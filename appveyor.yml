@@ -1,0 +1,31 @@
+version: '{build}'
+image: Visual Studio 2017
+init:
+  - git config --global core.autocrlf true
+branches:  
+  only:
+  - master
+before_build:
+  # Display .NET Core version
+  - cmd: dotnet --version
+  # Display minimal restore text
+  - cmd: dotnet restore
+pull_requests:  
+  do_not_increment_build_number: true
+nuget:  
+  disable_publish_on_pr: true
+build_script:  
+  - cmd: dotnet pack .\src\BeatPulse -c Release -o ..\..\artifacts
+test_script:
+  - cmd: dotnet test .\tests\UnitTests -c Release
+artifacts:  
+- path: .\artifacts\**\*.nupkg
+  name: NuGet
+deploy:  
+- provider: NuGet
+  name: production
+  api_key:
+    secure: 44bohP+05nCVBsZvK3tklX4yK8Rwi7vWRKTj1sMI1V26twqZJayTtRxv0fLF1t2o
+  on:
+    branch: master
+    appveyor_repo_tag: true

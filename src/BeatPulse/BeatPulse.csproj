@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
+    <Description>
+      BeatPulse is a health check library for ASP.NET Core Applications
+      For more information see http://github.com/Xabaril/CheckPulse
+    </Description>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health</PackageTags>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+
+</Project>
