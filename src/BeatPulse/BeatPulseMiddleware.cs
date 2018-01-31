@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BeatPulse
@@ -31,11 +32,11 @@ namespace BeatPulse
             }
             else
             {
-                //break circuit
+                var isHealthy = await pulseService.IsHealthy(request.Path);
 
-
+                await WriteResponseAsync(request.HttpContext,
+                        isHealthy ? (int)HttpStatusCode.OK : (int)HttpStatusCode.ServiceUnavailable);
             }
-
         }
 
         bool IsBeatPulseRequest(HttpRequest request)
@@ -44,7 +45,7 @@ namespace BeatPulse
                 && _templateMatcher.TryMatch(request.Path, new RouteValueDictionary());
         }
 
-        Task WriteResponseAsync(HttpContext context,string content,int statusCode)
+        Task WriteResponseAsync(HttpContext context,int statusCode)
         {
             const string defaultContentType = "application/json";
             const string defaultCacheOptions = "no-cache, no-store, must-revalidate";
@@ -57,7 +58,7 @@ namespace BeatPulse
             context.Response.Headers["Expires"] = new[] { defaultExpires };
             context.Response.StatusCode = statusCode;
 
-            return context.Response.WriteAsync(content);
+            return context.Response.WriteAsync(Enum.GetName(typeof(HttpStatusCode), statusCode));
         }
     }
 }

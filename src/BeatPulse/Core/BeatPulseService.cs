@@ -1,17 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BeatPulse.Core
 {
     class BeatPulseService
         : IBeatPulseService
     {
-        public BeatPulseService()
+        private readonly IEnumerable<IBeatPulseHealthCheck> _checkers;
+
+        public BeatPulseService(IEnumerable<IBeatPulseHealthCheck> checkers)
         {
+            _checkers = checkers ?? throw new ArgumentNullException(nameof(checkers));
         }
 
-        public Task<bool> EvaluateSegment(string segment)
+       
+        public Task<bool> IsHealthy(string segment)
         {
-            return Task.FromResult<bool>(true);
+            return Task.FromResult(true);
         }
     }
 }

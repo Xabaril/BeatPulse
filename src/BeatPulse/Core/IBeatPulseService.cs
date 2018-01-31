@@ -4,6 +4,6 @@ namespace BeatPulse.Core
 {
     public interface IBeatPulseService
     {
-        Task<bool> EvaluateSegment(string segment);
+        Task<bool> IsHealthy(string segment);
     }
 }
