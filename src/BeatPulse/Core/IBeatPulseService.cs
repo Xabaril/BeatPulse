@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace BeatPulse.Core
 {
     public interface IBeatPulseService
     {
-        Task<bool> IsHealthy(string segment);
+        Task<bool> IsHealthy(string path, HttpContext context);
     }
 }

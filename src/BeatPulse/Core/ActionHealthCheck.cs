@@ -4,7 +4,8 @@ using System.Text;
 
 namespace BeatPulse.Core
 {
-    public interface IBeatPulseHealthCheck
+    class ActionHealthCheck
+        : IBeatPulseHealthCheck
     {
     }
 }

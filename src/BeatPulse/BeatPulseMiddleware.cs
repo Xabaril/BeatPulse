@@ -32,7 +32,7 @@ namespace BeatPulse
             }
             else
             {
-                var isHealthy = await pulseService.IsHealthy(request.Path);
+                var isHealthy = await pulseService.IsHealthy(request.Path,context);
 
                 await WriteResponseAsync(request.HttpContext,
                         isHealthy ? (int)HttpStatusCode.OK : (int)HttpStatusCode.ServiceUnavailable);

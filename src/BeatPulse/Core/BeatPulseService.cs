@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace BeatPulse.Core
@@ -7,15 +8,16 @@ namespace BeatPulse.Core
     class BeatPulseService
         : IBeatPulseService
     {
-        private readonly IEnumerable<IBeatPulseHealthCheck> _checkers;
+        private readonly BeatPulseChecks _checks;
+        private readonly ILogger<BeatPulseService> _logger;
 
-        public BeatPulseService(IEnumerable<IBeatPulseHealthCheck> checkers)
+        public BeatPulseService(BeatPulseChecks checks, ILogger<BeatPulseService> logger)
         {
-            _checkers = checkers ?? throw new ArgumentNullException(nameof(checkers));
+            _checks = checks ?? throw new ArgumentNullException(nameof(checks));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-       
-        public Task<bool> IsHealthy(string segment)
+        public Task<bool> IsHealthy(string path,HttpContext context)
         {
             return Task.FromResult(true);
         }
