@@ -10,7 +10,6 @@ namespace BeatPulse
 {
     class BeatPulseMiddleware
     {
-        const string BEATPULSE_PATH_SEGMENT_NAME = "segment";
 
         private readonly RequestDelegate _next;
         private readonly TemplateMatcher _templateMatcher;
@@ -18,8 +17,9 @@ namespace BeatPulse
         public BeatPulseMiddleware(RequestDelegate next, string requestPath)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
-            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{requestPath}/{{{BEATPULSE_PATH_SEGMENT_NAME}}}"),
-                new RouteValueDictionary() { { "segment", "" } });
+            
+            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{requestPath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
+                new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty} });
         }
 
         public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
@@ -52,7 +52,8 @@ namespace BeatPulse
 
             if (isValidRequest)
             {
-                beatPulsePath = routeValues[BEATPULSE_PATH_SEGMENT_NAME].ToString();
+                beatPulsePath = routeValues[BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME]
+                    .ToString();
             }
 
             return isValidRequest;

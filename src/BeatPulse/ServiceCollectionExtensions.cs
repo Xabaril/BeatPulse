@@ -1,4 +1,5 @@
-﻿using BeatPulse.Core;
+﻿using BeatPulse;
+using BeatPulse.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -11,7 +12,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var context = new BeatPulseContext();
 
-            //TODO: agregar por defecto el health check _self
+            context.Add(
+                new ActionHealthCheck("self", BeatPulseKeys.BEATPULSE_SELFT_SEGMENT, httpContext => true));
 
             setup?.Invoke(context);
 
