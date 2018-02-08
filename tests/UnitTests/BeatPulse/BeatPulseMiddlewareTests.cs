@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using UnitTests.Base;
 using Xunit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using BeatPulse.Core;
 
 namespace BeatPulse
 {
@@ -35,12 +37,20 @@ namespace BeatPulse
         [Fact]
         public async Task response_http_status_serviceunavailable_when_beat_pulse_service_is_not_healthy()
         {
+            var healthCheck = new ActionHealthCheck(
+                "defaultName",
+                "defaultPath", 
+                httpcontext => false);
+
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddBeatPulse();
+                    svc.AddBeatPulse(context=>
+                    {
+                        context.Add(healthCheck);
+                    });
                 });
 
             var server = new TestServer(webHostBuilder);

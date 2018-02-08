@@ -10,21 +10,23 @@ namespace BeatPulse
 {
     class BeatPulseMiddleware
     {
+        const string BEATPULSE_PATH_SEGMENT_NAME = "segment";
+
         private readonly RequestDelegate _next;
         private readonly TemplateMatcher _templateMatcher;
 
         public BeatPulseMiddleware(RequestDelegate next, string requestPath)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
-            _templateMatcher = new TemplateMatcher(TemplateParser.Parse(requestPath),
-                new RouteValueDictionary());
+            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{requestPath}/{{{BEATPULSE_PATH_SEGMENT_NAME}}}"),
+                new RouteValueDictionary() { { "segment", "" } });
         }
 
         public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
         {
             var request = context.Request;
 
-            if (!IsBeatPulseRequest(request))
+            if (!IsBeatPulseRequest(request,out string beatPulsePath))
             {
                 await _next.Invoke(context);
 
@@ -32,17 +34,28 @@ namespace BeatPulse
             }
             else
             {
-                var isHealthy = await pulseService.IsHealthy(request.Path,context);
+                var isHealthy = await pulseService.IsHealthy(beatPulsePath, context);
 
                 await WriteResponseAsync(request.HttpContext,
                         isHealthy ? (int)HttpStatusCode.OK : (int)HttpStatusCode.ServiceUnavailable);
             }
         }
 
-        bool IsBeatPulseRequest(HttpRequest request)
+        bool IsBeatPulseRequest(HttpRequest request,out string beatPulsePath)
         {
-            return request.Method == HttpMethods.Get
-                && _templateMatcher.TryMatch(request.Path, new RouteValueDictionary());
+            beatPulsePath = string.Empty;
+
+            var routeValues = new RouteValueDictionary();
+
+            var isValidRequest =  request.Method == HttpMethods.Get
+                && _templateMatcher.TryMatch(request.Path, routeValues);
+
+            if (isValidRequest)
+            {
+                beatPulsePath = routeValues[BEATPULSE_PATH_SEGMENT_NAME].ToString();
+            }
+
+            return isValidRequest;
         }
 
         Task WriteResponseAsync(HttpContext context,int statusCode)

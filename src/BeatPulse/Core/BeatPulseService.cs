@@ -5,21 +5,46 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.Core
 {
-    class BeatPulseService
+    public class BeatPulseService
         : IBeatPulseService
     {
-        private readonly BeatPulseChecks _checks;
+        private readonly BeatPulseContext _context;
         private readonly ILogger<BeatPulseService> _logger;
 
-        public BeatPulseService(BeatPulseChecks checks, ILogger<BeatPulseService> logger)
+        public BeatPulseService(BeatPulseContext context, ILogger<BeatPulseService> logger)
         {
-            _checks = checks ?? throw new ArgumentNullException(nameof(checks));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<bool> IsHealthy(string path,HttpContext context)
+        public async Task<bool> IsHealthy(string path,HttpContext context)
         {
-            return Task.FromResult(true);
+            _logger.LogInformation($"BeatPulse is checking health for path {path}");
+
+            if (String.IsNullOrEmpty(path))
+            {
+                //global health
+                foreach (var item in _context.All)
+                {
+                    if (! await item.IsHealthy(context))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                var checker = _context.Find(path);
+
+                if (checker != null)
+                {
+                    return await checker.IsHealthy(context);
+                }
+            }
+
+            return true;
         }
     }
 }
