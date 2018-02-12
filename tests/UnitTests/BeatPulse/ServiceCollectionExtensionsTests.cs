@@ -8,7 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing.Template;
 
-namespace UnitTests.BeatPulse
+namespace BeatPulse
 {
     public class service_collection_extensions_AddBeatPulse_should
     {

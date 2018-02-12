@@ -8,7 +8,7 @@ using System.Linq;
 using UnitTests.Base;
 using Xunit;
 
-namespace UnitTests.BeatPulse.SqlServer
+namespace BeatPulse.SqlServer
 {
     public class beat_pulse_context_should
     {

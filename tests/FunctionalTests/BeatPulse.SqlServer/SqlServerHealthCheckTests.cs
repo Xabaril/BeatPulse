@@ -1,6 +1,4 @@
-﻿using BeatPulse;
-using BeatPulse.SqlServer;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -10,7 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FunctionalTests.BeatPulse.SqlServer
+namespace BeatPulse.SqlServer
 {
     [Collection("execution")]
     public class sqlserver_health_check_should

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests.BeatPulse.Core
+namespace BeatPulse.Core
 {
     public class action_health_should
     {
