@@ -19,11 +19,10 @@ namespace BeatPulse.Core
 
         public async Task<bool> IsHealthy(string path,HttpContext context)
         {
-            _logger.LogInformation($"BeatPulse is checking health for path {path}");
+            _logger.LogInformation($"BeatPulse is checking health on {path}");
 
             if (String.IsNullOrEmpty(path))
             {
-                //global health
                 foreach (var item in _context.All)
                 {
                     if (! await item.IsHealthy(context))

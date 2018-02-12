@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+
 namespace BeatPulse.Core
 {
     public class BeatPulseContext
     {
-        Dictionary<string, IBeatPulseHealthCheck> _healthCheckers = new Dictionary<string, IBeatPulseHealthCheck>();
+        private readonly Dictionary<string, IBeatPulseHealthCheck> _healthCheckers = new Dictionary<string, IBeatPulseHealthCheck>();
 
         public BeatPulseContext Add(IBeatPulseHealthCheck check)
         {

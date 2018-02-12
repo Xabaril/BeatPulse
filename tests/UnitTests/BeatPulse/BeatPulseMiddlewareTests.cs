@@ -29,7 +29,7 @@ namespace BeatPulse
             var server = new TestServer(webHostBuilder);
 
             var response = await server.CreateClient()
-                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATHH);
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
             response.EnsureSuccessStatusCode();
         }
@@ -56,7 +56,7 @@ namespace BeatPulse
             var server = new TestServer(webHostBuilder);
 
             var response = await server.CreateClient()
-                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATHH);
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
             response.StatusCode
                 .Should()
@@ -113,7 +113,7 @@ namespace BeatPulse
             var server = new TestServer(webHostBuilder);
 
             var response = await server.CreateClient()
-                .PostAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATHH, new StringContent(string.Empty));
+                .PostAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH, new StringContent(string.Empty));
 
             response.EnsureSuccessStatusCode();
 
@@ -121,7 +121,7 @@ namespace BeatPulse
                 .Be("latest-midleware");
 
             response = await server.CreateClient()
-                .PutAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATHH, new StringContent(string.Empty));
+                .PutAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH, new StringContent(string.Empty));
 
             response.EnsureSuccessStatusCode();
 
@@ -129,7 +129,7 @@ namespace BeatPulse
                 .Be("latest-midleware");
 
             response = await server.CreateClient()
-                .DeleteAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATHH);
+                .DeleteAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
             response.EnsureSuccessStatusCode();
 

@@ -1,11 +1,13 @@
 version: '3'
 services:
-    oracle:
-        image: sath89/oracle-12c
+    sqlserver:
+        image: microsoft/mssql-server-linux
         restart: always
         ports:
-            - 8080:8080
-            - 1521:1521
+            - ${SQLSERVER_PORT}:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=${SQLSERVER_PASSWORD}
     adminer:
         image: adminer
         restart: always
