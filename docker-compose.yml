@@ -8,6 +8,17 @@ services:
         environment:
             - ACCEPT_EULA=Y
             - SA_PASSWORD=${SQLSERVER_PASSWORD}
+    redis:
+        image: redis:alpine
+        ports:
+            - ${REDIS_PORT}:6379
+    postgres:
+        image: postgres
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        ports:
+            - ${POSTGRES_PORT}:5432
     adminer:
         image: adminer
         restart: always

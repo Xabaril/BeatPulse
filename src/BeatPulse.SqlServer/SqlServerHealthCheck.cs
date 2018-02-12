@@ -11,7 +11,7 @@ namespace BeatPulse.SqlServer
     {
         private readonly string _sqlServerConnectionString;
 
-        public string HealthCheckName => "SqlServerHealthCheck";
+        public string HealthCheckName => nameof(SqlServerHealthCheck);
 
         public string HealthCheckDefaultPath => "sqlserver";
 
