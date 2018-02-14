@@ -26,9 +26,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.SqlServer", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{EC4C333A-FA30-4414-829B-18906FDDE704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.Redis", "src\BeatPulse.Redis\BeatPulse.Redis.csproj", "{B104A0B5-6166-4F64-A7EA-1B11535A78F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Redis", "src\BeatPulse.Redis\BeatPulse.Redis.csproj", "{B104A0B5-6166-4F64-A7EA-1B11535A78F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.NpgSql", "src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj", "{DAFB2EB8-5645-433A-8555-3C6ED11260C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.NpgSql", "src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj", "{DAFB2EB8-5645-433A-8555-3C6ED11260C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.MongoDb", "src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj", "{86E77F50-5306-42DE-9500-E56F3AD3F69C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{DAFB2EB8-5645-433A-8555-3C6ED11260C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAFB2EB8-5645-433A-8555-3C6ED11260C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAFB2EB8-5645-433A-8555-3C6ED11260C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86E77F50-5306-42DE-9500-E56F3AD3F69C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E77F50-5306-42DE-9500-E56F3AD3F69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86E77F50-5306-42DE-9500-E56F3AD3F69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86E77F50-5306-42DE-9500-E56F3AD3F69C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{EC4C333A-FA30-4414-829B-18906FDDE704} = {FAB4DED2-2F9C-49E1-9D32-9A057D968FEA}
 		{B104A0B5-6166-4F64-A7EA-1B11535A78F2} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{DAFB2EB8-5645-433A-8555-3C6ED11260C2} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{86E77F50-5306-42DE-9500-E56F3AD3F69C} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

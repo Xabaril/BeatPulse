@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.1</Version>
-    <Authors>Xabaril Contributors</Authors>
-    <Company>Xabaril</Company>
-    <Description>BeatPulse.Redis is the health check package for Redis on BeatPulse</Description>
     <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
     <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>
-    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sql Server</PackageTags>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;MongoDb</PackageTags>
+    <Description>BeatPulse.MongoDb is the health check package for MongoDb on BeatPulse</Description>
+    <Authors>Xabaril Contributors</Authors>
+    <Company>Xabaril</Company>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
   </ItemGroup>
 
   <ItemGroup>
