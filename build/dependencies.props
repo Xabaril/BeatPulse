@@ -1,0 +1,37 @@
+<Project>
+  <PropertyGroup Label="SDK Versions">
+    <NetStandardTargetVersion>netstandard2.0</NetStandardTargetVersion>
+    <NetCoreTargetVersion>netcoreapp2.0</NetCoreTargetVersion>
+    <MicrosoftNETTestSdkPackageVersion>15.5.0</MicrosoftNETTestSdkPackageVersion>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="Package Versions">
+    <HostingAbstractionsVersion>2.0.1</HostingAbstractionsVersion>
+    <ASPNetCoreRoutingVersion>2.0.1</ASPNetCoreRoutingVersion>
+    <ASPNetCoreAllPackageVersion>2.0.5</ASPNetCoreAllPackageVersion>
+    <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
+    <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
+    <NpgsqlVersion>3.2.6</NpgsqlVersion>
+    <RedisVersion>1.2.6</RedisVersion>
+    <SqlClientVersion>4.4.2</SqlClientVersion>
+    <FluentAssertionsVersion>5.0.0</FluentAssertionsVersion>
+    <ASPNetCoreTestHostVersion>2.0.1</ASPNetCoreTestHostVersion>
+    <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
+    <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
+  </PropertyGroup>
+
+  <PropertyGroup Label="CLI Tools Versions">
+    <DotnetXUnitPackageVersion>2.3.1</DotnetXUnitPackageVersion>
+    <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package information">
+    <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
+    <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>    
+    <Authors>Xabaril Contributors</Authors>
+    <Company>Xabaril</Company>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+</Project>

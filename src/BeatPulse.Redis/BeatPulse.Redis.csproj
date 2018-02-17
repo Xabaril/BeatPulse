@@ -1,19 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.1</Version>
-    <Authors>Xabaril Contributors</Authors>
-    <Company>Xabaril</Company>
+    <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.Redis is the health check package for Redis on BeatPulse</Description>
-    <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
-    <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>
-    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sql Server</PackageTags>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Redis</PackageTags>
+    <Version>$(Version)</Version>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <Company>$(Company)</Company>
+    <Authors>$(Authors)</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
+    <PackageReference Include="StackExchange.Redis.StrongName" Version="$(RedisVersion)" />
   </ItemGroup>
 
   <ItemGroup>

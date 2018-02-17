@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
+    <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.SqlServer is the health check package for SqlServer on BeatPulse </Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sql Server</PackageTags>
-    <Version>0.0.1</Version>
-    <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>
-    <Authors>Xabaril Contributors</Authors>
-    <Company>Xabaril</Company>
+    <Version>$(Version)</Version>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <Company>$(Company)</Company>
+    <Authors>$(Authors)</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="$(SqlClientVersion)" />
   </ItemGroup>
 
   <ItemGroup>
