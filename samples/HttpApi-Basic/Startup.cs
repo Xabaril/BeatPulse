@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using BeatPulse;
 namespace HttpApi_Basic
 {
     public class Startup
@@ -23,6 +23,11 @@ namespace HttpApi_Basic
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddSqlServer("Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+            });
+
             services.AddMvc();
         }
 

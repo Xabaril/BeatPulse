@@ -1,6 +1,7 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.SqlServer;
 
-namespace BeatPulse.SqlServer
+namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
