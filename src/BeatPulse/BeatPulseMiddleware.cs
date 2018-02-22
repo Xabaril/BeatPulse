@@ -13,25 +13,6 @@ namespace BeatPulse
 {
     class BeatPulseMiddleware
     {
-
-        class OutputMessage
-        {
-            private List<HealthCheckMessage> _messages;
-            public IEnumerable<HealthCheckMessage> Checks => _messages;
-
-            public DateTime StartedAtUtc { get; }
-
-            public DateTime EndAtUtc { get; set; }
-
-            public OutputMessage()
-            {
-                StartedAtUtc = DateTime.UtcNow;
-                _messages = new List<HealthCheckMessage>();
-            }
-
-            public void AddHealthCheckMessages(IEnumerable<HealthCheckMessage> msgs) => _messages.AddRange(msgs);
-        }
-
         private readonly RequestDelegate _next;
         private readonly TemplateMatcher _templateMatcher;
         private readonly BeatPulseOptions _options;
@@ -40,9 +21,9 @@ namespace BeatPulse
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
-            var requestPath = options.BeatPulsePath;
 
-            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{requestPath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
+            //match template like /hc/{segment} 
+            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
                 new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });
         }
 
@@ -58,13 +39,15 @@ namespace BeatPulse
             }
             else
             {
-                var wantedOutput = _options.EnableOutput;
                 var output = new OutputMessage();
-                var checksResponses = await pulseService.IsHealthy(beatPulsePath, context);
-                output.AddHealthCheckMessages(checksResponses);
+
+                //get responses from checkers
+                var responses = await pulseService.IsHealthy(beatPulsePath, context);
+
+                output.AddHealthCheckMessages(responses);
                 output.EndAtUtc = DateTime.UtcNow;
 
-                await WriteResponseAsync(request.HttpContext, output, wantedOutput);
+                await WriteResponseAsync(request.HttpContext, output, _options.EnableOutput);
             }
         }
 
@@ -101,15 +84,28 @@ namespace BeatPulse
             var statusCode = output.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
             context.Response.StatusCode = (int)statusCode;
 
-            if (outputWanted)
+            var content = outputWanted ? JsonConvert.SerializeObject(output)
+                : Enum.GetName(typeof(HttpStatusCode), statusCode);
+
+            return context.Response.WriteAsync(content);
+        }
+
+        class OutputMessage
+        {
+            private readonly List<HealthCheckMessage> _messages = new List<HealthCheckMessage>();
+
+            public IEnumerable<HealthCheckMessage> Checks => _messages;
+
+            public DateTime StartedAtUtc { get; }
+
+            public DateTime EndAtUtc { get; set; }
+
+            public OutputMessage()
             {
-                var json = JsonConvert.SerializeObject(output);
-                return context.Response.WriteAsync(json);
+                StartedAtUtc = DateTime.UtcNow;
             }
-            else
-            {
-                return context.Response.WriteAsync(Enum.GetName(typeof(HttpStatusCode), statusCode));
-            }
+
+            public void AddHealthCheckMessages(IEnumerable<HealthCheckMessage> messages) => _messages.AddRange(messages);
         }
     }
 }

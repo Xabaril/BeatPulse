@@ -1,26 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace BeatPulse.Core
 {
     public class HealthCheckMessage
     {
-        private readonly Stopwatch _watcher;
+        private readonly Stopwatch _watcher = new Stopwatch();
+
         public string Name { get; }
+
         public string Message { get; private set; }
 
         public long MilliSeconds {get; private set;}
 
         public bool Run { get; private set; }
+
         public bool IsHealthy { get; private set; }
 
         public HealthCheckMessage(string name)
         {
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             Run = false;
-            _watcher = new Stopwatch();
             IsHealthy = false;
         }
 
@@ -29,12 +29,13 @@ namespace BeatPulse.Core
             _watcher.Restart();
         }
 
-        internal void StopCounter(string msg, bool healthy)
+        internal void StopCounter(string message, bool healthy)
         {
             _watcher.Stop();
+
             MilliSeconds = _watcher.ElapsedMilliseconds;
-            Message = msg;
             Run = true;
+            Message = message;
             IsHealthy = healthy;
         }
     }

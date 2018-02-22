@@ -19,40 +19,49 @@ namespace BeatPulse.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<HealthCheckMessage>> IsHealthy(string path,HttpContext context)
+        public async Task<IEnumerable<HealthCheckMessage>> IsHealthy(string path, HttpContext context)
         {
             _logger.LogInformation($"BeatPulse is checking health on {path}");
 
             if (String.IsNullOrEmpty(path))
             {
                 var messages = new List<HealthCheckMessage>(_context.ChecksCount);
+
                 foreach (var item in _context.All)
                 {
-                    var msg = new HealthCheckMessage(item.HealthCheckName);
+                    var message = new HealthCheckMessage(item.HealthCheckName);
+
                     if (item.Options.IncludeInOutput)
                     {
-                        messages.Add(msg);
+                        messages.Add(message);
                     }
-                    msg.StartCounter();
+
+                    message.StartCounter();
+
                     var (itemMessage, healthy) = await item.IsHealthy(context);
-                    msg.StopCounter(itemMessage, healthy);
+
+                    message.StopCounter(itemMessage, healthy);
+
                     if (!healthy)
                     {
                         return messages;
                     }
                 }
+
                 return messages;
             }
             else
             {
                 var checker = _context.Find(path);
+
                 if (checker != null)
                 {
-                    var msg = new HealthCheckMessage(checker.HealthCheckName);
-                    msg.StartCounter();
+                    var message = new HealthCheckMessage(checker.HealthCheckName);
+                    message.StartCounter();
                     var (checkerMessage, healthy) = await checker.IsHealthy(context);
-                    msg.StopCounter(checkerMessage, healthy);
-                    return new[] { msg };
+                    message.StopCounter(checkerMessage, healthy);
+
+                    return new[] { message };
                 }
             }
 

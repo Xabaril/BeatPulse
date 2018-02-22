@@ -9,32 +9,29 @@ namespace BeatPulse.SqlServer
     public class SqlServerHealthCheck
         : IBeatPulseHealthCheck
     {
-        private readonly SqlServerHcOptions _options;
-
-        public string HealthCheckName { get; }
+        public string HealthCheckName => nameof(SqlServerHealthCheck);
 
         public string HealthCheckDefaultPath => "sqlserver";
 
-        public IHealthCheckOptions Options => _options;
+        public IHealthCheckOptions Options { get; }
 
-        public SqlServerHealthCheck(string name, SqlServerHcOptions options)
+        string _connectionString;
+
+        public SqlServerHealthCheck(string sqlserverconnectionstring)
         {
-            if (string.IsNullOrEmpty(options.ConnectionString))
-            {
-                throw new ArgumentException("No connection string provided. Please Use options.UseConnectionString().", "options");
-            }
-            HealthCheckName = name ?? nameof(SqlServerHealthCheck);
-            _options = options;
+            _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
+            Options = new HealthCheckOptions();
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context)
         {
-            using (var connection = new SqlConnection(_options.ConnectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 try
                 {
                     await connection.OpenAsync();
-                    return ("", true);
+
+                    return ("OK", true);
                 }
                 catch (Exception ex)
                 {

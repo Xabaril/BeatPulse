@@ -1,6 +1,4 @@
-﻿
-
-using BeatPulse.Core;
+﻿using BeatPulse.Core;
 using BeatPulse.MongoDb;
 
 namespace BeatPulse

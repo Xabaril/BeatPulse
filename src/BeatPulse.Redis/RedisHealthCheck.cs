@@ -29,7 +29,7 @@ namespace BeatPulse.Redis
             {
                 await ConnectionMultiplexer.ConnectAsync(_redisConnectionString);
 
-                return ("", true);
+                return ("OK", true);
             }
             catch (Exception ex)
             {

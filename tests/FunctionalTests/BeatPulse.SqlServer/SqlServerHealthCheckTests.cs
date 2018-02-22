@@ -37,10 +37,7 @@ namespace BeatPulse.SqlServer
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddSqlServer(options =>
-                        {
-                            options.UseConnectionSring(connectionString);
-                        });
+                        context.AddSqlServer(connectionString);
                     });
                 });
 
@@ -62,10 +59,7 @@ namespace BeatPulse.SqlServer
                {
                    services.AddBeatPulse(context =>
                    {
-                       context.AddSqlServer(options =>
-                       {
-                           options.UseConnectionSring("Server=tcp:200.0.0.100,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
-                       });
+                       context.AddSqlServer("Server=tcp:200.0.0.100,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
                    });
                });
 

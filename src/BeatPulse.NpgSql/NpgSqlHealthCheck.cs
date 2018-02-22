@@ -31,7 +31,7 @@ namespace BeatPulse.NpgSql
                 {
                     await connection.OpenAsync();
 
-                    return ("", true);
+                    return ("OK", true);
                 }
                 catch (Exception ex)
                 {

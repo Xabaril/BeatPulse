@@ -1,6 +1,5 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
@@ -13,7 +12,10 @@ namespace Microsoft.Extensions.DependencyInjection
             var context = new BeatPulseContext();
 
             context.Add(
-                new ActionHealthCheck("self", BeatPulseKeys.BEATPULSE_SELF_SEGMENT, httpContext => ("", true)));
+                new ActionHealthCheck(
+                    BeatPulseKeys.BEATPULSE_SELF_NAME, 
+                    BeatPulseKeys.BEATPULSE_SELF_SEGMENT,
+                    httpContext => (BeatPulseKeys.BEATPULSE_SELF_MESSAGE, true)));
 
             setup?.Invoke(context);
 

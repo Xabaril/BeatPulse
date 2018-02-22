@@ -30,7 +30,7 @@ namespace BeatPulse.MongoDb
                 await new MongoClient(_mongoDbConnectionString)
                     .ListDatabasesAsync();
 
-                return ("", true);
+                return ("OK", true);
             }
             catch (Exception ex)
             {

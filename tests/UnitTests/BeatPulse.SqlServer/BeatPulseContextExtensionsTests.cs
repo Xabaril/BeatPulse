@@ -22,10 +22,7 @@ namespace BeatPulse.SqlServer
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddSqlServer(options=>
-                        {
-                            options.UseConnectionSring("the-sql-server-connection-string");
-                        });
+                        context.AddSqlServer("the-sql-server-connection-string");
                     });
                 });
 
