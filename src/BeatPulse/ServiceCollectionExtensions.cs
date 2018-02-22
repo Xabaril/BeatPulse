@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var context = new BeatPulseContext();
 
             context.Add(
-                new ActionHealthCheck("self", BeatPulseKeys.BEATPULSE_SELF_SEGMENT, httpContext => true));
+                new ActionHealthCheck("self", BeatPulseKeys.BEATPULSE_SELF_SEGMENT, httpContext => ("", true)));
 
             setup?.Invoke(context);
 

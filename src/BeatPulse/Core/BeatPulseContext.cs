@@ -49,5 +49,7 @@ namespace BeatPulse.Core
                 return _healthCheckers.Values;
             }
         }
+
+        public int ChecksCount => _healthCheckers.Count;
     }
 }

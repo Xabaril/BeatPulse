@@ -61,7 +61,7 @@ namespace BeatPulse
             
             _defaultServiceCollection.AddBeatPulse(context =>
             {
-                context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => true));
+                context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => ("", true)));
             });
 
             var beatPulseContext = _defaultServiceCollection.BuildServiceProvider()

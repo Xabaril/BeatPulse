@@ -15,23 +15,26 @@ namespace BeatPulse.MongoDb
 
         public string HealthCheckDefaultPath => "mongodb";
 
+        public IHealthCheckOptions Options { get; }
+
         public MongoDbHealthCheck(string mongoDbConnectionString)
         {
             _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
+            Options = new HealthCheckOptions();
         }
 
-        public async Task<bool> IsHealthy(HttpContext context)
+        public async Task<(string, bool)> IsHealthy(HttpContext context)
         {
             try
             {
                 await new MongoClient(_mongoDbConnectionString)
                     .ListDatabasesAsync();
 
-                return true;
+                return ("", true);
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return ($"Exception {ex.GetType().Name} with message ('{ex.Message}')", false);
             }
             
         }

@@ -7,19 +7,18 @@ namespace BeatPulse
     class BeatPulseFilter
         : IStartupFilter
     {
-        private string _beatPulsePath;
+        private readonly BeatPulseOptions _options;
 
-        public BeatPulseFilter(string beatPulsePath)
+        public BeatPulseFilter(BeatPulseOptions options)
         {
-            _beatPulsePath = beatPulsePath ?? throw new ArgumentNullException(nameof(beatPulsePath));
+            _options = options;
         }
 
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
         {
             return builder =>
             {
-                builder.UseMiddleware<BeatPulseMiddleware>(_beatPulsePath);
-
+                builder.UseMiddleware<BeatPulseMiddleware>(_options);
                 next(builder);
             };
         }

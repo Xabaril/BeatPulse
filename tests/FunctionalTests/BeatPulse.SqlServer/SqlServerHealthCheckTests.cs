@@ -26,7 +26,7 @@ namespace BeatPulse.SqlServer
             //read appveyor services default values on
             //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
 
-            var connectionString = _fixture.IsAppVeyorExecution 
+            var connectionString = _fixture.IsAppVeyorExecution
                 ? @"Server=(local)\SQL2016;Initial Catalog=master;User Id=sa;Password=Password12!"
                 : "Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!";
 
@@ -37,7 +37,10 @@ namespace BeatPulse.SqlServer
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddSqlServer(connectionString);
+                        context.AddSqlServer(options =>
+                        {
+                            options.UseConnectionSring(connectionString);
+                        });
                     });
                 });
 
@@ -59,7 +62,10 @@ namespace BeatPulse.SqlServer
                {
                    services.AddBeatPulse(context =>
                    {
-                       context.AddSqlServer("Server=tcp:200.0.0.100,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                       context.AddSqlServer(options =>
+                       {
+                           options.UseConnectionSring("Server=tcp:200.0.0.100,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                       });
                    });
                });
 

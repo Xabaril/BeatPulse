@@ -20,6 +20,10 @@ namespace HttpApi_Basic
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseBeatPulse()
+                //.UseBeatPulse(opt =>
+                //{
+                //    opt.EnableOutput = false;
+                //})
                 .UseStartup<Startup>()
                 .Build();
     }

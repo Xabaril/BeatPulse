@@ -40,7 +40,7 @@ namespace BeatPulse
             var healthCheck = new ActionHealthCheck(
                 "defaultName",
                 "defaultPath", 
-                httpcontext => false);
+                httpcontext => ("false", false));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -141,7 +141,7 @@ namespace BeatPulse
         public async Task response_http_status_ok_when_beat_pulse_service_is_healthy_on_custom_path()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse("customhealthpath")
+                .UseBeatPulse(o => o.BeatPulsePath = "customhealthpath")
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {

@@ -25,7 +25,11 @@ namespace HttpApi_Basic
         {
             services.AddBeatPulse(setup =>
             {
-                setup.AddSqlServer("Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                setup.AddSqlServer("sql_server", options =>
+                {
+                    options.UseConnectionSring("Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                    //options.IncludeInOutput = false;
+                });
             });
 
             services.AddMvc();

@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(HostingAbstractionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="$(ASPNetCoreRoutingVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
 
 </Project>

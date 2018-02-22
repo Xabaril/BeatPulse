@@ -11,7 +11,7 @@ namespace BeatPulse.Core
         [Fact]
         public async Task execute_definded_action_for_health_check()
         {
-            var result = false;
+            var result = ("false",false);
 
             var healthCheck = new ActionHealthCheck(
                 "name",
@@ -31,7 +31,7 @@ namespace BeatPulse.Core
             var healthCheck = new ActionHealthCheck(
                 nameof(defaultName),
                 nameof(defaultPath),
-                (context) => true);
+                (context) => ("", true));
 
             healthCheck.HealthCheckName
                 .Should().Be(nameof(defaultName));
