@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeatPulse;
+using BeatPulse.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using BeatPulse;
+using System.Net.Http;
+
 namespace HttpApi_Basic
 {
     public class Startup
@@ -25,6 +22,24 @@ namespace HttpApi_Basic
         {
             services.AddBeatPulse(setup =>
             {
+                //add custom health check
+                setup.Add(new ActionHealthCheck("cat", "catapi", httpContext =>
+                {
+                    var response = (new HttpClient()).GetAsync("https:/http.cat/200")
+                        .Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("OK", true);
+                    }
+                    else
+                    {
+                        return ("the cat api is broken!", false);
+                    }
+                    
+                }));
+
+                //add sql server health check
                 setup.AddSqlServer("Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
             });
 
