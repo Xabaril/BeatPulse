@@ -15,25 +15,25 @@ namespace BeatPulse.Redis
 
         public string HealthCheckDefaultPath => "redis";
 
-        public IHealthCheckOptions Options { get; }
-
         public RedisHealthCheck(string redisConnectionString)
         {
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
-            Options = new HealthCheckOptions();
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment)
         {
             try
             {
                 await ConnectionMultiplexer.ConnectAsync(_redisConnectionString);
 
-                return ("OK", true);
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
             {
-                return ($"Exception {ex.GetType().Name} with message ('{ex.Message}')", false);
+                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                return (message, false);
             }
             
         }

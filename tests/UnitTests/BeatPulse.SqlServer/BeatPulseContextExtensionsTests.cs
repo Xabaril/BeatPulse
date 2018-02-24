@@ -31,7 +31,7 @@ namespace BeatPulse.SqlServer
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.All
+            beatPulseContex.AllBeatPulseHealthChecks
                 .Where(hc => hc.GetType() == typeof(SqlServerHealthCheck))
                 .Should().HaveCount(1);
 

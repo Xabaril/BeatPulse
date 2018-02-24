@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
@@ -22,7 +23,7 @@ namespace BeatPulse
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
 
-            //match template like /hc/{segment} 
+            //match template for uri like /hc/{segment} 
             _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
                 new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });
         }
@@ -90,11 +91,11 @@ namespace BeatPulse
             return context.Response.WriteAsync(content);
         }
 
-        class OutputMessage
+        private class OutputMessage
         {
-            private readonly List<HealthCheckMessage> _messages = new List<HealthCheckMessage>();
+            private readonly List<HealthCheckResult> _messages = new List<HealthCheckResult>();
 
-            public IEnumerable<HealthCheckMessage> Checks => _messages;
+            public IEnumerable<HealthCheckResult> Checks => _messages;
 
             public DateTime StartedAtUtc { get; }
 
@@ -105,7 +106,7 @@ namespace BeatPulse
                 StartedAtUtc = DateTime.UtcNow;
             }
 
-            public void AddHealthCheckMessages(IEnumerable<HealthCheckMessage> messages) => _messages.AddRange(messages);
+            public void AddHealthCheckMessages(IEnumerable<HealthCheckResult> messages) => _messages.AddRange(messages);
         }
     }
 }

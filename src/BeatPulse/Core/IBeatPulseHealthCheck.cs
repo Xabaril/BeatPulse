@@ -9,8 +9,6 @@ namespace BeatPulse.Core
 
         string HealthCheckDefaultPath { get; }
 
-        IHealthCheckOptions Options { get; }
-
-        Task<(string, bool)> IsHealthy(HttpContext context);
+        Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment);
     }
 }

@@ -9,34 +9,34 @@ namespace BeatPulse.MongoDb
     public class MongoDbHealthCheck
         : IBeatPulseHealthCheck
     {
-        private string _mongoDbConnectionString;
+        private readonly string _mongoDbConnectionString;
 
         public string HealthCheckName => nameof(MongoDbHealthCheck);
 
         public string HealthCheckDefaultPath => "mongodb";
 
-        public IHealthCheckOptions Options { get; }
-
         public MongoDbHealthCheck(string mongoDbConnectionString)
         {
             _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
-            Options = new HealthCheckOptions();
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
         {
             try
             {
                 await new MongoClient(_mongoDbConnectionString)
                     .ListDatabasesAsync();
 
-                return ("OK", true);
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
             {
-                return ($"Exception {ex.GetType().Name} with message ('{ex.Message}')", false);
+                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                return (message, false);
+                
             }
-            
         }
     }
 }

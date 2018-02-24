@@ -1,5 +1,4 @@
-﻿using BeatPulse.Core;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,7 +17,7 @@ namespace BeatPulse.Core
                 "defaultPath",
                 (context) => result);
 
-            (await healthCheck.IsHealthy(new DefaultHttpContext()))
+            (await healthCheck.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
                 .Should().Be(result);
         }
 

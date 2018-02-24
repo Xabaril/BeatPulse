@@ -35,21 +35,19 @@ namespace BeatPulse.Core
             }
         }
 
-        public IBeatPulseHealthCheck Find(string path)
+        public IBeatPulseHealthCheck FindBeatPulseHealthCheck(string path)
         {
             _healthCheckers.TryGetValue(path, out IBeatPulseHealthCheck check);
 
             return check;
         }
 
-        public IEnumerable<IBeatPulseHealthCheck> All
+        public IEnumerable<IBeatPulseHealthCheck> AllBeatPulseHealthChecks
         {
             get
             {
                 return _healthCheckers.Values;
             }
         }
-
-        public int ChecksCount => _healthCheckers.Count;
     }
 }

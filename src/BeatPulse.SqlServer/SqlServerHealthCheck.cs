@@ -13,17 +13,14 @@ namespace BeatPulse.SqlServer
 
         public string HealthCheckDefaultPath => "sqlserver";
 
-        public IHealthCheckOptions Options { get; }
-
-        string _connectionString;
+        private readonly string _connectionString;
 
         public SqlServerHealthCheck(string sqlserverconnectionstring)
         {
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
-            Options = new HealthCheckOptions();
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -31,11 +28,14 @@ namespace BeatPulse.SqlServer
                 {
                     await connection.OpenAsync();
 
-                    return ("OK", true);
+                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
                 catch (Exception ex)
                 {
-                    return ($"Exception {ex.GetType().Name} with message ('{ex.Message}')", false);
+                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                    return (message, false);
                 }
             }
         }

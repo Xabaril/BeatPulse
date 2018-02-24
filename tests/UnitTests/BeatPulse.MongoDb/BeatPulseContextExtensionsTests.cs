@@ -31,7 +31,7 @@ namespace BeatPulse.MongoDb
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.All
+            beatPulseContex.AllBeatPulseHealthChecks
                 .Where(hc => hc.GetType() == typeof(MongoDbHealthCheck))
                 .Should().HaveCount(1);
 

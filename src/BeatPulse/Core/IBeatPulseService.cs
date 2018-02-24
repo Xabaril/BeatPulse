@@ -6,6 +6,6 @@ namespace BeatPulse.Core
 {
     public interface IBeatPulseService
     {
-        Task<IEnumerable<HealthCheckMessage>> IsHealthy(string path, HttpContext context);
+        Task<IEnumerable<HealthCheckResult>> IsHealthy(string path, HttpContext context);
     }
 }

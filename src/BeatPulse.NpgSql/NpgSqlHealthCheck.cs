@@ -15,15 +15,13 @@ namespace BeatPulse.NpgSql
 
         public string HealthCheckDefaultPath => "npgsql";
 
-        public IHealthCheckOptions Options { get; }
 
         public NpgSqlHealthCheck(string npgsqlConnectionString)
         {
             _npgsqlConnectionString = npgsqlConnectionString ?? throw new ArgumentNullException(nameof(npgsqlConnectionString));
-            Options = new HealthCheckOptions();
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
         {
             using (var connection = new NpgsqlConnection(_npgsqlConnectionString))
             {
@@ -31,11 +29,15 @@ namespace BeatPulse.NpgSql
                 {
                     await connection.OpenAsync();
 
-                    return ("OK", true);
+                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
                 catch (Exception ex)
                 {
-                    return ($"Exception {ex.GetType().Name} with message ('{ex.Message}')", false);
+                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                    return (message, false);
+
                 }
             }
         }

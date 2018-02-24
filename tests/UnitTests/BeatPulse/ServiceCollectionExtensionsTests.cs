@@ -1,41 +1,31 @@
 ﻿using BeatPulse.Core;
+using FluentAssertions;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Routing.Template;
 
 namespace BeatPulse
 {
     public class service_collection_extensions_AddBeatPulse_should
     {
-        private readonly ServiceCollection _defaultServiceCollection;
+        private readonly IServiceProvider _serviceProvider;
 
         public service_collection_extensions_AddBeatPulse_should()
         {
-            _defaultServiceCollection = new ServiceCollection();
-
-            var loggerFactory = new LoggerFactory();
-
-            _defaultServiceCollection.AddLogging(builder =>
-            {
-                builder.AddDebug();
-            });
+            _serviceProvider = WebHost.CreateDefaultBuilder()
+                .UseStartup<DefaultStartup>()
+                .Build()
+                .Services;
         }
 
        
         [Fact]
         public void register_beat_pulse_service()
         {
-            _defaultServiceCollection.AddBeatPulse(context =>
-            {
-            });
-
-            _defaultServiceCollection.BuildServiceProvider()
-                .GetService<IBeatPulseService>()
+            _serviceProvider.GetService<IBeatPulseService>()
                 .Should()
                 .BeOfType<BeatPulseService>();
         }
@@ -43,12 +33,7 @@ namespace BeatPulse
         [Fact]
         public void register_beat_pulse_contxt()
         {
-            _defaultServiceCollection.AddBeatPulse(context =>
-            {
-            });
-
-            _defaultServiceCollection.BuildServiceProvider()
-                .GetService<BeatPulseContext>()
+            _serviceProvider.GetService<BeatPulseContext>()
                 .Should()
                 .BeOfType<BeatPulseContext>();
         }
@@ -56,21 +41,32 @@ namespace BeatPulse
         [Fact]
         public void execute_the_context_setup()
         {
-            string name;
+            var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
+
             string path;
-            
-            _defaultServiceCollection.AddBeatPulse(context =>
-            {
-                context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => ("", true)));
-            });
 
-            var beatPulseContext = _defaultServiceCollection.BuildServiceProvider()
-                .GetService<BeatPulseContext>();
-
-            beatPulseContext.Find(nameof(path))
+            beatPulseContext.FindBeatPulseHealthCheck(nameof(path))
                 .Should()
                 .NotBeNull();
 
+        }
+
+        class DefaultStartup
+        {
+            public void ConfigureServices(IServiceCollection services)
+            {
+                string name;
+                string path;
+
+                services.AddBeatPulse(context =>
+                {
+                    context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => ("", true)));
+                });
+            }
+
+            public void Configure(IApplicationBuilder app)
+            {
+            }
         }
     }
 }

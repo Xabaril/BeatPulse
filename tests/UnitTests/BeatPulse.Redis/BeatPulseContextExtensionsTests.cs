@@ -30,7 +30,7 @@ namespace BeatPulse.Redis
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.All
+            beatPulseContex.AllBeatPulseHealthChecks
                 .Where(hc => hc.GetType() == typeof(RedisHealthCheck))
                 .Should().HaveCount(1);
 
