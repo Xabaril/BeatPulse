@@ -2,13 +2,13 @@
 {
     public class BeatPulseOptions
     {
-        public bool EnableOutput { get; set; }
+        public bool DetailedOutput { get; set; }
 
         public string BeatPulsePath { get; set; }
 
         public BeatPulseOptions()
         {
-            EnableOutput = true;
+            DetailedOutput = true;
             BeatPulsePath = BeatPulseKeys.BEATPULSE_DEFAULT_PATH;
         }
     }

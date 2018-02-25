@@ -28,7 +28,7 @@ namespace BeatPulse.Core
 
             if (String.IsNullOrEmpty(path))
             {
-                var heathCheckResults = new List<HealthCheckResult>(_beatPulseContext.AllBeatPulseHealthChecks.Count());
+                var heathCheckResults = new List<HealthCheckResult>();
 
                 foreach (var healtCheck in _beatPulseContext.AllBeatPulseHealthChecks)
                 {

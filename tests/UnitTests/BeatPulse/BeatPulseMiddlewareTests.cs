@@ -10,6 +10,9 @@ using Xunit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using BeatPulse.Core;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace BeatPulse
 {
@@ -40,7 +43,7 @@ namespace BeatPulse
             var healthCheck = new ActionHealthCheck(
                 "defaultName",
                 "defaultPath", 
-                httpcontext => ("false", false));
+                httpcontext => Task.FromResult(("false", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -62,6 +65,43 @@ namespace BeatPulse
                 .Should()
                 .Be(HttpStatusCode.ServiceUnavailable);
         }
+
+        [Fact]
+        public async Task response_http_status_serviceunavailable_and_detailed_result_when_beat_pulse_service_is_not_healthy_and_detailed_is_configured()
+        {
+            string defaultName;
+            string defaultPath;
+
+            var healthCheck = new ActionHealthCheck(
+                nameof(defaultName),
+                nameof(defaultPath),
+                httpcontext => Task.FromResult(("custom check is not working", false)));
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.DetailedOutput = true)
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(context =>
+                    {
+                        context.Add(healthCheck);
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.StatusCode
+                .Should()
+                .Be(HttpStatusCode.ServiceUnavailable);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            JsonConvert.DeserializeObject<OutputMessage>(content)
+                .Should().NotBeNull();
+        }   
 
         [Fact]
         public async Task continue_chain_for_non_beat_pulse_requests()
@@ -154,6 +194,15 @@ namespace BeatPulse
                 .GetAsync("customhealthpath");
 
             response.EnsureSuccessStatusCode();
+        }
+
+        class OutputMessage
+        {
+            public List<dynamic> Checks { get; set; }
+
+            public DateTime StartedAtUtc { get; set; }
+
+            public DateTime EndAtUtc { get; set; }
         }
     }
 }

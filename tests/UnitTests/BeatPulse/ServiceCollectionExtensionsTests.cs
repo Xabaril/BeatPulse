@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BeatPulse
@@ -21,7 +22,7 @@ namespace BeatPulse
                 .Services;
         }
 
-       
+
         [Fact]
         public void register_beat_pulse_service()
         {
@@ -58,9 +59,11 @@ namespace BeatPulse
                 string name;
                 string path;
 
+                var taskResult = Task.FromResult((string.Empty, true));
+
                 services.AddBeatPulse(context =>
                 {
-                    context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => ("", true)));
+                    context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => taskResult));
                 });
             }
 

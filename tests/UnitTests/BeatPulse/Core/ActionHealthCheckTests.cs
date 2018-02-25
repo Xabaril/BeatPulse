@@ -10,27 +10,33 @@ namespace BeatPulse.Core
         [Fact]
         public async Task execute_definded_action_for_health_check()
         {
-            var result = ("false",false);
+            var taskResult = Task.FromResult((string.Empty,false));
 
-            var healthCheck = new ActionHealthCheck(
-                "name",
-                "defaultPath",
-                (context) => result);
-
-            (await healthCheck.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
-                .Should().Be(result);
-        }
-
-        [Fact]
-        public void get_specified_properties()
-        {
             string defaultName;
             string defaultPath;
 
             var healthCheck = new ActionHealthCheck(
                 nameof(defaultName),
                 nameof(defaultPath),
-                (context) => ("", true));
+                (context) => taskResult);
+
+            (await healthCheck.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
+                .Should().Be(taskResult.Result);
+        }
+
+        [Fact]
+        public void get_specified_properties()
+        {
+            var taskResult = Task.FromResult((string.Empty, true));
+
+            string defaultName;
+            string defaultPath;
+            
+
+            var healthCheck = new ActionHealthCheck(
+                nameof(defaultName),
+                nameof(defaultPath),
+                (context) => taskResult);
 
             healthCheck.HealthCheckName
                 .Should().Be(nameof(defaultName));

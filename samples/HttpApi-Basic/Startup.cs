@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net.Http;
 
 namespace HttpApi_Basic
@@ -23,11 +24,15 @@ namespace HttpApi_Basic
             services.AddBeatPulse(setup =>
             {
                 //add custom health check
-                setup.Add(new ActionHealthCheck("cat", "catapi", httpContext =>
+                setup.Add(new ActionHealthCheck("cat", "catapi", async httpContext =>
                 {
-                    var response = (new HttpClient()).GetAsync("https:/http.cat/200")
-                        .Result;
+                    var httpClient = new HttpClient()
+                    {
+                        BaseAddress = new Uri("http://www.google.es")
+                    };
 
+                    var response = await httpClient.GetAsync(string.Empty);
+                      
                     if (response.IsSuccessStatusCode)
                     {
                         return ("OK", true);

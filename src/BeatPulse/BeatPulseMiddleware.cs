@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
@@ -48,7 +47,7 @@ namespace BeatPulse
                 output.AddHealthCheckMessages(responses);
                 output.EndAtUtc = DateTime.UtcNow;
 
-                await WriteResponseAsync(request.HttpContext, output, _options.EnableOutput);
+                await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
             }
         }
 
@@ -70,7 +69,7 @@ namespace BeatPulse
             return isValidRequest;
         }
 
-        Task WriteResponseAsync(HttpContext context, OutputMessage output, bool outputWanted)
+        Task WriteResponseAsync(HttpContext context, OutputMessage message, bool detailed)
         {
             const string defaultContentType = "application/json";
             const string defaultCacheOptions = "no-cache, no-store, must-revalidate";
@@ -82,10 +81,10 @@ namespace BeatPulse
             context.Response.Headers["Pragma"] = new[] { defaultPragma };
             context.Response.Headers["Expires"] = new[] { defaultExpires };
 
-            var statusCode = output.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
+            var statusCode = message.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
             context.Response.StatusCode = (int)statusCode;
 
-            var content = outputWanted ? JsonConvert.SerializeObject(output)
+            var content = detailed ? JsonConvert.SerializeObject(message)
                 : Enum.GetName(typeof(HttpStatusCode), statusCode);
 
             return context.Response.WriteAsync(content);
