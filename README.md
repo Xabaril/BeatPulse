@@ -76,7 +76,13 @@ Install-Package BeatPulse.Redis
 By default, the global path get the information of all liveness checkers, including the automatic *self* check added. If *DetailedOutput* is true the information is a complete json result with checkers, time, and results.
 
 ``` json
-HTTP STATUS OK
+
+curl curl http://your-domain/health
+GET /health HTTP/1.1
+Host: your-domain
+User-Agent: curl/7.49.0
+Accept: */*
+HTTP/1.1 200 OK
 
 {
 	"Checks": [
@@ -108,8 +114,8 @@ HTTP STATUS OK
 ```
 Optionally, you can get result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-project-uri/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
+http://your-domain/health/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
 
-http://your-project-uri/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
+http://your-domain/health/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
 
 
