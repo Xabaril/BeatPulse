@@ -32,6 +32,6 @@
     <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>    
     <Authors>Xabaril Contributors</Authors>
     <Company>Xabaril</Company>
-    <Version>0.0.1</Version>
+    <Version>0.6.0</Version>
   </PropertyGroup>
 </Project>
