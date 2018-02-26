@@ -12,8 +12,10 @@ namespace HttpApi_Basic
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseBeatPulse(options=>options.BeatPulsePath = "health") // Override path from hc -> health
-                .UseStartup<Startup>()
-                .Build();
+                .UseBeatPulse(options=>
+                {
+                    options.DetailedOutput = true; // default is false
+                    options.BeatPulsePath = "health"; // Override path from hc -> health
+                }).UseStartup<Startup>().Build();
     }
 }

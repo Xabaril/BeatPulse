@@ -8,7 +8,7 @@
 
         public BeatPulseOptions()
         {
-            DetailedOutput = true;
+            DetailedOutput = false;
             BeatPulsePath = BeatPulseKeys.BEATPULSE_DEFAULT_PATH;
         }
     }

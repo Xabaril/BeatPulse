@@ -34,16 +34,62 @@ namespace BeatPulse
             var response = await server.CreateClient()
                 .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
-            response.EnsureSuccessStatusCode();
+            var responseStatus = response.StatusCode;
+
+            responseStatus.Should()
+                .Be(HttpStatusCode.OK);
+
+            (await response.Content.ReadAsStringAsync()).Should()
+                .Be(Enum.GetName(typeof(HttpStatusCode), responseStatus));
+        }
+
+        [Fact]
+        public async Task response_http_status_ok_and_detailed_information_when_beat_pulse_service_is_healthy_and_detailed_information_is_configured()
+        {
+            string defaultName;
+            string defaultPath;
+
+            var healthCheck = new ActionHealthCheck(
+                nameof(defaultName),
+                nameof(defaultPath),
+                httpcontext => Task.FromResult(("custom check is working", true)));
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.DetailedOutput = true)
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(context =>
+                    {
+                        context.Add(healthCheck);
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.StatusCode
+                .Should()
+                .Be(HttpStatusCode.OK);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            JsonConvert.DeserializeObject<OutputMessage>(content)
+                .Should().NotBeNull();
         }
 
         [Fact]
         public async Task response_http_status_serviceunavailable_when_beat_pulse_service_is_not_healthy()
         {
+            string defaultName;
+            string defaultPath;
+
             var healthCheck = new ActionHealthCheck(
-                "defaultName",
-                "defaultPath", 
-                httpcontext => Task.FromResult(("false", false)));
+                nameof(defaultName),
+                nameof(defaultPath),
+                httpcontext => Task.FromResult(("Some message when service is not available", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -61,9 +107,13 @@ namespace BeatPulse
             var response = await server.CreateClient()
                 .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
-            response.StatusCode
-                .Should()
+            var responseStatus = response.StatusCode;
+
+            responseStatus.Should()
                 .Be(HttpStatusCode.ServiceUnavailable);
+
+            (await response.Content.ReadAsStringAsync()).Should()
+                .Be(Enum.GetName(typeof(HttpStatusCode),responseStatus));
         }
 
         [Fact]

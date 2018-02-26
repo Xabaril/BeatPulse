@@ -2,8 +2,6 @@
 
 [![Build history](https://buildstats.info/appveyor/chart/xabaril/beatpulse)](https://ci.appveyor.com/project/beatpulse/ci-buildstats/history)
 
-
-
 # Beat Pulse
 
 *BeatPulse* is a simple health check /  liveness / readiness library for .NET Core Applications.
@@ -34,29 +32,84 @@ Install-Package BeatPulse.Redis
 
 ``` csharp
 
-    public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseBeatPulse() //this add beat pulse startup filter
-                .UseStartup<Startup>()
-                .Build();
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+               .UseBeatPulse(options=>
+                {
+                   options.DetailedOutput = true; // default false
+                   options.BeatPulsePath = "health"; // default hc
+                }).UseStartup<Startup>().Build();
 ```
-
-4. Configure *BeatPulse* middleware and the liveness libraries to be used.
+4. Configure *BeatPulse* middleware and the liveness libraries to be used or add a custom check.
 
 ``` csharp
-
     services.AddBeatPulse(setup =>
     {
-        setup.AddSqlServer("your-sql-server-connection-string");
+        //add custom health check
+        setup.Add(new ActionHealthCheck("cat", "catapi", async  httpContext =>
+        {
+            var httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri("http://www.google.es")
+            };
+
+            var response = await httpClient.GetAsync(string.Empty);
+                
+            if (response.IsSuccessStatusCode)
+            {
+                return ("OK", true);
+            }
+            else
+            {
+                return ("the cat api is broken!", false);
+            }
+            
+        }));
+
+        //add sql server health check
+        setup.AddSqlServer("your-connection-string");
     });
 ```
 
-5. Use the *BeatPulse* uri's to get liveness results.
+5. Use the *BeatPulse* uri's to get liveness/readiness results.
 
+By default, the global path get the information of all liveness checkers, including the automatic *self* check added. If *DetailedOutput* is true the information is a complete json result with checkers, time, and results.
+
+``` json
+HTTP STATUS OK
+
+{
+	"Checks": [
+		{
+			"Name": "self",
+			"Message": "OK",
+			"MilliSeconds": 0,
+			"Run": true,
+			"IsHealthy": true
+		},
+		{
+			"Name": "cat",
+			"Message": "OK",
+			"MilliSeconds": 376,
+			"Run": true,
+			"IsHealthy": true
+		},
+		{
+			"Name": "SqlServerHealthCheck",
+			"Message": "OK",
+			"MilliSeconds": 309,
+			"Run": true,
+			"IsHealthy": true
+		}
+	],
+	"StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
+	"EndAtUtc": "2018-02-26T19:30:06.0978236Z"
+}
 ```
-http://your-project-uri/hc get the global information of all liveness checkers included in the configuration.
+Optionally, you can get result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-project-uri/_self get the liveness status of the project without execute any configured liveness library. This is ideal for your liveness uri setup in k8s pod configuration.
+http://your-project-uri/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
 
 http://your-project-uri/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
-```
+
+
