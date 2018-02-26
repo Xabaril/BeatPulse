@@ -2,6 +2,8 @@
 
 [![Build history](https://buildstats.info/appveyor/chart/xabaril/beatpulse)](https://ci.appveyor.com/project/beatpulse/ci-buildstats/history)
 
+
+
 # Beat Pulse
 
 *BeatPulse* is a simple health check /  liveness / readiness library for .NET Core Applications.
