@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse
@@ -41,13 +42,30 @@ namespace BeatPulse
             {
                 var output = new OutputMessage();
 
-                //get responses from checkers
-                var responses = await pulseService.IsHealthy(beatPulsePath, context);
+                //get responses from liveness
 
-                output.AddHealthCheckMessages(responses);
-                output.EndAtUtc = DateTime.UtcNow;
+                using (var cancellationTokenSource = new CancellationTokenSource())
+                {
+                    var task = pulseService.IsHealthy(beatPulsePath, context,cancellationTokenSource.Token);
 
-                await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                    if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
+                    {
+                        var responses = await task;
+
+                        output.AddHealthCheckMessages(responses);
+                        output.EndAtUtc = DateTime.UtcNow;
+
+                        await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                    }
+                    else
+                    {
+                        //timeout
+
+                        cancellationTokenSource.Cancel();
+
+                        await WriteTimeoutAsync(request.HttpContext);
+                    }
+                }
             }
         }
 
@@ -90,11 +108,20 @@ namespace BeatPulse
             return context.Response.WriteAsync(content);
         }
 
+        Task WriteTimeoutAsync(HttpContext context)
+        {
+            var statusCode = (int)HttpStatusCode.ServiceUnavailable;
+            var content =  Enum.GetName(typeof(HttpStatusCode), statusCode);
+
+            context.Response.StatusCode = statusCode;
+            return context.Response.WriteAsync(content);
+        }
+
         private class OutputMessage
         {
-            private readonly List<HealthCheckResult> _messages = new List<HealthCheckResult>();
+            private readonly List<LivenessResult> _messages = new List<LivenessResult>();
 
-            public IEnumerable<HealthCheckResult> Checks => _messages;
+            public IEnumerable<LivenessResult> Checks => _messages;
 
             public DateTime StartedAtUtc { get; }
 
@@ -105,7 +132,7 @@ namespace BeatPulse
                 StartedAtUtc = DateTime.UtcNow;
             }
 
-            public void AddHealthCheckMessages(IEnumerable<HealthCheckResult> messages) => _messages.AddRange(messages);
+            public void AddHealthCheckMessages(IEnumerable<LivenessResult> messages) => _messages.AddRange(messages);
         }
     }
 }

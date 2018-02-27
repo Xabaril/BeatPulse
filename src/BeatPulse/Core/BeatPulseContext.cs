@@ -5,22 +5,22 @@ namespace BeatPulse.Core
 {
     public class BeatPulseContext
     {
-        private readonly Dictionary<string, IBeatPulseHealthCheck> _healthCheckers = new Dictionary<string, IBeatPulseHealthCheck>();
+        private readonly Dictionary<string, IBeatPulseLiveness> _activeLiveness = new Dictionary<string, IBeatPulseLiveness>();
 
-        public BeatPulseContext Add(IBeatPulseHealthCheck check)
+        public BeatPulseContext Add(IBeatPulseLiveness liveness)
         {
-            if (check == null)
+            if (liveness == null)
             {
-                throw new ArgumentNullException(nameof(check));
+                throw new ArgumentNullException(nameof(liveness));
             }
 
-            var defaultPath = check.HealthCheckDefaultPath;
+            var defaultPath = liveness.DefaultPath;
 
             if (!string.IsNullOrEmpty(defaultPath))
             {
-                if (!_healthCheckers.ContainsKey(defaultPath))
+                if (!_activeLiveness.ContainsKey(defaultPath))
                 {
-                    _healthCheckers.Add(defaultPath, check);
+                    _activeLiveness.Add(defaultPath, liveness);
                 }
                 else
                 {
@@ -35,18 +35,18 @@ namespace BeatPulse.Core
             }
         }
 
-        public IBeatPulseHealthCheck FindBeatPulseHealthCheck(string path)
+        public IBeatPulseLiveness FindLiveness(string path)
         {
-            _healthCheckers.TryGetValue(path, out IBeatPulseHealthCheck check);
+            _activeLiveness.TryGetValue(path, out IBeatPulseLiveness check);
 
             return check;
         }
 
-        public IEnumerable<IBeatPulseHealthCheck> AllBeatPulseHealthChecks
+        public IEnumerable<IBeatPulseLiveness> AllLiveness
         {
             get
             {
-                return _healthCheckers.Values;
+                return _activeLiveness.Values;
             }
         }
     }

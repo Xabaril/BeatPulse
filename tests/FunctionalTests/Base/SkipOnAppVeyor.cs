@@ -9,9 +9,10 @@ namespace FunctionalTests.Base
 {
 
     /*
-     * This class is based on jbogard code for respawn
+     * This class is a copy of jbogard code for respawn
      * https://github.com/jbogard/Respawn/blob/master/Respawn.DatabaseTests/SkipOnAppVeyorAttribute.cs
      */
+
     public class SkipOnAppVeyorTestDiscoverer : IXunitTestCaseDiscoverer
     {
         private readonly IMessageSink _diagnosticMessageSink;

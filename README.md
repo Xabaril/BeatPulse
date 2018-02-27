@@ -4,10 +4,9 @@
 
 # Beat Pulse
 
-*BeatPulse* is a simple health check /  liveness / readiness library for .NET Core Applications.
+*BeatPulse* is a simple liveness, readiness library for .NET Core Applications.
 
-
-## What is the motivation behind it?
+## What is the motivation behind it
 
 The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and there is no plan to include this feature in ASP.NET Core 2.1.
 
@@ -15,23 +14,22 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 
 1. Install the Nuget Package into your ASP.NET Core application.
 
-```
+``` PowerShell
 Install-Package BeatPulse
 ```
 
-2. Install the liveness libraries that you need your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql*.
+2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql and custom lambda liveness*.
 
-```
+``` PowerShell
 Install-Package BeatPulse.SqlServer
 Install-Package BeatPulse.MongoDb
 Install-Package BeatPulse.Npgsql
 Install-Package BeatPulse.Redis
 ```
 
-3. Add *BeatPulse* into your ASP.NET Core project
+3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method for register and configure BeatPulse.
 
 ``` csharp
-
  public static IWebHost BuildWebHost(string[] args) =>
         WebHost.CreateDefaultBuilder(args)
                .UseBeatPulse(options=>
@@ -40,7 +38,8 @@ Install-Package BeatPulse.Redis
                    options.BeatPulsePath = "health"; // default hc
                 }).UseStartup<Startup>().Build();
 ```
-4. Configure *BeatPulse* middleware and the liveness libraries to be used or add a custom check.
+
+4. Add *BeatPulseService* and set the liveness libraries to be used
 
 ``` csharp
     services.AddBeatPulse(setup =>
@@ -54,7 +53,6 @@ Install-Package BeatPulse.Redis
             };
 
             var response = await httpClient.GetAsync(string.Empty);
-                
             if (response.IsSuccessStatusCode)
             {
                 return ("OK", true);
@@ -63,7 +61,6 @@ Install-Package BeatPulse.Redis
             {
                 return ("the cat api is broken!", false);
             }
-            
         }));
 
         //add sql server health check
@@ -71,9 +68,9 @@ Install-Package BeatPulse.Redis
     });
 ```
 
-5. Use the *BeatPulse* uri's to get liveness/readiness results.
+5. Request *BeatPulse* to get liveness results.
 
-By default, the global path get the information of all liveness checkers, including the automatic *self* check added. If *DetailedOutput* is true the information is a complete json result with checkers, time, and results.
+By default, the global path get the information of all liveness checkers, including the out of box *self* check added. If *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results.
 
 ``` json
 
@@ -85,33 +82,37 @@ Accept: */*
 HTTP/1.1 200 OK
 
 {
-	"Checks": [
-		{
-			"Name": "self",
-			"Message": "OK",
-			"MilliSeconds": 0,
-			"Run": true,
-			"IsHealthy": true
-		},
-		{
-			"Name": "cat",
-			"Message": "OK",
-			"MilliSeconds": 376,
-			"Run": true,
-			"IsHealthy": true
-		},
-		{
-			"Name": "SqlServerHealthCheck",
-			"Message": "OK",
-			"MilliSeconds": 309,
-			"Run": true,
-			"IsHealthy": true
-		}
+    "Checks": [
+    {
+        "Name": "self",
+        "Path":"_self",
+        "Message": "OK",
+        "MilliSeconds": 0,
+        "Run": true,
+        "IsHealthy": true
+    },
+    {
+        "Name": "cat",
+        "Path":"catapi",
+        "Message": "OK",
+        "MilliSeconds": 376,
+        "Run": true,
+        "IsHealthy": true
+    },
+    {
+        "Name": "SqlServerHealthCheck",
+        "Path":"sqlserver",
+        "Message": "OK",
+        "MilliSeconds": 309,
+        "Run": true,
+        "IsHealthy": true
+    }
 	],
 	"StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
 	"EndAtUtc": "2018-02-26T19:30:06.0978236Z"
 }
 ```
+
 Optionally, you can get result for specific liveness adding the liveness segment path on the beat pulse base path.
 
 http://your-domain/health/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.

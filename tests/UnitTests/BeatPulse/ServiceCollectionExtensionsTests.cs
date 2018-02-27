@@ -46,7 +46,7 @@ namespace BeatPulse
 
             string path;
 
-            beatPulseContext.FindBeatPulseHealthCheck(nameof(path))
+            beatPulseContext.FindLiveness(nameof(path))
                 .Should()
                 .NotBeNull();
 
@@ -63,7 +63,7 @@ namespace BeatPulse
 
                 services.AddBeatPulse(context =>
                 {
-                    context.Add(new ActionHealthCheck(nameof(name), nameof(path), httpContext => taskResult));
+                    context.Add(new ActionLiveness(nameof(name), nameof(path), httpContext => taskResult));
                 });
             }
 

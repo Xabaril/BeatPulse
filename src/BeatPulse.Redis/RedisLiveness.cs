@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.Redis
 {
-    public class RedisHealthCheck
-        : IBeatPulseHealthCheck
+    public class RedisLiveness
+        : IBeatPulseLiveness
     {
         private string _redisConnectionString;
 
-        public string HealthCheckName => nameof(RedisHealthCheck);
+        public string Name => nameof(RedisLiveness);
 
-        public string HealthCheckDefaultPath => "redis";
+        public string DefaultPath => "redis";
 
-        public RedisHealthCheck(string redisConnectionString)
+        public RedisLiveness(string redisConnectionString)
         {
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
         }
@@ -30,7 +30,7 @@ namespace BeatPulse.Redis
             }
             catch (Exception ex)
             {
-                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

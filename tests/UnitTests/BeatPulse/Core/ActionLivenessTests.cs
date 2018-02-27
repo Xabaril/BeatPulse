@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BeatPulse.Core
 {
-    public class action_health_should
+    public class action_liveness_should
     {
         [Fact]
         public async Task execute_definded_action_for_health_check()
@@ -15,12 +15,12 @@ namespace BeatPulse.Core
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionHealthCheck(
+            var liveness = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
                 (context) => taskResult);
 
-            (await healthCheck.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
+            (await liveness.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
                 .Should().Be(taskResult.Result);
         }
 
@@ -31,17 +31,16 @@ namespace BeatPulse.Core
 
             string defaultName;
             string defaultPath;
-            
 
-            var healthCheck = new ActionHealthCheck(
+            var liveness = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
                 (context) => taskResult);
 
-            healthCheck.HealthCheckName
+            liveness.Name
                 .Should().Be(nameof(defaultName));
 
-            healthCheck.HealthCheckDefaultPath
+            liveness.DefaultPath
                 .Should().Be(nameof(defaultPath));
         }
     }

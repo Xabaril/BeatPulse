@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.SqlServer
 {
-    public class SqlServerHealthCheck
-        : IBeatPulseHealthCheck
+    public class SqlServerLiveness
+        : IBeatPulseLiveness
     {
-        public string HealthCheckName => nameof(SqlServerHealthCheck);
+        public string Name => nameof(SqlServerLiveness);
 
-        public string HealthCheckDefaultPath => "sqlserver";
+        public string DefaultPath => "sqlserver";
 
         private readonly string _connectionString;
 
-        public SqlServerHealthCheck(string sqlserverconnectionstring)
+        public SqlServerLiveness(string sqlserverconnectionstring)
         {
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
         }
@@ -32,7 +32,7 @@ namespace BeatPulse.SqlServer
                 }
                 catch (Exception ex)
                 {
-                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                     return (message, false);

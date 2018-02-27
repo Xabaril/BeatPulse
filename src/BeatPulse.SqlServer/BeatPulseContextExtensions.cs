@@ -7,7 +7,7 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddSqlServer(this BeatPulseContext context, string connectionString)
         {
-            context.Add(new SqlServerHealthCheck(connectionString));
+            context.Add(new SqlServerLiveness(connectionString));
 
             return context;
         }

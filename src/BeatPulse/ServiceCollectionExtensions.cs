@@ -12,7 +12,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var context = new BeatPulseContext();
 
-            context.Add(new ActionHealthCheck(
+            //add default self segment out of box
+            context.Add(new ActionLiveness(
                 BeatPulseKeys.BEATPULSE_SELF_NAME,
                 BeatPulseKeys.BEATPULSE_SELF_SEGMENT,
                 httpContext => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true))));

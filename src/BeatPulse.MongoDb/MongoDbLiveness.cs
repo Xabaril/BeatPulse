@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.MongoDb
 {
-    public class MongoDbHealthCheck
-        : IBeatPulseHealthCheck
+    public class MongoDbLiveness
+        : IBeatPulseLiveness
     {
         private readonly string _mongoDbConnectionString;
 
-        public string HealthCheckName => nameof(MongoDbHealthCheck);
+        public string Name => nameof(MongoDbLiveness);
 
-        public string HealthCheckDefaultPath => "mongodb";
+        public string DefaultPath => "mongodb";
 
-        public MongoDbHealthCheck(string mongoDbConnectionString)
+        public MongoDbLiveness(string mongoDbConnectionString)
         {
             _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
         }
@@ -31,7 +31,7 @@ namespace BeatPulse.MongoDb
             }
             catch (Exception ex)
             {
-                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

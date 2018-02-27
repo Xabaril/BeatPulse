@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.Core
@@ -22,56 +23,61 @@ namespace BeatPulse.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<HealthCheckResult>> IsHealthy(string path, HttpContext httpContext)
+        public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, HttpContext httpContext,CancellationToken cancellationToken)
         {
             _logger.LogInformation($"BeatPulse is checking health on {path}");
 
             if (String.IsNullOrEmpty(path))
             {
-                var heathCheckResults = new List<HealthCheckResult>();
+                var livenessResults = new List<LivenessResult>();
 
-                foreach (var healtCheck in _beatPulseContext.AllBeatPulseHealthChecks)
+                foreach (var liveness in _beatPulseContext.AllLiveness)
                 {
-                    var healthCheckResult = await RunBeatPulseCheck(healtCheck, httpContext);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
-                    heathCheckResults.Add(healthCheckResult);
+                    var healthCheckResult = await RunLiveness(liveness, httpContext);
+
+                    livenessResults.Add(healthCheckResult);
 
                     if (!healthCheckResult.IsHealthy)
                     {
                         //break when first check is not healthy
 
-                        return heathCheckResults;
+                        return livenessResults;
                     }
                 }
 
-                return heathCheckResults;
+                return livenessResults;
             }
             else
             {
-                var healtCheck = _beatPulseContext.FindBeatPulseHealthCheck(path);
+                var liveness = _beatPulseContext.FindLiveness(path);
 
-                if (healtCheck != null)
+                if (liveness != null)
                 {
-                    var healthCheckResult = await RunBeatPulseCheck(healtCheck, httpContext);
+                    var livenessResult = await RunLiveness(liveness, httpContext);
 
-                    return new[] { healthCheckResult };
+                    return new[] { livenessResult };
                 }
             }
 
-            return Enumerable.Empty<HealthCheckResult>();
+            return Enumerable.Empty<LivenessResult>();
         }
 
-        async Task<HealthCheckResult> RunBeatPulseCheck(IBeatPulseHealthCheck beatPulseCheck, HttpContext httpContext)
+        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness beatPulseCheck, HttpContext httpContext)
         {
-            var healthCheckMessage = new HealthCheckResult(beatPulseCheck.HealthCheckName);
+            var livenessResult = new LivenessResult(beatPulseCheck.Name,beatPulseCheck.DefaultPath);
 
-            healthCheckMessage.StartCounter();
+            livenessResult.StartCounter();
 
             var (message, healthy) = await beatPulseCheck.IsHealthy(httpContext, _environment.IsDevelopment());
 
-            healthCheckMessage.StopCounter(message, healthy);
+            livenessResult.StopCounter(message, healthy);
 
-            return healthCheckMessage;
+            return livenessResult;
         }
     }
 }

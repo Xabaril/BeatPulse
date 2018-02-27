@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.NpgSql
 {
-    public class NpgSqlHealthCheck
-        : IBeatPulseHealthCheck
+    public class NpgSqlLiveness
+        : IBeatPulseLiveness
     {
         private readonly string _npgsqlConnectionString;
 
-        public string HealthCheckName => nameof(NpgSqlHealthCheck);
+        public string Name => nameof(NpgSqlLiveness);
 
-        public string HealthCheckDefaultPath => "npgsql";
+        public string DefaultPath => "npgsql";
 
 
-        public NpgSqlHealthCheck(string npgsqlConnectionString)
+        public NpgSqlLiveness(string npgsqlConnectionString)
         {
             _npgsqlConnectionString = npgsqlConnectionString ?? throw new ArgumentNullException(nameof(npgsqlConnectionString));
         }
@@ -33,7 +33,7 @@ namespace BeatPulse.NpgSql
                 }
                 catch (Exception ex)
                 {
-                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, HealthCheckName)
+                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                     return (message, false);

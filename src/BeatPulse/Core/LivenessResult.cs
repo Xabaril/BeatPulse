@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace BeatPulse.Core
 {
-    public class HealthCheckResult
+    public class LivenessResult
     {
         private readonly Stopwatch _watcher = new Stopwatch();
 
@@ -15,11 +15,14 @@ namespace BeatPulse.Core
 
         public bool Run { get; private set; }
 
+        public string Path { get; private set; }
+
         public bool IsHealthy { get; private set; }
 
-        public HealthCheckResult(string name)
+        public LivenessResult(string name,string path)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            Path = path ?? throw new ArgumentNullException(nameof(path));
             Run = false;
             IsHealthy = false;
         }

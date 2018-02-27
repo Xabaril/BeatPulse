@@ -7,7 +7,7 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddMongoDb(this BeatPulseContext context, string mongodbConnectionString)
         {
-            context.Add(new MongoDbHealthCheck(mongodbConnectionString));
+            context.Add(new MongoDbLiveness(mongodbConnectionString));
 
             return context;
         }

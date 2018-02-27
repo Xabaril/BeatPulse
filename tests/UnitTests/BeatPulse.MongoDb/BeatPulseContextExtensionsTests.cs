@@ -13,7 +13,7 @@ namespace BeatPulse.MongoDb
     public class beat_pulse_context_should
     {
         [Fact]
-        public void register_mongodb_health_check()
+        public void register_mongodb_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -31,8 +31,8 @@ namespace BeatPulse.MongoDb
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllBeatPulseHealthChecks
-                .Where(hc => hc.GetType() == typeof(MongoDbHealthCheck))
+            beatPulseContex.AllLiveness
+                .Where(hc => hc.GetType() == typeof(MongoDbLiveness))
                 .Should().HaveCount(1);
 
         }

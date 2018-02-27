@@ -8,27 +8,25 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BeatPulse.SqlServer
+namespace BeatPulse.Redis
 {
     [Collection("execution")]
-    public class sqlserver_health_check_should
+    public class redis_liveness_should
     {
         private readonly ExecutionFixture _fixture;
 
-        public sqlserver_health_check_should(ExecutionFixture fixture)
+        public redis_liveness_should(ExecutionFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
-        public async Task return_true_if_sqlServer_is_available()
+        [SkipOnAppVeyor]
+        public async Task return_true_if_redis_is_available()
         {
             //read appveyor services default values on
             //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
 
-            var connectionString = _fixture.IsAppVeyorExecution
-                ? @"Server=(local)\SQL2016;Initial Catalog=master;User Id=sa;Password=Password12!"
-                : "Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!";
+            var connectionString = "localhost:6379,allowAdmin=true";
 
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
@@ -37,7 +35,7 @@ namespace BeatPulse.SqlServer
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddSqlServer(connectionString);
+                        context.AddRedis(connectionString);
                     });
                 });
 
@@ -50,7 +48,7 @@ namespace BeatPulse.SqlServer
         }
 
         [Fact]
-        public async Task return_false_if_sqlServer_is_not_available()
+        public async Task return_false_if_redis_is_not_available()
         {
             var webHostBuilder = new WebHostBuilder()
                .UseStartup<DefaultStartup>()
@@ -59,7 +57,7 @@ namespace BeatPulse.SqlServer
                {
                    services.AddBeatPulse(context =>
                    {
-                       context.AddSqlServer("Server=tcp:200.0.0.100,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                       context.AddRedis("nonexistinghost:6379,allowAdmin=true");
                    });
                });
 

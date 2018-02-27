@@ -13,7 +13,7 @@ namespace BeatPulse.Npgsql
     public class beat_pulse_context_should
     {
         [Fact]
-        public void register_npgsql_health_check()
+        public void register_npgsql_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -31,8 +31,8 @@ namespace BeatPulse.Npgsql
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllBeatPulseHealthChecks
-                .Where(hc => hc.GetType() == typeof(NpgSqlHealthCheck))
+            beatPulseContex.AllLiveness
+                .Where(hc => hc.GetType() == typeof(NpgSqlLiveness))
                 .Should().HaveCount(1);
 
         }

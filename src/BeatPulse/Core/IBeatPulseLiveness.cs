@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.Core
 {
-    public interface IBeatPulseHealthCheck
+    public interface IBeatPulseLiveness
     {
-        string HealthCheckName { get; }
+        string Name { get; }
 
-        string HealthCheckDefaultPath { get; }
+        string DefaultPath { get; }
 
         Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment);
     }

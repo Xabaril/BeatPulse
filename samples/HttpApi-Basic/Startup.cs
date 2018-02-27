@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HttpApi_Basic
 {
@@ -24,7 +25,7 @@ namespace HttpApi_Basic
             services.AddBeatPulse(setup =>
             {
                 //add custom health check
-                setup.Add(new ActionHealthCheck("cat", "catapi", async httpContext =>
+                setup.Add(new ActionLiveness("cat", "catapi", async httpContext =>
                 {
                     var httpClient = new HttpClient()
                     {

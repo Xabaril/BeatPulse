@@ -15,7 +15,8 @@ namespace HttpApi_Basic
                 .UseBeatPulse(options=>
                 {
                     options.DetailedOutput = true; // default is false
-                    options.BeatPulsePath = "health"; // Override path from hc -> health
+                    options.BeatPulsePath = "health"; // default hc
+                    options.Timeout = 1500; //default infinite (-1)
                 }).UseStartup<Startup>().Build();
     }
 }

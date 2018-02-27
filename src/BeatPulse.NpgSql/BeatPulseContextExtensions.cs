@@ -7,7 +7,7 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddNpgSql(this BeatPulseContext context, string npgsqlConnectionString)
         {
-            context.Add(new NpgSqlHealthCheck(npgsqlConnectionString));
+            context.Add(new NpgSqlLiveness(npgsqlConnectionString));
 
             return context;
         }

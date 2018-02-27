@@ -11,11 +11,11 @@ using Xunit;
 namespace BeatPulse.Npgsql
 {
     [Collection("execution")]
-    public class npgsql_health_check_should
+    public class npgsql_liveness_should
     {
         private readonly ExecutionFixture _fixture;
 
-        public npgsql_health_check_should(ExecutionFixture fixture)
+        public npgsql_liveness_should(ExecutionFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }

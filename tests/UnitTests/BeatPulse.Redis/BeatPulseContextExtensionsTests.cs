@@ -12,7 +12,7 @@ namespace BeatPulse.Redis
     public class beat_pulse_context_should
     {
         [Fact]
-        public void register_sqlserver_health_check()
+        public void register_sqlserver_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -30,8 +30,8 @@ namespace BeatPulse.Redis
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllBeatPulseHealthChecks
-                .Where(hc => hc.GetType() == typeof(RedisHealthCheck))
+            beatPulseContex.AllLiveness
+                .Where(hc => hc.GetType() == typeof(RedisLiveness))
                 .Should().HaveCount(1);
 
         }

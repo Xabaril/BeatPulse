@@ -8,25 +8,25 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BeatPulse.Redis
+namespace BeatPulse.SqlServer
 {
     [Collection("execution")]
-    public class redis_health_check_should
+    public class mongodb_liveness_should
     {
         private readonly ExecutionFixture _fixture;
 
-        public redis_health_check_should(ExecutionFixture fixture)
+        public mongodb_liveness_should(ExecutionFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [SkipOnAppVeyor]
-        public async Task return_true_if_redis_is_available()
+        [Fact]
+        public async Task return_true_if_mongodb_is_available()
         {
             //read appveyor services default values on
             //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
 
-            var connectionString = "localhost:6379,allowAdmin=true";
+            var connectionString = @"mongodb://localhost:27017";
 
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
@@ -35,7 +35,7 @@ namespace BeatPulse.Redis
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddRedis(connectionString);
+                        context.AddMongoDb(connectionString);
                     });
                 });
 
@@ -48,7 +48,7 @@ namespace BeatPulse.Redis
         }
 
         [Fact]
-        public async Task return_false_if_redis_is_not_available()
+        public async Task return_false_if_mongodb_is_not_available()
         {
             var webHostBuilder = new WebHostBuilder()
                .UseStartup<DefaultStartup>()
@@ -57,7 +57,7 @@ namespace BeatPulse.Redis
                {
                    services.AddBeatPulse(context =>
                    {
-                       context.AddRedis("nonexistinghost:6379,allowAdmin=true");
+                       context.AddMongoDb("mongodb://nonexistingdomain:27017");
                    });
                });
 
