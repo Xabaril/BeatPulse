@@ -32,7 +32,7 @@ namespace BeatPulse.SqlServer
                 }
                 catch (Exception ex)
                 {
-                    var message = isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                    var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                     return (message, false);
