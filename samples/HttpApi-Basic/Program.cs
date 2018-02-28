@@ -14,9 +14,9 @@ namespace HttpApi_Basic
             WebHost.CreateDefaultBuilder(args)
                 .UseBeatPulse(options=>
                 {
-                    options.DetailedOutput = true; // default is false
-                    options.BeatPulsePath = "health"; // default hc
-                    options.Timeout = 1500; //default infinite (-1)
+                    options.SetAlternatePath("health") //default hc
+                        .SetTimeout(milliseconds:1500) // default -1 infinitely
+                        .EnableDetailedOutput(); //default false
                 }).UseStartup<Startup>().Build();
     }
 }

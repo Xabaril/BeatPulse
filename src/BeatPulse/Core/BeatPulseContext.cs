@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BeatPulse.Core
 {
-    public class BeatPulseContext
+    public sealed class BeatPulseContext
     {
         private readonly Dictionary<string, IBeatPulseLiveness> _activeLiveness = new Dictionary<string, IBeatPulseLiveness>();
 
@@ -35,14 +35,14 @@ namespace BeatPulse.Core
             }
         }
 
-        public IBeatPulseLiveness FindLiveness(string path)
+        internal IBeatPulseLiveness FindLiveness(string path)
         {
             _activeLiveness.TryGetValue(path, out IBeatPulseLiveness check);
 
             return check;
         }
 
-        public IEnumerable<IBeatPulseLiveness> AllLiveness
+        internal IEnumerable<IBeatPulseLiveness> AllLiveness
         {
             get
             {

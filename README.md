@@ -34,18 +34,19 @@ Install-Package BeatPulse.Redis
         WebHost.CreateDefaultBuilder(args)
                .UseBeatPulse(options=>
                 {
-                   options.DetailedOutput = true; // default false
-                   options.BeatPulsePath = "health"; // default hc
+                   options.SetAlternatePath("health") //default hc
+                        .SetTimeout(milliseconds:1500) // default -1 infinitely
+                        .EnableDetailedOutput(); //default false
                 }).UseStartup<Startup>().Build();
 ```
 
-4. Add *BeatPulseService* and set the liveness libraries to be used
+4. Add *BeatPulseService* and set the liveness libraries to be used.
 
 ``` csharp
     services.AddBeatPulse(setup =>
     {
-        //add custom health check
-        setup.Add(new ActionHealthCheck("cat", "catapi", async  httpContext =>
+        //add custom liveness
+        setup.Add(new ActionLiveness("cat", "catapi", async  httpContext =>
         {
             var httpClient = new HttpClient()
             {
@@ -53,6 +54,7 @@ Install-Package BeatPulse.Redis
             };
 
             var response = await httpClient.GetAsync(string.Empty);
+
             if (response.IsSuccessStatusCode)
             {
                 return ("OK", true);
@@ -63,7 +65,7 @@ Install-Package BeatPulse.Redis
             }
         }));
 
-        //add sql server health check
+        //add sql server liveness
         setup.AddSqlServer("your-connection-string");
     });
 ```
@@ -118,5 +120,3 @@ Optionally, you can get result for specific liveness adding the liveness segment
 http://your-domain/health/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
 
 http://your-domain/health/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
-
-

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace BeatPulse
 {
     public class beat_pulse_middleware_should
-    { 
+    {
         [Fact]
         public async Task response_http_status_ok_when_beat_pulse_service_is_healthy()
         {
@@ -55,7 +55,7 @@ namespace BeatPulse
                 httpcontext => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.DetailedOutput = true)
+                .UseBeatPulse(options => options.EnableDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -96,7 +96,7 @@ namespace BeatPulse
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddBeatPulse(context=>
+                    svc.AddBeatPulse(context =>
                     {
                         context.Add(healthCheck);
                     });
@@ -113,7 +113,7 @@ namespace BeatPulse
                 .Be(HttpStatusCode.ServiceUnavailable);
 
             (await response.Content.ReadAsStringAsync()).Should()
-                .Be(Enum.GetName(typeof(HttpStatusCode),responseStatus));
+                .Be(Enum.GetName(typeof(HttpStatusCode), responseStatus));
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace BeatPulse
                 httpcontext => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.DetailedOutput = true)
+                .UseBeatPulse(options => options.EnableDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -170,7 +170,7 @@ namespace BeatPulse
                 });
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.Timeout = 50)
+                .UseBeatPulse(options => options.SetTimeout(50))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -205,7 +205,7 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse();
                 })
-                .Configure(app=>
+                .Configure(app =>
                 {
                     app.Run(async ctx =>
                     {
@@ -273,7 +273,7 @@ namespace BeatPulse
         public async Task response_http_status_ok_when_beat_pulse_service_is_healthy_on_custom_path()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(o => o.BeatPulsePath = "customhealthpath")
+                .UseBeatPulse(o => o.SetAlternatePath("customhealthpath"))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -286,6 +286,61 @@ namespace BeatPulse
                 .GetAsync("customhealthpath");
 
             response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task response_is_not_cached_out_of_box()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Headers.CacheControl.NoCache
+                .Should().Be(true);
+
+            response.Headers.CacheControl.MustRevalidate
+                .Should().Be(true);
+
+            response.Headers.CacheControl.NoStore
+                .Should().Be(true);
+        }
+
+        [Fact]
+        public async Task response_is_cached_if_enabled_on_options()
+        {
+            const int cacheDurationOnSeconds = 10;
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.EnableOutputCache(cacheDurationOnSeconds))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Headers.CacheControl.NoCache
+                .Should().Be(false);
+
+            response.Headers.CacheControl.Public
+                .Should().Be(true);
+
+            response.Headers.CacheControl.MaxAge
+                .Should().Be(TimeSpan.FromSeconds(cacheDurationOnSeconds));
+
         }
 
         class OutputMessage

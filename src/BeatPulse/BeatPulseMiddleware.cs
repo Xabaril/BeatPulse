@@ -90,15 +90,24 @@ namespace BeatPulse
         Task WriteResponseAsync(HttpContext context, OutputMessage message, bool detailed)
         {
             const string defaultContentType = "application/json";
-            const string defaultCacheOptions = "no-cache, no-store, must-revalidate";
-            const string defaultPragma = "no-cache";
+            const string noCacheOptions = "no-cache, no-store, must-revalidate";
+            const string noCachePragma = "no-cache";
             const string defaultExpires = "0";
 
             context.Response.Headers["Content-Type"] = new[] { defaultContentType };
-            context.Response.Headers["Cache-Control"] = new[] { defaultCacheOptions };
-            context.Response.Headers["Pragma"] = new[] { defaultPragma };
-            context.Response.Headers["Expires"] = new[] { defaultExpires };
 
+            if (_options.CacheOutput)
+            {
+                context.Response.Headers["Cache-Control"] = new[] { $"public, max-age={_options.CacheDuration}" };
+            }
+            else
+            {
+                context.Response.Headers["Cache-Control"] = new[] { noCacheOptions };
+                context.Response.Headers["Pragma"] = new[] { noCachePragma };
+                context.Response.Headers["Expires"] = new[] { defaultExpires };
+
+            }
+            
             var statusCode = message.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
             context.Response.StatusCode = (int)statusCode;
 
