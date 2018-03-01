@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.SqlServer
@@ -20,13 +21,13 @@ namespace BeatPulse.SqlServer
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 try
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync(cancellationToken);
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }

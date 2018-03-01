@@ -25,7 +25,7 @@ namespace BeatPulse.Core
 
         public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, HttpContext httpContext,CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"BeatPulse is checking health on {path}");
+            _logger.LogInformation($"BeatPulse is checking health on [BeatPulsePath]/{path}");
 
             if (String.IsNullOrEmpty(path))
             {
@@ -35,16 +35,24 @@ namespace BeatPulse.Core
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
+                        _logger.LogWarning($"BeatPulse execution is cancelled");
+
                         break;
                     }
 
-                    var healthCheckResult = await RunLiveness(liveness, httpContext);
+                    var healthCheckResult = await RunLiveness(liveness, httpContext,cancellationToken);
 
                     livenessResults.Add(healthCheckResult);
 
                     if (!healthCheckResult.IsHealthy)
                     {
                         //break when first check is not healthy
+
+                        var warningMessage = cancellationToken.IsCancellationRequested 
+                            ? $"Liveness {liveness.Name} was cancelled on timeout"
+                            : $"Liveness {liveness.Name} is not healthy";
+
+                        _logger.LogWarning(warningMessage);
 
                         return livenessResults;
                     }
@@ -58,7 +66,7 @@ namespace BeatPulse.Core
 
                 if (liveness != null)
                 {
-                    var livenessResult = await RunLiveness(liveness, httpContext);
+                    var livenessResult = await RunLiveness(liveness, httpContext,cancellationToken);
 
                     return new[] { livenessResult };
                 }
@@ -67,15 +75,31 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
-        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness beatPulseCheck, HttpContext httpContext)
+        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, HttpContext httpContext,CancellationToken cancellationToken)
         {
-            var livenessResult = new LivenessResult(beatPulseCheck.Name,beatPulseCheck.DefaultPath);
+            _logger.LogInformation($"Executing liveness {liveness.Name}.");
+
+            var livenessResult = new LivenessResult(liveness.Name,liveness.DefaultPath);
 
             livenessResult.StartCounter();
 
-            var (message, healthy) = await beatPulseCheck.IsHealthy(httpContext, _environment.IsDevelopment());
+            try
+            {
+                var (message, healthy) = await liveness.IsHealthy(httpContext, _environment.IsDevelopment(),cancellationToken);
 
-            livenessResult.StopCounter(message, healthy);
+                livenessResult.StopCounter(message, healthy);
+
+                _logger.LogInformation($"The liveness {liveness.Name} is executed.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"The liveness {liveness.Name} is unhealthy.");
+
+                var message = _environment.IsDevelopment()
+                    ? ex.Message : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, liveness.Name);
+
+                livenessResult.StopCounter(message, false);
+            }
 
             return livenessResult;
         }

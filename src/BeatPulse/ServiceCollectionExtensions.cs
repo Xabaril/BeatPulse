@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
             context.Add(new ActionLiveness(
                 BeatPulseKeys.BEATPULSE_SELF_NAME,
                 BeatPulseKeys.BEATPULSE_SELF_SEGMENT,
-                httpContext => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true))));
+                (httpContext,cancellationToken) => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true))));
 
             setup?.Invoke(context);
 

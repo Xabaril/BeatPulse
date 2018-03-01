@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.MongoDb
@@ -20,12 +21,12 @@ namespace BeatPulse.MongoDb
             _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default)
         {
             try
             {
                 await new MongoClient(_mongoDbConnectionString)
-                    .ListDatabasesAsync();
+                    .ListDatabasesAsync(cancellationToken);
 
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }

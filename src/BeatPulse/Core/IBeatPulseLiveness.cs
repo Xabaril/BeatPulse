@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.Core
@@ -9,6 +10,6 @@ namespace BeatPulse.Core
 
         string DefaultPath { get; }
 
-        Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment);
+        Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default);
     }
 }

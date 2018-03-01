@@ -18,7 +18,7 @@ namespace BeatPulse.Core
             var liveness = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                (context) => taskResult);
+                (context,cancellationToken) => taskResult);
 
             (await liveness.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
                 .Should().Be(taskResult.Result);
@@ -35,7 +35,7 @@ namespace BeatPulse.Core
             var liveness = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                (context) => taskResult);
+                (httpcontext, cancellationToken) => taskResult);
 
             liveness.Name
                 .Should().Be(nameof(defaultName));

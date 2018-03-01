@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using StackExchange.Redis;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.Redis
@@ -20,7 +21,7 @@ namespace BeatPulse.Redis
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {
             try
             {

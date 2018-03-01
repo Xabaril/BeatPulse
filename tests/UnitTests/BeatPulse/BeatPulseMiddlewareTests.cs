@@ -52,7 +52,7 @@ namespace BeatPulse
             var healthCheck = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                httpcontext => Task.FromResult(("custom check is working", true)));
+                (httpcontext,cancellationToken) => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.EnableDetailedOutput())
@@ -89,7 +89,7 @@ namespace BeatPulse
             var healthCheck = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                httpcontext => Task.FromResult(("Some message when service is not available", false)));
+                (httpcontext,cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -125,7 +125,7 @@ namespace BeatPulse
             var healthCheck = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                httpcontext => Task.FromResult(("custom check is not working", false)));
+                (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.EnableDetailedOutput())
@@ -162,7 +162,7 @@ namespace BeatPulse
             var healthCheck = new ActionLiveness(
                 nameof(defaultName),
                 nameof(defaultPath),
-                async httpcontext =>
+                async (httpcontext,cancellationToken) =>
                 {
                     await Task.Delay(100);
 

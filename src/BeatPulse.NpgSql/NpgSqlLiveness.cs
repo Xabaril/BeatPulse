@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Npgsql;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.NpgSql
@@ -21,13 +22,13 @@ namespace BeatPulse.NpgSql
             _npgsqlConnectionString = npgsqlConnectionString ?? throw new ArgumentNullException(nameof(npgsqlConnectionString));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment)
+        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default)
         {
             using (var connection = new NpgsqlConnection(_npgsqlConnectionString))
             {
                 try
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync(cancellationToken);
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
