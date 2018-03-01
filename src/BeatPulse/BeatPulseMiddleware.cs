@@ -18,11 +18,13 @@ namespace BeatPulse
         private readonly TemplateMatcher _templateMatcher;
         private readonly BeatPulseOptions _options;
 
+        private readonly LimitedDictionary<string, OutputMessage> _lastOutputs;
+
         public BeatPulseMiddleware(RequestDelegate next, BeatPulseOptions options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
-
+            _lastOutputs = new LimitedDictionary<string, OutputMessage>(maxitems: 10);
             //match template for uri like /hc/{segment} 
             _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
                 new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });
@@ -40,33 +42,62 @@ namespace BeatPulse
             }
             else
             {
-                var output = new OutputMessage();
-
-                //get responses from liveness
-
-                using (var cancellationTokenSource = new CancellationTokenSource())
+                var output = GetFromMemoryCache(beatPulsePath);
+                if (output != null)
                 {
-                    var task = pulseService.IsHealthy(beatPulsePath, context,cancellationTokenSource.Token);
-
-                    if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
+                    await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                }
+                else
+                {
+                    output = new OutputMessage();
+                    using (var cancellationTokenSource = new CancellationTokenSource())
                     {
-                        var responses = await task;
+                        var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
 
-                        output.AddHealthCheckMessages(responses);
-                        output.EndAtUtc = DateTime.UtcNow;
+                        if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
+                        {
+                            var responses = await task;
 
-                        await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
-                    }
-                    else
-                    {
-                        //timeout
+                            if (!responses.Any())
+                            {
+                                await WriteNotFoundAsync(request.HttpContext, _options.DetailedOutput);
+                                return;
+                            }
 
-                        cancellationTokenSource.Cancel();
+                            output.AddHealthCheckMessages(responses);
+                            output.EndAtUtc = DateTime.UtcNow;
 
-                        await WriteTimeoutAsync(request.HttpContext);
+                            if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                            {
+                                _lastOutputs.AddOrUpdate(beatPulsePath, output);
+                            }
+
+                            await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                        }
+                        else
+                        {
+                            //timeout
+                            _lastOutputs.Remove(beatPulsePath);
+                            cancellationTokenSource.Cancel();
+                            await WriteTimeoutAsync(request.HttpContext, _options.DetailedOutput);
+                        }
                     }
                 }
             }
+        }
+
+
+
+        private OutputMessage GetFromMemoryCache(string path)
+        {
+            if (_options.CacheOutput && _options.CacheMode.UseServerMemory() && _lastOutputs.ContainsKey(path))
+            {
+                var lastOutput = _lastOutputs[path];
+                var seconds = (DateTime.UtcNow - lastOutput.EndAtUtc).TotalSeconds;
+                return _options.CacheDuration >= seconds ? lastOutput : null;
+            }
+
+            return null;
         }
 
         bool IsBeatPulseRequest(HttpRequest request, out string beatPulsePath)
@@ -89,7 +120,7 @@ namespace BeatPulse
 
         Task WriteResponseAsync(HttpContext context, OutputMessage message, bool detailed)
         {
-            const string defaultContentType = "application/json";
+            var defaultContentType = detailed ? "application/json" : "text/plain";
             const string noCacheOptions = "no-cache, no-store, must-revalidate";
             const string noCachePragma = "no-cache";
             const string defaultExpires = "0";
@@ -98,7 +129,10 @@ namespace BeatPulse
 
             if (_options.CacheOutput)
             {
-                context.Response.Headers["Cache-Control"] = new[] { $"public, max-age={_options.CacheDuration}" };
+                if (_options.CacheMode == CacheMode.Header || _options.CacheMode == CacheMode.HeaderAndServerMemory)
+                {
+                    context.Response.Headers["Cache-Control"] = new[] { $"public, max-age={_options.CacheDuration}" };
+                }
             }
             else
             {
@@ -107,7 +141,7 @@ namespace BeatPulse
                 context.Response.Headers["Expires"] = new[] { defaultExpires };
 
             }
-            
+
             var statusCode = message.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
             context.Response.StatusCode = (int)statusCode;
 
@@ -117,14 +151,32 @@ namespace BeatPulse
             return context.Response.WriteAsync(content);
         }
 
-        Task WriteTimeoutAsync(HttpContext context)
-        {
-            var statusCode = (int)HttpStatusCode.ServiceUnavailable;
-            var content =  Enum.GetName(typeof(HttpStatusCode), statusCode);
+        Task WriteTimeoutAsync(HttpContext context, bool detailed) => WriteStatusCodeAsync(context, detailed, HttpStatusCode.ServiceUnavailable, "Timeout");
 
+
+        Task WriteNotFoundAsync(HttpContext context, bool detailed) => WriteStatusCodeAsync(context, detailed, HttpStatusCode.NotFound, "Beatpulse Path not found");
+
+        Task WriteStatusCodeAsync(HttpContext context, bool detailed, HttpStatusCode httpcode, string reason = null)
+        {
+            var defaultContentType = detailed ? "application/json" : "text/plain";
+            context.Response.Headers["Content-Type"] = new[] { defaultContentType };
+            var statusCode = (int)httpcode;
             context.Response.StatusCode = statusCode;
+            string content = null;
+            var code = Enum.GetName(typeof(HttpStatusCode), statusCode);
+
+            if (detailed)
+            {
+                content = JsonConvert.SerializeObject(new { Code = code, Reason = reason });
+            }
+            else
+            {
+                content = code;
+            }
+
             return context.Response.WriteAsync(content);
         }
+
 
         private class OutputMessage
         {

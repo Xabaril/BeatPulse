@@ -14,6 +14,8 @@ namespace BeatPulse
 
         internal bool CacheOutput { get; private set; }
 
+        internal CacheMode CacheMode { get; private set; }
+
         public BeatPulseOptions()
         {
             DetailedOutput = false;
@@ -21,13 +23,14 @@ namespace BeatPulse
             Timeout = -1; // wait infinitely
             CacheOutput = false;
             CacheDuration = 0;
+            CacheMode = CacheMode.Header;
         }
 
-        public BeatPulseOptions EnableOutputCache(int seconds)
+        public BeatPulseOptions EnableOutputCache(int seconds, CacheMode mode = CacheMode.Header)
         {
             CacheDuration = seconds;
             CacheOutput = true;
-
+            CacheMode = mode;
             return this;
         }
 

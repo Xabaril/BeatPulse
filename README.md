@@ -120,3 +120,26 @@ Optionally, you can get result for specific liveness adding the liveness segment
 http://your-domain/health/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
 
 http://your-domain/health/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
+
+## Cache responses
+
+Beatpulse can cache its responses. There are two cache modes:
+
+1. By using HTTP Headers. Using this model beatpulse adds a `Cache-Control` header with a value of  `public, max-age=xxx`. It is up to user agents to honor this header.
+2. In-memory. Using this model beatpulse stores the previous response and returns if the cache duration time has not elapsed.
+
+To enable cache use the method `EnableOutputCache`:
+
+``` csharp
+    .UseBeatPulse(options=>
+    {
+        options.SetAlternatePath("health") //default hc
+            .EnableOutputCache(10)      // Can use CacheMode as second parameter
+            .SetTimeout(milliseconds:1500) // default -1 infinitely
+            .EnableDetailedOutput(); //default false
+    })
+```
+
+You can specify the cache method by using a second parameter with a `CacheMode` value (`Header`, `ServerMemory` or `HeaderAndServerMemory`) (default is `Header`).
+
+If you perform two inmediate requests (because using a user-agent that do not follow the `Cache-Control` header) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
