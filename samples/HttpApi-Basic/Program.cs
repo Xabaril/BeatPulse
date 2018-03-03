@@ -15,7 +15,8 @@ namespace HttpApi_Basic
                 .UseBeatPulse(options=>
                 {
                     options.SetAlternatePath("health") //default hc
-                        .SetTimeout(milliseconds:100) // default -1 infinitely
+                        .EnableOutputCache(10)      // Can use CacheMode as second parameter
+                        .SetTimeout(milliseconds:1500) // default -1 infinitely
                         .EnableDetailedOutput(); //default false
                 }).UseStartup<Startup>().Build();
     }

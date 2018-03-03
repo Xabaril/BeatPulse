@@ -13,6 +13,7 @@ using BeatPulse.Core;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeatPulse
 {
@@ -288,6 +289,47 @@ namespace BeatPulse
             response.EnsureSuccessStatusCode();
         }
 
+
+
+        [Fact]
+        public async Task response_content_type_is_text_plain_if_detailed_output_is_disabled()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Content.Headers.ContentType.MediaType.Should().Be("text/plain");
+        }
+
+        [Fact]
+        public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Content.Headers.ContentType.MediaType.Should().Be("application/json");
+        }
+
+
         [Fact]
         public async Task response_is_not_cached_out_of_box()
         {
@@ -315,7 +357,7 @@ namespace BeatPulse
         }
 
         [Fact]
-        public async Task response_is_cached_if_enabled_on_options()
+        public async Task response_is_cached_if_enabled_on_options_using_headers_by_default()
         {
             const int cacheDurationOnSeconds = 10;
 
@@ -341,6 +383,123 @@ namespace BeatPulse
             response.Headers.CacheControl.MaxAge
                 .Should().Be(TimeSpan.FromSeconds(cacheDurationOnSeconds));
 
+        }
+
+        [Fact]
+        public async Task execute_tests_if_requested_by_user_agent_even_though_response_is_cached_by_headers()
+        {
+            const int cacheDurationOnSeconds = 10;
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options =>
+                {
+                    options.EnableOutputCache(cacheDurationOnSeconds);
+                    options.EnableDetailedOutput();
+                })
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var firstResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            var secondResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            var firstJson = await firstResponse.Content.ReadAsStringAsync();
+            var secondJson = await secondResponse.Content.ReadAsStringAsync();
+
+            firstJson.Equals(secondJson).Should().Be(false);
+
+        }
+
+
+        [Fact]
+        public async Task use_in_memory_cache_if_specified_in_options()
+        {
+            const int cacheDurationOnSeconds = 10;
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options =>
+                {
+                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.EnableDetailedOutput();
+                })
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var firstResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            var secondResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            var firstJson = await firstResponse.Content.ReadAsStringAsync();
+            var secondJson = await secondResponse.Content.ReadAsStringAsync();
+
+            firstJson.Equals(secondJson).Should().Be(true);
+        }
+
+        [Fact]
+        public async Task do_not_return_in_memory_cached_response_if_time_has_passed()
+        {
+            const int cacheDurationOnSeconds = 1;
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options =>
+                {
+                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.EnableDetailedOutput();
+                })
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var firstResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            await Task.Delay(1500);
+
+            var secondResponse = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            var firstJson = await firstResponse.Content.ReadAsStringAsync();
+            var secondJson = await secondResponse.Content.ReadAsStringAsync();
+
+            firstJson.Equals(secondJson).Should().BeFalse();
+        }
+
+
+        [Fact]
+        public async Task response_http_status_not_found_if_beatpulse_path_is_not_registered()
+        {
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH + "/not-registered-path");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         class OutputMessage
