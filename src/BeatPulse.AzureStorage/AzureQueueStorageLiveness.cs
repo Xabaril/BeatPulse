@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
 using System;
 using System.Threading;
 
@@ -23,8 +24,8 @@ namespace BeatPulse.AzureStorage
         {
             try
             {
-                var blobClient = storageAccount.CreateCloudBlobClient();
-                var serviceProperties = await blobClient.GetServicePropertiesAsync(new BlobRequestOptions(), null, cancellationToken);
+                var blobClient = storageAccount.CreateCloudQueueClient();
+                var serviceProperties = await blobClient.GetServicePropertiesAsync(new QueueRequestOptions(), null, cancellationToken);
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
