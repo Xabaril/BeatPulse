@@ -28,3 +28,9 @@ services:
         image: mongo
         ports:
             - ${MONGODB_PORT}:27017
+    mysql:
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+        ports:
+            - ${MYSQL_PORT}:3306

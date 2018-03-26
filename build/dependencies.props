@@ -20,6 +20,7 @@
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
 	<WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
+	<MySqlDataVersion>6.10.6</MySqlDataVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
