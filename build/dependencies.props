@@ -19,6 +19,7 @@
     <ASPNetCoreTestHostVersion>2.0.1</ASPNetCoreTestHostVersion>
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
+	<WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
