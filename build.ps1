@@ -72,6 +72,7 @@ if ($suffix -eq "") {
     exec { & dotnet pack .\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
     exec { & dotnet pack .\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+	exec { & dotnet pack .\src\BeatPulse.MySql\BeatPulse.MySql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 } else {
     exec { & dotnet pack .\src\BeatPulse\BeatPulse.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
@@ -79,5 +80,6 @@ if ($suffix -eq "") {
     exec { & dotnet pack .\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+	exec { & dotnet pack .\src\BeatPulse.MySql\BeatPulse.MySql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 }
 

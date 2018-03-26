@@ -6,6 +6,7 @@ services:
   - mssql2016
   - postgresql101
   - mongodb
+  - mysql
 nuget:
   disable_publish_on_pr: true
 build_script:
