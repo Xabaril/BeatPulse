@@ -13,8 +13,7 @@ namespace BeatPulse.DocumentDb
         public string Name => nameof(DocumentDbLiveness);
 
         public string DefaultPath => "documentdb";
-        private DocumentDbOptions _documentDbOptions = new DocumentDbOptions();
-        private string _primaryKey;
+        private DocumentDbOptions _documentDbOptions = new DocumentDbOptions();        
         public DocumentDbLiveness(DocumentDbOptions documentDbOptions)
         {
             _documentDbOptions.UriEndpoint = documentDbOptions.UriEndpoint ?? throw new ArgumentNullException(nameof(documentDbOptions.UriEndpoint));

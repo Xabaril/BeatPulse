@@ -21,7 +21,7 @@
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
 	  <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
 	  <MySqlDataVersion>6.10.6</MySqlDataVersion>
-    <MicrosoftAzureDocumentDbCoreVersion>1.21.1</MicrosoftAzureDocumentDbCoreVersion>
+    <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
