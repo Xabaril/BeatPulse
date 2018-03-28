@@ -7,14 +7,14 @@ namespace BeatPulse.UI.Core
 {
     public class UIResourcesMapper
     {
-        private readonly IUIResourceReader _reader;
+        private readonly IUIResourcesReader _reader;
 
-        public UIResourcesMapper(IUIResourceReader reader)
+        public UIResourcesMapper(IUIResourcesReader reader)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
-        public void Map(IApplicationBuilder app, string sufix)
+        public void Map(IApplicationBuilder app, string suffix)
         {
             var resources = _reader.GetUIResources;
 
@@ -22,7 +22,7 @@ namespace BeatPulse.UI.Core
             
             foreach (var resource in resources)
             {
-                app.Map($"{sufix}/{resource.FileName}", appBuilder =>
+                app.Map($"{suffix}/{resource.FileName}", appBuilder =>
                 {
                     appBuilder.Run(async context =>
                     {
@@ -35,11 +35,11 @@ namespace BeatPulse.UI.Core
 
             //map default sufix to index.html
 
-            app.Map(sufix, appBuilder =>
+            app.Map(suffix, appBuilder =>
             {
                 appBuilder.Run(context =>
                 {
-                    context.Response.Redirect($"{sufix}/index.html", permanent: true);
+                    context.Response.Redirect($"{suffix}/index.html", permanent: true);
 
                     return Task.CompletedTask;
                 });

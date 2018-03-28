@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace BeatPulse.UI.Core
 {
-    public class UIEmbeddedResourcesReader : IUIResourceReader
+    public class UIEmbeddedResourcesReader : IUIResourcesReader
     {
         private readonly Assembly _assembly;
 
@@ -47,12 +47,9 @@ namespace BeatPulse.UI.Core
 
                     string result = reader.ReadToEnd();
                     
-                    //temporal extension mapping
                     resourceList.Add(
-
                         UIResource.Create($"{fileName}.{extension}", result,
-
-                        extension.ToLower().Contains("js") ? "text/javascript" : "text/html"));
+                        ContentType.FromExtension(extension)));
                 }
             }
 
