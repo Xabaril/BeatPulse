@@ -45,7 +45,7 @@ namespace BeatPulse.UI.Core
                 using (var reader = new StreamReader(contentStream))
                 {
 
-                    string result = reader.ReadToEnd();                    
+                    string result = reader.ReadToEnd();
                     
                     resourceList.Add(
                         UIResource.Create($"{fileName}.{extension}", result,
