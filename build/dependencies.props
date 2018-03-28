@@ -7,8 +7,8 @@
   </PropertyGroup>
   
   <PropertyGroup Label="Package Versions">
-    <HostingAbstractionsVersion>2.0.1</HostingAbstractionsVersion>
-    <ASPNetCoreRoutingVersion>2.0.1</ASPNetCoreRoutingVersion>
+    <HostingAbstractionsVersion>2.0.2</HostingAbstractionsVersion>
+    <ASPNetCoreRoutingVersion>2.0.2</ASPNetCoreRoutingVersion>
     <ASPNetCoreAllPackageVersion>2.0.5</ASPNetCoreAllPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
@@ -22,6 +22,7 @@
 	  <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
 	  <MySqlDataVersion>6.10.6</MySqlDataVersion>
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
+    <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">

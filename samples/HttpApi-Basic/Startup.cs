@@ -1,5 +1,6 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
+using BeatPulse.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -59,6 +60,7 @@ namespace HttpApi_Basic
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseBeatPulseUI();
             app.UseMvc();
         }
     }
