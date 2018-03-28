@@ -35,27 +35,17 @@ namespace BeatPulse.Sqlite
                     var selectCmd = connection.CreateCommand();
                     selectCmd.CommandText = _healthQuery;
                     using (var reader = selectCmd.ExecuteReader()) {}                 
-                    
-                    CloseConnection(connection);
+                                        
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
             catch (Exception ex)
-            {
-                CloseConnection(connection);
+            {                
                 var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);
             }         
-        }
-    
-        private void CloseConnection(SqliteConnection connection)
-        {
-            if (connection.State == ConnectionState.Open)
-            {
-                connection.Close();
-            }
-        }
+        }    
     }
 }
