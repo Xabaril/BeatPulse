@@ -27,6 +27,7 @@ Install-Package BeatPulse.Npgsql
 Install-Package BeatPulse.Redis
 Install-Package BeatPulse.AzureStorage
 Install-Package BeatPulse.MySql
+Install-Package BeatPulse.DocumentDb
 ```
 
 3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method for register and configure BeatPulse.

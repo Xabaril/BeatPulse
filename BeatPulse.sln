@@ -34,7 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MongoDb", "src\Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.AzureStorage", "src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj", "{924EC204-A2E9-4B74-9AE4-6C7C096BC2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.MySql", "src\BeatPulse.MySql\BeatPulse.MySql.csproj", "{868D83D9-8F44-4CC9-890B-435C843BD30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MySql", "src\BeatPulse.MySql\BeatPulse.MySql.csproj", "{868D83D9-8F44-4CC9-890B-435C843BD30D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.DocumentDb", "src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj", "{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{86E77F50-5306-42DE-9500-E56F3AD3F69C} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{924EC204-A2E9-4B74-9AE4-6C7C096BC2D9} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{868D83D9-8F44-4CC9-890B-435C843BD30D} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
