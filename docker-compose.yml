@@ -19,11 +19,6 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         ports:
             - ${POSTGRES_PORT}:5432
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8083:8083
     mongodb:
         image: mongo
         ports:

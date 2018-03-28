@@ -1,10 +1,9 @@
-﻿
+﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Documents.Client;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Documents.Client;
 
 namespace BeatPulse.DocumentDb
 {
@@ -13,7 +12,9 @@ namespace BeatPulse.DocumentDb
         public string Name => nameof(DocumentDbLiveness);
 
         public string DefaultPath => "documentdb";
-        private DocumentDbOptions _documentDbOptions = new DocumentDbOptions();        
+
+        private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();     
+        
         public DocumentDbLiveness(DocumentDbOptions documentDbOptions)
         {
             _documentDbOptions.UriEndpoint = documentDbOptions.UriEndpoint ?? throw new ArgumentNullException(nameof(documentDbOptions.UriEndpoint));
@@ -27,6 +28,7 @@ namespace BeatPulse.DocumentDb
                 using (var documentDbClient = new DocumentClient(new Uri(_documentDbOptions.UriEndpoint), _documentDbOptions.PrimaryKey))
                 {
                     await documentDbClient.OpenAsync();
+
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
