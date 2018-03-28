@@ -22,6 +22,7 @@
 	  <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
 	  <MySqlDataVersion>6.10.6</MySqlDataVersion>
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
+    <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">

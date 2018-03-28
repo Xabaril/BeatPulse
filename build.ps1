@@ -50,7 +50,7 @@ try {
 
 	Push-Location -Path .\tests\UnitTests
 
-	exec { & dotnet xunit -configuration Release --fx-version 2.0.0 }
+	exec { & dotnet xunit -configuration Release --fx-version 2.0.6 }
 } finally {
 	Pop-Location
 }
@@ -59,7 +59,7 @@ try {
     
         Push-Location -Path .\tests\FunctionalTests
     
-        exec { & dotnet xunit -configuration Release --fx-version 2.0.0 }
+        exec { & dotnet xunit -configuration Release --fx-version 2.0.6 }
     } finally {
         Pop-Location
     }
@@ -74,6 +74,7 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.MySql\BeatPulse.MySql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
     exec { & dotnet pack .\src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 } else {
     exec { & dotnet pack .\src\BeatPulse\BeatPulse.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
@@ -83,5 +84,6 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.MySql\BeatPulse.MySql.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 }
 
