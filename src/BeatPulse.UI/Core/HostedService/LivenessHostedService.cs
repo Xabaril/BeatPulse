@@ -12,7 +12,8 @@ namespace BeatPulse.UI.Core.HostedService
         private readonly ILogger<LivenessHostedService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        private Timer _livenessTask;
+        private Task _executingTask;
+
 
         public LivenessHostedService(IServiceProvider provider, ILogger<LivenessHostedService> logger)
         {
@@ -22,31 +23,32 @@ namespace BeatPulse.UI.Core.HostedService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            if ( _livenessTask != null )
+            _executingTask = ExecuteASync(cancellationToken);
+
+            if (_executingTask.IsCompleted)
             {
-                _livenessTask = new Timer(Execute, null, 1000, 1000);
+                //token cancelled just
+
+                return _executingTask;
             }
 
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            if (_livenessTask != null)
+            await Task.WhenAny(_executingTask, Task.Delay(Timeout.Infinite,cancellationToken));
+        }
+
+        async Task ExecuteASync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
             {
-                _livenessTask.Change(Timeout.Infinite, Timeout.Infinite);
-                _livenessTask.Dispose();
+                _logger.LogDebug("Executing LivenessHostedSErvice");
 
-                _livenessTask = null;
+                await Task.Delay(5 * 1000);
             }
-
-            return Task.CompletedTask;
             
-        }
-
-        void Execute(object state)
-        {
-            _logger.LogInformation("Executing LivenessHostedSErvice");
         }
     }
 }
