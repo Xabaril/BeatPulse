@@ -17,9 +17,7 @@ namespace FunctionalTests.Beatpulse.Http.Fixtures
         public static string TargetServerUrl { get; } = "http://localhost:54000";
 
         public TestServer AServerWithHttpLiveness(HttpLivenessOptions options)
-        {
-            var urlSegments = options.Url.Split("/");
-
+        {      
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
                 .UseBeatPulse()
