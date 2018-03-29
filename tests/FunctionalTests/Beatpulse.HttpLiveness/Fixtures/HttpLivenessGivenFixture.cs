@@ -14,7 +14,7 @@ namespace FunctionalTests.Beatpulse.Http.Fixtures
 {
     public class HttpLivenessGivenFixture
     {
-        public static string TargetServerUrl { get; } = "http://localhost:54000";
+        public const string DefaultTargetServerUrl  = "http://localhost:54000";
 
         public TestServer AServerWithHttpLiveness(HttpLivenessOptions options)
         {      
@@ -32,11 +32,11 @@ namespace FunctionalTests.Beatpulse.Http.Fixtures
             return new TestServer(webHostBuilder);
         }
 
-        public IWebHost ATargetServerWithConfiguredResponse(RequestDelegate @delegate, string url = "http://localhost:54000")
+        public IWebHost ATargetServerWithConfiguredResponse(RequestDelegate @delegate, string url = DefaultTargetServerUrl)
         {
             
             var webhost = new WebHostBuilder()
-                .UseUrls(new[] { url ?? TargetServerUrl })               
+                .UseUrls(new[] {url})               
                 .UseKestrel()
                 .Configure( app => {
                     app.Run(@delegate);
