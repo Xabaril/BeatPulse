@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace FunctionalTests.Beatpulse.Http.Fixtures
 {
-    public class HttpConfiguredTargetServer: IDisposable
+    public class HttpConfiguredResponseServer: IDisposable
     {
         public const string DefaultTargetServerUrl = "http://localhost:54000";
         private readonly RequestDelegate _delegate;
         private IWebHost _server = null;
 
-        public HttpConfiguredTargetServer(RequestDelegate @delegate, string url = DefaultTargetServerUrl)
+        public HttpConfiguredResponseServer(RequestDelegate @delegate, string url = DefaultTargetServerUrl)
         {
             _server = new WebHostBuilder()
                 .UseUrls(new[] { url })

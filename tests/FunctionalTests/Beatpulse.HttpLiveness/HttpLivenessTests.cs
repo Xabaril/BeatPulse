@@ -28,10 +28,10 @@ namespace FunctionalTests.Beatpulse.Http
         [Fact]
         public async Task be_healthy_when_success_response_from_endpoint_with_default_options()
         {
-            var livenessOptions = new HttpLivenessOptions().WithUrl($"{HttpConfiguredTargetServer.DefaultTargetServerUrl}");
+            var livenessOptions = new HttpLivenessOptions().WithUrl($"{HttpConfiguredResponseServer.DefaultTargetServerUrl}");
             var server = _given.AServerWithHttpLiveness(livenessOptions);
 
-            using (var targetServer = new HttpConfiguredTargetServer(context => Task.CompletedTask))
+            using (var targetServer = new HttpConfiguredResponseServer(context => Task.CompletedTask))
             {
                 var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH).GetAsync();
 
@@ -46,12 +46,12 @@ namespace FunctionalTests.Beatpulse.Http
             var content = "not found";
 
             var livenessOptions = new HttpLivenessOptions()
-                .WithUrl($"{HttpConfiguredTargetServer.DefaultTargetServerUrl}")
+                .WithUrl($"{HttpConfiguredResponseServer.DefaultTargetServerUrl}")
                 .WithContentCheck(content)
                 .WithStatusCode(statusCode);
 
             var server = _given.AServerWithHttpLiveness(livenessOptions);
-            using (var targetServer = new HttpConfiguredTargetServer(async context =>
+            using (var targetServer = new HttpConfiguredResponseServer(async context =>
             {
                 context.Response.StatusCode = statusCode;
                 await context.Response.WriteAsync(content);
@@ -66,11 +66,11 @@ namespace FunctionalTests.Beatpulse.Http
         public async Task be_unhealthy_when_configured_content_does_not_match()
         {
             var livenessOptions = new HttpLivenessOptions()
-                .WithUrl($"{HttpConfiguredTargetServer.DefaultTargetServerUrl}")
+                .WithUrl($"{HttpConfiguredResponseServer.DefaultTargetServerUrl}")
                 .WithContentCheck("<div>Hello there!</div>");
 
             var server = _given.AServerWithHttpLiveness(livenessOptions);
-            using (var targetServer = new HttpConfiguredTargetServer(
+            using (var targetServer = new HttpConfiguredResponseServer(
                 async context => await context.Response.WriteAsync("Response")))
             {
                 var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH).GetAsync();
@@ -83,11 +83,11 @@ namespace FunctionalTests.Beatpulse.Http
         public async Task be_unhealthy_when_configured_status_code_does_not_match()
         {
             var livenessOptions = new HttpLivenessOptions()
-                .WithUrl($"{HttpConfiguredTargetServer.DefaultTargetServerUrl}")
+                .WithUrl($"{HttpConfiguredResponseServer.DefaultTargetServerUrl}")
                 .WithStatusCode(404);
 
             var server = _given.AServerWithHttpLiveness(livenessOptions);
-            using(var targetServer = new HttpConfiguredTargetServer(context => Task.CompletedTask))
+            using(var targetServer = new HttpConfiguredResponseServer(context => Task.CompletedTask))
             {
                 var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH).GetAsync();
 
@@ -99,11 +99,11 @@ namespace FunctionalTests.Beatpulse.Http
         public async Task be_unhealthy_when_configured_timeout_excedded()
         {
             var livenessOptions = new HttpLivenessOptions()
-                .WithUrl($"{HttpConfiguredTargetServer.DefaultTargetServerUrl}")
+                .WithUrl($"{HttpConfiguredResponseServer.DefaultTargetServerUrl}")
                 .WithTimeout(2);
 
             var server = _given.AServerWithHttpLiveness(livenessOptions);
-            using(var targetServer = new HttpConfiguredTargetServer(async context => await Task.Delay(3000)))
+            using(var targetServer = new HttpConfiguredResponseServer(async context => await Task.Delay(3000)))
             {
                 var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH).GetAsync();
 
