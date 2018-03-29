@@ -14,11 +14,13 @@ namespace BeatPulse.Sqlite
     {
         private string _connectionString;
         private string _healthQuery;
+
         public SqliteLiveness(string connectionString, string healthQuery)
         {            
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
         }
+
         public string Name => nameof(SqliteLiveness);
 
         public string DefaultPath => "sqlite";
