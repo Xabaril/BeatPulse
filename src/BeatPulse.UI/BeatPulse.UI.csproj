@@ -13,11 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\beatpulse.css" />
     <None Remove="Assets\index.html" />
     <None Remove="Assets\index.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\beatpulse.css" />
     <EmbeddedResource Include="Assets\index.html" />
     <EmbeddedResource Include="Assets\index.js" />
   </ItemGroup>
