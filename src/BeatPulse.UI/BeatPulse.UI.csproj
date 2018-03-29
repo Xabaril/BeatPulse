@@ -26,4 +26,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(HostingAbstractionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Persistence\" />
+  </ItemGroup>
 </Project>

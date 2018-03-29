@@ -47,7 +47,7 @@ namespace HttpApi_Basic
                     }
 
                 }));
-            });
+            }).AddBeatPulseUI();
 
             services.AddMvc();
         }
