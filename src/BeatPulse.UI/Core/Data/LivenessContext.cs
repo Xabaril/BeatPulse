@@ -6,6 +6,8 @@ namespace BeatPulse.UI.Core.Data
     class LivenessContext
         :DbContext
     {
+        public LivenessContext(DbContextOptions options) : base(options) { }
+
         public DbSet<LivenessConfiguration> LivenessConfiguration { get; set; }
 
         public DbSet<LivenessExecutionHistory> LivenessExecutionHistory { get; set; }
