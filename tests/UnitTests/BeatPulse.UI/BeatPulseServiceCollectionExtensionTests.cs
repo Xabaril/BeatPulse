@@ -3,6 +3,7 @@ using BeatPulse.UI.Core.Data;
 using BeatPulse.UI.Core.HostedService;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace BeatPulse.UI
@@ -21,8 +22,9 @@ namespace BeatPulse.UI
             provider.GetService<LivenessContext>()
                 .Should().NotBeNull();
 
-            provider.GetService<LivenessHostedService>()
+            provider.GetService<IHostedService>()
                 .Should().NotBeNull();
+
         }
     }
 }
