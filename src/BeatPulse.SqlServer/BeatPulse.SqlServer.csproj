@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.SqlServer is the health check package for SqlServer on BeatPulse </Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sql Server</PackageTags>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseSqlServerPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

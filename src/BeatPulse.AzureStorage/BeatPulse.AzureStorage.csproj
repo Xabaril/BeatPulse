@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;AzureStorage</PackageTags>
     <Description>BeatPulse.AzureStorage is the health check package for Blobs, Tables and Queues on BeatPulse</Description>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseAzureStoragePackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

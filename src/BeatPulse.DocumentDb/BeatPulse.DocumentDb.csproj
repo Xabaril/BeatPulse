@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;DocumentDb</PackageTags>
     <Description>BeatPulse.DocumentDb is the health check package for Azure DocumentDb on BeatPulse</Description>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseDocumentDbPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

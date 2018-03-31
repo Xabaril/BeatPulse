@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.NpgSql is a health check for Postgress Sql</Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;Postgress</PackageTags>
-    <Version>$(Version)</Version>
+    <Version>$(BeatpulseNpgSqlPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

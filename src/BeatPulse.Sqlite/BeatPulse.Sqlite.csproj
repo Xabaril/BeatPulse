@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sqlite</PackageTags>
     <Description>BeatPulse.Sqlite is the health check package for Sqlite BeatPulse</Description>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseSqlitePackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

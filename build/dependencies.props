@@ -30,12 +30,23 @@
     <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
   </PropertyGroup>
 
+  <PropertyGroup Label="Package Versions">
+    <BeatPulsePackageVersion>1.3.3</BeatPulsePackageVersion>
+    <BeatPulseAzureStoragePackageVersion>1.3.3</BeatPulseAzureStoragePackageVersion>
+    <BeatPulseDocumentDbPackageVersion>1.3.3</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>1.3.3</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMySqlPackageVersion>1.3.3</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>1.3.3</BeatpulseNpgSqlPackageVersion>
+    <BeatpulseRedisPackageVersion>1.3.3</BeatpulseRedisPackageVersion>
+    <BeatPulseSqlitePackageVersion>1.3.3</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlServerPackageVersion>1.3.3</BeatPulseSqlServerPackageVersion>    
+  </PropertyGroup>
+
   <PropertyGroup Label="Package information">
     <PackageLicenseUrl>https://github.com/Xabaril/BeatPulse/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
     <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>    
     <Authors>Xabaril Contributors</Authors>
-    <Company>Xabaril</Company>
-    <Version>1.3.3</Version>
+    <Company>Xabaril</Company>    
   </PropertyGroup>
 </Project>
