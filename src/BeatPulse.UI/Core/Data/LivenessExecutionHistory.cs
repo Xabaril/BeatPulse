@@ -11,6 +11,8 @@ namespace BeatPulse.UI.Core.Data
 
         public string LivenessUri { get; set; }
 
+        public string LivenessName { get; set; }
+
         public bool IsHealthy { get; set; }
 
         public string Result { get; set; }

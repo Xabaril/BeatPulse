@@ -14,8 +14,8 @@ namespace BeatPulse.UI.Core.Data.Configuration
                 .IsRequired(true)
                 .HasMaxLength(500);
 
-            builder.Property(lc => lc.WebHookNotificationUri)
-                .IsRequired(false)
+            builder.Property(lc => lc.LivenessName)
+                .IsRequired(true)
                 .HasMaxLength(500);
         }
     }

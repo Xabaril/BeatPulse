@@ -24,11 +24,12 @@ namespace BeatPulse.UI.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("LivenessUri")
+                    b.Property<string>("LivenessName")
                         .IsRequired()
                         .HasMaxLength(500);
 
-                    b.Property<string>("WebHookNotificationUri")
+                    b.Property<string>("LivenessUri")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -45,8 +46,13 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.Property<bool>("IsHealthy");
 
+                    b.Property<string>("LivenessName")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
                     b.Property<string>("LivenessUri")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("Result")
                         .IsRequired()

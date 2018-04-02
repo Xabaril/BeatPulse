@@ -11,7 +11,7 @@ using System;
 namespace BeatPulse.UI.Core.Data.Migrations
 {
     [DbContext(typeof(LivenessContext))]
-    [Migration("20180329135304_Initial")]
+    [Migration("20180401094010_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,12 @@ namespace BeatPulse.UI.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("LivenessUri")
+                    b.Property<string>("LivenessName")
                         .IsRequired()
                         .HasMaxLength(500);
 
-                    b.Property<string>("WebHookNotificationUri")
+                    b.Property<string>("LivenessUri")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -46,8 +47,13 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.Property<bool>("IsHealthy");
 
+                    b.Property<string>("LivenessName")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
                     b.Property<string>("LivenessUri")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.Property<string>("Result")
                         .IsRequired()

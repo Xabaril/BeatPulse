@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeatPulse.UI.Core.Data
 {
     class LivenessContext
-        :DbContext
+        : DbContext
     {
         public LivenessContext(DbContextOptions options) : base(options) { }
 
@@ -16,7 +16,7 @@ namespace BeatPulse.UI.Core.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("livenessdb");
+                optionsBuilder.UseSqlite("Data Source = livenessdb");
             }
         }
 
@@ -25,5 +25,5 @@ namespace BeatPulse.UI.Core.Data
             modelBuilder.ApplyConfiguration(new LivenessConfigurationMap());
             modelBuilder.ApplyConfiguration(new LivenessExecutionHistoryMap());
         }
-    }  
+    }
 }

@@ -4,6 +4,6 @@ namespace BeatPulse.UI.Core
 {
     interface ILivenessFailureNotifier
     {
-        Task NotifyFailure(string livenessUri,string content);
+        Task NotifyFailure(string livenessName,string content);
     }
 }

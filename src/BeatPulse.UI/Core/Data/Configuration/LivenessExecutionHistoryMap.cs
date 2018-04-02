@@ -14,9 +14,13 @@ namespace BeatPulse.UI.Core.Data.Configuration
             builder.Property(le => le.IsHealthy)
                 .IsRequired(true);
 
-
             builder.Property(le => le.LivenessUri)
+                .HasMaxLength(500)
                 .IsRequired(true);
+
+            builder.Property(le => le.LivenessName)
+               .HasMaxLength(500)
+               .IsRequired(true);
 
             builder.Property(le => le.Result)
                 .HasMaxLength(2000)

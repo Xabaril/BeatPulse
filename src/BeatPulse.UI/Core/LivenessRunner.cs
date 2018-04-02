@@ -15,7 +15,7 @@ namespace BeatPulse.UI.Core
         private readonly ILivenessFailureNotifier _failureNotifier;
         private readonly ILogger<LivenessRunner> _logger;
 
-        public LivenessRunner(LivenessContext context, ILivenessFailureNotifier failureNotifier,ILogger<LivenessRunner> logger)
+        public LivenessRunner(LivenessContext context, ILivenessFailureNotifier failureNotifier, ILogger<LivenessRunner> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
@@ -24,7 +24,7 @@ namespace BeatPulse.UI.Core
 
         public async Task Run(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("LivenessRuner is on run method");
+            _logger.LogDebug("LivenessRuner is on run method.");
 
             var liveness = await _context.LivenessConfiguration
                     .ToListAsync();
@@ -33,6 +33,8 @@ namespace BeatPulse.UI.Core
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    _logger.LogDebug("LivenessRunner Run is cancelled.");
+
                     break;
                 }
 
@@ -44,7 +46,7 @@ namespace BeatPulse.UI.Core
                 {
                     _logger.LogWarning($"LivenessRuner notify liveness failure for {item.LivenessUri}.");
 
-                    await _failureNotifier.NotifyFailure(item.LivenessUri, executionHistory.Result);
+                    await _failureNotifier.NotifyFailure(item.LivenessName, executionHistory.Result);
                 }
             }
 
@@ -53,12 +55,12 @@ namespace BeatPulse.UI.Core
 
         private async Task<LivenessExecutionHistory> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
         {
-            var hc = livenessConfiguration.LivenessUri;
+            var (uri, name) = livenessConfiguration;
 
             try
             {
                 var response = await new HttpClient()
-                    .GetAsync(hc);
+                    .GetAsync(uri);
 
                 var success = response.IsSuccessStatusCode;
 
@@ -69,17 +71,21 @@ namespace BeatPulse.UI.Core
                 {
                     ExecutedOn = DateTime.UtcNow,
                     IsHealthy = success,
-                    LivenessUri = hc,
+                    LivenessUri = uri,
+                    LivenessName = name,
                     Result = content
                 };
             }
             catch (Exception exception)
             {
+                _logger.LogError(exception, "LivenessRunner EvaluateLiveness throw the exception.");
+
                 return new LivenessExecutionHistory()
                 {
                     ExecutedOn = DateTime.UtcNow,
                     IsHealthy = false,
-                    LivenessUri = hc,
+                    LivenessUri = uri,
+                    LivenessName = name,
                     Result = exception.Message
                 };
             }

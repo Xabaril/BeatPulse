@@ -1,4 +1,5 @@
-﻿using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Core;
+using BeatPulse.UI.Core.Data;
 using BeatPulse.UI.Core.HostedService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,10 +12,17 @@ namespace BeatPulse.UI
         public static IServiceCollection AddBeatPulseUI(this IServiceCollection services)
         {
             services.AddSingleton<IHostedService, LivenessHostedService>();
-            services.AddDbContext<LivenessContext>(options =>
+            services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
+            services.AddScoped<ILivenessRunner, LivenessRunner>();
+            services.AddDbContext<LivenessContext>(db =>
             {
-                options.UseSqlite("livenesdb");
+                db.UseSqlite("Data Source=livenesdb");
             });
+
+            var context = services.BuildServiceProvider()
+                .GetRequiredService<LivenessContext>();
+
+            context.Database.Migrate();
 
             return services;
         }

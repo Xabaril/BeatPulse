@@ -14,8 +14,8 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
-                    WebHookNotificationUri = table.Column<string>(maxLength: 500, nullable: true)
+                    LivenessName = table.Column<string>(maxLength: 500, nullable: false),
+                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +30,8 @@ namespace BeatPulse.UI.Core.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ExecutedOn = table.Column<DateTime>(nullable: false),
                     IsHealthy = table.Column<bool>(nullable: false),
-                    LivenessUri = table.Column<string>(nullable: false),
+                    LivenessName = table.Column<string>(maxLength: 500, nullable: false),
+                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
                     Result = table.Column<string>(maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
