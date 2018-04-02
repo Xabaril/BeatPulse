@@ -1,5 +1,6 @@
 ﻿using BeatPulse.UI.Core.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,6 +29,14 @@ namespace UnitTests.BeatPulse.UI.Core
         public LivenessContextBuilder WithDatabaseName(string databaseName)
         {
             _databaseName = databaseName ?? "testdb";
+
+            return this;
+        }
+
+
+        public LivenessContextBuilder WithRandomDatabaseName()
+        {
+            _databaseName = Guid.NewGuid().ToString();
 
             return this;
         }

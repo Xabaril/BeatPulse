@@ -1,11 +1,8 @@
 ﻿using BeatPulse.UI.Core;
-using BeatPulse.UI.Core.Data;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,41 +12,88 @@ namespace UnitTests.BeatPulse.UI.Core
     public class liveness_runner_should
     {
         [Fact]
-        public async Task execute_notify_failures_if_liveness_is_off()
+        public async Task execute_notify_failures_if_liveness_is_down()
         {
-            var notifier = new TestNotifier();
+            var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var tokenSource = new CancellationTokenSource();
 
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://www.google.es/healthlivenesspath", "Google Liveness")
+                .Build();
+
             var context = new LivenessContextBuilder()
-                .WithLiveness(new LivenessConfiguration()
-                {
-                    LivenessUri = "http://www.bing.es/health",
-                    WebHookNotificationUri = "http://testwebhook.com"
-                }).WithDatabaseName(nameof(execute_notify_failures_if_liveness_is_off)).Build();
+                .WithLiveness(livenessConfiguration)
+                .WithRandomDatabaseName()
+                .Build();
 
             var runner = new LivenessRunner(context, notifier, logger);
 
             await runner.Run(tokenSource.Token);
 
-            notifier.Notified
+            notifier.ContainsFailureNotificationFor(livenessConfiguration.LivenessName)
                 .Should().BeTrue();
         }
 
-        class TestNotifier : ILivenessFailureNotifier
+        [Fact]
+        public async Task execute_save_all_execution_histories()
         {
-            public bool Notified { get; private set; }
+            var notifier = new MemoryNotifier();
+            var logger = new Logger<LivenessRunner>(new LoggerFactory());
+            var tokenSource = new CancellationTokenSource();
 
-            public TestNotifier()
+            var googleConfigurationLiveness = new LivenessConfigurationBuilder()
+                .With("http://www.google.es/healthlivenesspath", "Google Liveness")
+                .Build();
+
+            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
+               .With("http://www.bing.es", "Bing Liveness")
+               .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(googleConfigurationLiveness)
+                .WithLiveness(bingConfigurationLiveness)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runner = new LivenessRunner(context, notifier, logger);
+
+            await runner.Run(tokenSource.Token);
+
+            var history = context.LivenessExecutionHistory
+                .ToList();
+
+            history.Count().Should().Be(2);
+
+            history.Where(h => h.LivenessName == "Google Liveness")
+                .Single()?.IsHealthy.Should().BeFalse();
+
+            history.Where(h => h.LivenessName == "Bing Liveness")
+                .Single()?.IsHealthy.Should().BeTrue();
+        }
+
+        class MemoryNotifier : ILivenessFailureNotifier
+        {
+            Dictionary<string, string> _notifications;
+
+            public MemoryNotifier()
             {
-                Notified = false;
+                _notifications = new Dictionary<string, string>();
             }
 
-            public Task NotifyFailure(string url,string content)
+            public Task NotifyFailure(string name,string content)
             {
-                Notified = true;
+                if (!_notifications.ContainsKey(name))
+                {
+                    _notifications.Add(name, content);
+                }
 
                 return Task.CompletedTask;
+            }
+
+            public bool ContainsFailureNotificationFor(string name)
+            {
+                return _notifications.ContainsKey(name);
             }
         }
     }
