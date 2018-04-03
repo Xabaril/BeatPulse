@@ -58,7 +58,7 @@ namespace HttpApi_Basic
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseMvc();
         }
     }
