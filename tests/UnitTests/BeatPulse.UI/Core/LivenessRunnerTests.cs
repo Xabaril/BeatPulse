@@ -12,7 +12,7 @@ namespace UnitTests.BeatPulse.UI.Core
     public class liveness_runner_should
     {
         [Fact]
-        public async Task execute_notify_failures_if_liveness_is_down()
+        public async Task notify_failures_if_liveness_is_down()
         {
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
@@ -36,7 +36,7 @@ namespace UnitTests.BeatPulse.UI.Core
         }
 
         [Fact]
-        public async Task execute_save_all_execution_histories()
+        public async Task save_all_execution_histories()
         {
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
@@ -70,6 +70,60 @@ namespace UnitTests.BeatPulse.UI.Core
 
             history.Where(h => h.LivenessName == "Bing Liveness")
                 .Single()?.IsHealthy.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task get_latest_get_latest_history_infirmation_for_specified_liveness()
+        {
+            var notifier = new MemoryNotifier();
+            var logger = new Logger<LivenessRunner>(new LoggerFactory());
+            var tokenSource = new CancellationTokenSource();
+            var livenessName = "Bing Liveness";
+
+            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
+              .With("http://www.bing.es", livenessName)
+              .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(bingConfigurationLiveness)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runner = new LivenessRunner(context, notifier, logger);
+
+            await runner.Run(tokenSource.Token);
+
+            var history = await runner.GetLatestRun(livenessName, CancellationToken.None);
+
+            history.Where(h => h.LivenessName == livenessName)
+                .Single()?.IsHealthy.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task get_all_livenes_configuration()
+        {
+            var notifier = new MemoryNotifier();
+            var logger = new Logger<LivenessRunner>(new LoggerFactory());
+            var tokenSource = new CancellationTokenSource();
+            var livenessName = "Bing Liveness";
+
+            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
+              .With("http://www.bing.es", livenessName)
+              .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(bingConfigurationLiveness)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runner = new LivenessRunner(context, notifier, logger);
+
+            var liveness =  await runner.GetLiveness(CancellationToken.None);
+
+            liveness.Count.Should().Be(1);
+
+            liveness.Single()
+                .LivenessName.Should().Be(livenessName);
         }
 
         class MemoryNotifier : ILivenessFailureNotifier

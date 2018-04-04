@@ -21,7 +21,7 @@ namespace BeatPulse.UI
 
             var provider = services.BuildServiceProvider();
 
-            provider.GetService<LivenessContext>()
+            provider.GetService<LivenessDb>()
                 .Should().NotBeNull();
 
             provider.GetService<IHostedService>()

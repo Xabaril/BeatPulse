@@ -10,7 +10,7 @@ using System;
 
 namespace BeatPulse.UI.Core.Data.Migrations
 {
-    [DbContext(typeof(LivenessContext))]
+    [DbContext(typeof(LivenessDb))]
     partial class LivenessContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

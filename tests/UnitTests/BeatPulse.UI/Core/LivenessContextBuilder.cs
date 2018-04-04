@@ -41,12 +41,12 @@ namespace UnitTests.BeatPulse.UI.Core
             return this;
         }
 
-        public LivenessContext Build()
+        public LivenessDb Build()
         {
             var contextOptionsBuilder = new DbContextOptionsBuilder();
             contextOptionsBuilder.UseSqlite($"Data Source={_databaseName}");
 
-            var context = new LivenessContext(contextOptionsBuilder.Options);
+            var context = new LivenessDb(contextOptionsBuilder.Options);
             context.Database.Migrate();
 
             if (_configurations.Any())

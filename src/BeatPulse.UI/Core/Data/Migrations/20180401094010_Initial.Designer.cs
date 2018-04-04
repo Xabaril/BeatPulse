@@ -10,7 +10,7 @@ using System;
 
 namespace BeatPulse.UI.Core.Data.Migrations
 {
-    [DbContext(typeof(LivenessContext))]
+    [DbContext(typeof(LivenessDb))]
     [Migration("20180401094010_Initial")]
     partial class Initial
     {

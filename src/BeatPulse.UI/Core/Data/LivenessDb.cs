@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeatPulse.UI.Core.Data
 {
-    class LivenessContext
+    class LivenessDb
         : DbContext
     {
-        public LivenessContext(DbContextOptions options) : base(options) { }
+        public LivenessDb(DbContextOptions options) : base(options) { }
 
         public DbSet<LivenessConfiguration> LivenessConfiguration { get; set; }
 

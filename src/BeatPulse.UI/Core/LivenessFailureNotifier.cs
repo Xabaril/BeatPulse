@@ -22,11 +22,11 @@ namespace BeatPulse.UI.Core
         public async Task NotifyFailure(string livenessName, string content)
         {
             const string jsonContentType = "application/json";
-            const string webHookUriConfigurationKey = "BeatPulseUIWebHookNotifier";
 
-            var webHook = _configuration[webHookUriConfigurationKey];
+            var webHookConfigurationValue = _configuration[Globals.WEBHOOK_NOTIFICATION_SETTING_KEY];
 
-            if (webHook != null)
+            if (webHookConfigurationValue != null
+                && Uri.TryCreate(webHookConfigurationValue, UriKind.Absolute, out Uri webHookUri))
             {
                 using (var httpClient = new HttpClient())
                 {
@@ -34,7 +34,7 @@ namespace BeatPulse.UI.Core
 
                     try
                     {
-                        var response = await httpClient.PostAsync(webHook, payload);
+                        var response = await httpClient.PostAsync(webHookUri, payload);
 
                         if (!response.IsSuccessStatusCode)
                         {
@@ -43,9 +43,13 @@ namespace BeatPulse.UI.Core
                     }
                     catch (Exception exception)
                     {
-                        _logger.LogError($"The failure notification is not executed successfully.",exception);
+                        _logger.LogError($"The failure notification is not executed successfully.", exception);
                     }
                 }
+            }
+            else
+            {
+                _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri. Set the webhook uri value on {Globals.WEBHOOK_NOTIFICATION_SETTING_KEY} setting key.");
             }
         }
     }

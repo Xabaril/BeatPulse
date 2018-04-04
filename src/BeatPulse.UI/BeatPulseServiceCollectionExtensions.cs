@@ -13,14 +13,16 @@ namespace BeatPulse.UI
         {
             services.AddSingleton<IHostedService, LivenessHostedService>();
             services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
+
             services.AddScoped<ILivenessRunner, LivenessRunner>();
-            services.AddDbContext<LivenessContext>(db =>
+
+            services.AddDbContext<LivenessDb>(db =>
             {
                 db.UseSqlite("Data Source=livenesdb");
             });
 
             var context = services.BuildServiceProvider()
-                .GetRequiredService<LivenessContext>();
+                .GetRequiredService<LivenessDb>();
 
             context.Database.Migrate();
 

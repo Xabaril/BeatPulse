@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,11 +13,11 @@ namespace BeatPulse.UI.Core
     class LivenessRunner
         : ILivenessRunner
     {
-        private readonly LivenessContext _context;
+        private readonly LivenessDb _context;
         private readonly ILivenessFailureNotifier _failureNotifier;
         private readonly ILogger<LivenessRunner> _logger;
 
-        public LivenessRunner(LivenessContext context, ILivenessFailureNotifier failureNotifier, ILogger<LivenessRunner> logger)
+        public LivenessRunner(LivenessDb context, ILivenessFailureNotifier failureNotifier, ILogger<LivenessRunner> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
@@ -91,7 +93,27 @@ namespace BeatPulse.UI.Core
             }
         }
 
-        private async Task SaveExecutionHistory(LivenessContext context, LivenessExecutionHistory history)
+        public Task<List<LivenessExecutionHistory>> GetLatestRun(string livenessName, CancellationToken cancellationToken)
+        {
+            if (String.IsNullOrEmpty(livenessName))
+            {
+                throw new ArgumentNullException(nameof(livenessName));
+            }
+
+            return _context.LivenessExecutionHistory
+                .Where(lh=>lh.LivenessName == livenessName)
+                .OrderByDescending(le => le.ExecutedOn)
+                .Take(Globals.NUMBER_OF_LIVENESS_RUN_EXECUTIONS)
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<List<LivenessConfiguration>> GetLiveness(CancellationToken cancellationToken)
+        {
+            return _context.LivenessConfiguration
+                .ToListAsync(cancellationToken);
+        }
+
+        private async Task SaveExecutionHistory(LivenessDb context, LivenessExecutionHistory history)
         {
             _logger.LogDebug("LivenessRuner save a new liveness execution history.");
 
