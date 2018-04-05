@@ -18,7 +18,6 @@ namespace BeatPulse.UI
         {
             services.AddOptions();
 
-
             services.AddSingleton<IHostedService, LivenessHostedService>();
             services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
 
