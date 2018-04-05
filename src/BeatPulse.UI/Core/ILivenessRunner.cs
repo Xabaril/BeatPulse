@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core
 {
-    interface ILivenessRunner
+    internal interface ILivenessRunner
     {
         Task Run(CancellationToken cancellationToken);
 

@@ -3,7 +3,7 @@
 namespace BeatPulse.UI.Core.Data
 {
 
-    class LivenessExecutionHistory
+    internal class LivenessExecutionHistory
     {
         public int Id { get; set; }
 
