@@ -1,6 +1,6 @@
 ﻿namespace BeatPulse.UI.Core.Data
 {
-    class LivenessConfiguration
+    internal class LivenessConfiguration
     {
         public int Id { get; set; }
 

@@ -28,7 +28,7 @@ namespace BeatPulse.UI.Core
                     {
                         context.Response.ContentType = resource.ContentType;
 
-                        await context.Response.WriteAsync(resource.Content);
+                       await context.Response.WriteAsync(resource.Content);
                     });
                 });
             }
