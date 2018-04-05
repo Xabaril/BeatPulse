@@ -2,8 +2,13 @@
 using BeatPulse.UI.Core.Data;
 using BeatPulse.UI.Core.HostedService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BeatPulse.UI
 {
@@ -11,6 +16,9 @@ namespace BeatPulse.UI
     {
         public static IServiceCollection AddBeatPulseUI(this IServiceCollection services)
         {
+            services.AddOptions();
+            
+
             services.AddSingleton<IHostedService, LivenessHostedService>();
             services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
 
@@ -21,12 +29,53 @@ namespace BeatPulse.UI
                 db.UseSqlite("Data Source=livenesdb");
             });
 
-            var context = services.BuildServiceProvider()
-                .GetRequiredService<LivenessDb>();
+            var serviceProvider = services.BuildServiceProvider();
 
-            context.Database.Migrate();
+            CreateDatabase(serviceProvider).Wait();
 
             return services;
+        }
+
+        static async Task CreateDatabase(IServiceProvider serviceProvider)
+        {
+            var scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider
+                    .GetService<LivenessDb>();
+
+                var configuration = scope.ServiceProvider
+                    .GetService<IConfiguration>();
+
+                await db.Database.MigrateAsync();
+
+                var configurationSection = new LivenessConfigurationSection();
+
+                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY,configurationSection);
+
+                var liveness = configurationSection.Liveness
+                    .Select(s => new LivenessConfiguration()
+                    {
+                        LivenessName = s.Name,
+                        LivenessUri = s.Uri
+                    });
+
+                await db.LivenessConfiguration
+                    .AddRangeAsync(liveness);
+            }
+        }
+
+        class LivenessConfigurationSection
+        {
+            public List<LivenessConfigurationSetting> Liveness { get; set; }
+        }
+
+        class LivenessConfigurationSetting
+        {
+            public string Name { get; set; }
+
+            public string Uri { get; set; }
         }
     }
 }

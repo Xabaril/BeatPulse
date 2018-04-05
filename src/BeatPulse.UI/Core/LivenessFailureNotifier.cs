@@ -23,7 +23,9 @@ namespace BeatPulse.UI.Core
         {
             const string jsonContentType = "application/json";
 
-            var webHookConfigurationValue = _configuration[Globals.WEBHOOK_NOTIFICATION_SETTING_KEY];
+            var webHookUriKey = $"{Globals.BEATPULSEUI_SECTION_SETTING_KEY}:{Globals.WEBHOOK_NOTIFICATION_SETTING_KEY}";
+
+            var webHookConfigurationValue = _configuration[webHookUriKey];
 
             if (webHookConfigurationValue != null
                 && Uri.TryCreate(webHookConfigurationValue, UriKind.Absolute, out Uri webHookUri))
