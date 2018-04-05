@@ -15,12 +15,10 @@ namespace BeatPulse.UI.Core
     public class UIApiEndpointMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IEnumerable<IUIAuthorizationFilter> _authorizationFilters;
-
-        public UIApiEndpointMiddleware(RequestDelegate next, IEnumerable<IUIAuthorizationFilter> authorizationFilters)
+        
+        public UIApiEndpointMiddleware(RequestDelegate next)
         {
-            _next = next;
-            _authorizationFilters = authorizationFilters;
+            _next = next;        
         }
 
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
