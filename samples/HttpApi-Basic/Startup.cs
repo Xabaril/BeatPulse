@@ -1,6 +1,7 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
 using BeatPulse.UI;
+using BeatPulse.UI.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +51,13 @@ namespace HttpApi_Basic
             }).AddBeatPulseUI();
 
             services.AddMvc();
+
+            //Authorization filter sample that always success
+            services.AddSingleton<IUIAuthorizationFilter, CustomUIAuthorizationFilter>();
+
+            //Uncomment to pass configured apikey in the querystring for validation
+            //services.AddSingleton<IUIAuthorizationFilter>(sp => new ApiKeyQueryCustomAuthorizationFilter("secret"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
