@@ -15,9 +15,10 @@ namespace BeatPulse.UI
         {
             var configurationBuilder = new ConfigurationBuilder();
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<IConfiguration>(configurationBuilder.Build());
 
             var services = BeatPulseServiceCollectionExtensions.AddBeatPulseUI(serviceCollection);
-            services.AddSingleton<IConfiguration>(configurationBuilder.Build());
+           
 
             var provider = services.BuildServiceProvider();
 

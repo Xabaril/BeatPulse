@@ -17,7 +17,7 @@ namespace BeatPulse.UI
         public static IServiceCollection AddBeatPulseUI(this IServiceCollection services)
         {
             services.AddOptions();
-            
+
 
             services.AddSingleton<IHostedService, LivenessHostedService>();
             services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
@@ -52,17 +52,23 @@ namespace BeatPulse.UI
 
                 var configurationSection = new LivenessConfigurationSection();
 
-                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY,configurationSection);
+                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY, configurationSection);
 
-                var liveness = configurationSection.Liveness
-                    .Select(s => new LivenessConfiguration()
-                    {
-                        LivenessName = s.Name,
-                        LivenessUri = s.Uri
-                    });
+                var liveness = configurationSection.Liveness?.Select(s => new LivenessConfiguration()
+                {
+                    LivenessName = s.Name,
+                    LivenessUri = s.Uri
+                });
 
-                await db.LivenessConfiguration
-                    .AddRangeAsync(liveness);
+                if (liveness != null
+                    &&
+                    liveness.Any())
+                {
+                    await db.LivenessConfiguration
+                        .AddRangeAsync(liveness);
+
+                    await db.SaveChangesAsync();
+                }
             }
         }
 
