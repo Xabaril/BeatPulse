@@ -16,7 +16,7 @@ namespace BeatPulse.UI.Core.Helpers
             if (authorizationFilters.Any())
             {
                 var filterTasks = new List<Task<bool>>();
-                var acceptedFilters = new List<bool>();
+                
                 foreach (var filter in authorizationFilters)
                 {
                     filterTasks.Add(filter.Accept(context));
