@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeatPulse.Core
 {
@@ -49,5 +50,10 @@ namespace BeatPulse.Core
                 return _activeLiveness.Values;
             }
         }
+
+        public IEnumerable<TL> AllLivenesOfType<TL>()
+            where TL : IBeatPulseLiveness =>
+            _activeLiveness.Values.OfType<TL>();
+        
     }
 }
