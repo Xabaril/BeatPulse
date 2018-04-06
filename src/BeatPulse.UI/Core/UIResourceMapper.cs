@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BeatPulse.UI.Core.Helpers;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace BeatPulse.UI.Core
             var resources = _reader.GetUIResources;
 
             //map all resources
-            
+
             foreach (var resource in resources)
             {
                 app.Map($"{suffix}/{resource.FileName}", appBuilder =>
@@ -28,7 +29,7 @@ namespace BeatPulse.UI.Core
                     {
                         context.Response.ContentType = resource.ContentType;
 
-                       await context.Response.WriteAsync(resource.Content);
+                        await context.Response.WriteAsync(resource.Content);
                     });
                 });
             }
@@ -37,11 +38,17 @@ namespace BeatPulse.UI.Core
 
             app.Map(suffix, appBuilder =>
             {
-                appBuilder.Run(context =>
+                appBuilder.Run(async context =>
                 {
-                    context.Response.Redirect($"{suffix}/index.html", permanent: true);
+                    if (await UIAuthorizationHelper.IsAuthorizedAsync(context))
+                    {                        
+                        context.Response.Redirect($"{suffix}/index.html", permanent: true);
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 401;
+                    }
 
-                    return Task.CompletedTask;
                 });
             });
         }
