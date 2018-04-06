@@ -9,10 +9,8 @@ namespace BeatPulse.UI
         {
             var embeddedResourcesAssembly = typeof(UIResource).Assembly;
 
-            //register api middleware
             app.Map(pathMatch: apiPath, appBuilder => appBuilder.UseMiddleware<UIApiEndpointMiddleware>());
 
-            //register ui middleware for embebbed resources
             new UIResourcesMapper(
                 new UIEmbeddedResourcesReader(embeddedResourcesAssembly)).Map(app, suffix: uiPath);
 

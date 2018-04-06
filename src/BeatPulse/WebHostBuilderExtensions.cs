@@ -17,6 +17,6 @@ namespace Microsoft.AspNetCore.Hosting
             });
 
             return hostBuilder;
-        }
+        }       
     }
 }

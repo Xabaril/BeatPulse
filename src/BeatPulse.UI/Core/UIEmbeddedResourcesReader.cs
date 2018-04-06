@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace BeatPulse.UI.Core
 {
-    public class UIEmbeddedResourcesReader : IUIResourcesReader
+    class UIEmbeddedResourcesReader : IUIResourcesReader
     {
         private readonly Assembly _assembly;
 
@@ -33,18 +33,12 @@ namespace BeatPulse.UI.Core
             foreach (var file in embeddedFiles)
             {
                 var segments = file.Split(SPLIT_SEPARATOR);
-
-                //temporal mapping
-
                 var fileName = segments[segments.Length - 2];
-
                 var extension = segments[segments.Length - 1];
-
                 var contentStream = _assembly.GetManifestResourceStream(file);
 
                 using (var reader = new StreamReader(contentStream))
                 {
-
                     string result = reader.ReadToEnd();
                     
                     resourceList.Add(

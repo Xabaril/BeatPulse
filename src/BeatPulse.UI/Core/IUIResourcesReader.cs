@@ -2,7 +2,7 @@
 
 namespace BeatPulse.UI.Core
 {
-    public interface IUIResourcesReader
+    interface IUIResourcesReader
     {
         IEnumerable<UIResource> GetUIResources { get; }
     }

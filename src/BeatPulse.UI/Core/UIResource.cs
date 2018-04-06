@@ -2,7 +2,7 @@
 
 namespace BeatPulse.UI.Core
 {
-    public class UIResource
+    class UIResource
     {
         public string Content { get; }
 
@@ -12,7 +12,6 @@ namespace BeatPulse.UI.Core
 
         private UIResource(string fileName, string content, string contentType)
         {
-
             Content = content ?? throw new ArgumentNullException(nameof(content));
             ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
             FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
@@ -20,7 +19,6 @@ namespace BeatPulse.UI.Core
 
         public static UIResource Create(string fileName, string content, string contentType)
         {
-
             return new UIResource(fileName, content, contentType);
         }
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core
 {
-    public class LivenessFailureNotifier
+    class LivenessFailureNotifier
         : ILivenessFailureNotifier
     {
         private readonly IConfiguration _configuration;
@@ -21,8 +21,6 @@ namespace BeatPulse.UI.Core
 
         public async Task NotifyFailure(string livenessName, string content)
         {
-            const string jsonContentType = "application/json";
-
             var webHookUriKey = $"{Globals.BEATPULSEUI_SECTION_SETTING_KEY}:{Globals.WEBHOOK_NOTIFICATION_SETTING_KEY}";
 
             var webHookConfigurationValue = _configuration[webHookUriKey];
@@ -32,7 +30,7 @@ namespace BeatPulse.UI.Core
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var payload = new StringContent(content, Encoding.UTF8, jsonContentType);
+                    var payload = new StringContent(content, Encoding.UTF8, Globals.DEFAULT_RESPONSE_CONTENT_TYPE);
 
                     try
                     {

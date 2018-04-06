@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BeatPulse.UI.Core
 {
-    public class ContentType
+    class ContentType
     {
         public const string JAVASCRIPT = "text/javascript";
         public const string CSS = "text/css";

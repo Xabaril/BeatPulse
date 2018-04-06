@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core
 {
-    public class UIResourcesMapper
+    class UIResourcesMapper
     {
         private readonly IUIResourcesReader _reader;
 
@@ -18,8 +17,9 @@ namespace BeatPulse.UI.Core
         {
             var resources = _reader.GetUIResources;
 
-            //map all resources
-            
+            // map all resources on assets folders to 
+            // request uri by resource name
+
             foreach (var resource in resources)
             {
                 app.Map($"{suffix}/{resource.FileName}", appBuilder =>
@@ -28,20 +28,25 @@ namespace BeatPulse.UI.Core
                     {
                         context.Response.ContentType = resource.ContentType;
 
-                       await context.Response.WriteAsync(resource.Content);
+                        await context.Response.WriteAsync(resource.Content);
                     });
                 });
             }
 
-            //map default sufix to index.html
+            //redirect default suffix into index.html or return forbidden if is not authorized
 
             app.Map(suffix, appBuilder =>
             {
-                appBuilder.Run(context =>
+                appBuilder.Run(async context =>
                 {
-                    context.Response.Redirect($"{suffix}/index.html", permanent: true);
-
-                    return Task.CompletedTask;
+                    if (await context.IsAuthorizedAsync())
+                    {                        
+                        context.Response.Redirect($"{suffix}/index.html", permanent: true);
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 401;
+                    }
                 });
             });
         }
