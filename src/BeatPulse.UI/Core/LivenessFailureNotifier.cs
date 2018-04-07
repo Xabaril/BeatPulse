@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using BeatPulse.UI.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -10,23 +12,19 @@ namespace BeatPulse.UI.Core
     class LivenessFailureNotifier
         : ILivenessFailureNotifier
     {
-        private readonly IConfiguration _configuration;
         private readonly ILogger<LivenessFailureNotifier> _logger;
+        private readonly BeatPulseSettings _settings;
 
-        public LivenessFailureNotifier(IConfiguration configuration, ILogger<LivenessFailureNotifier> logger)
+        public LivenessFailureNotifier(IOptions<BeatPulseSettings> settings, ILogger<LivenessFailureNotifier> logger)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _settings = settings.Value ?? new BeatPulseSettings();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task NotifyFailure(string livenessName, string content)
         {
-            var webHookUriKey = $"{Globals.BEATPULSEUI_SECTION_SETTING_KEY}:{Globals.WEBHOOK_NOTIFICATION_SETTING_KEY}";
-
-            var webHookConfigurationValue = _configuration[webHookUriKey];
-
-            if (webHookConfigurationValue != null
-                && Uri.TryCreate(webHookConfigurationValue, UriKind.Absolute, out Uri webHookUri))
+            if (_settings.WebHookNotificationUri != null
+                && Uri.TryCreate(_settings.WebHookNotificationUri, UriKind.Absolute, out Uri webHookUri))
             {
                 using (var httpClient = new HttpClient())
                 {

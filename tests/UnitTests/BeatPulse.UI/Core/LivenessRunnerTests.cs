@@ -1,6 +1,8 @@
-﻿using BeatPulse.UI.Core;
+﻿using BeatPulse.UI.Configuration;
+using BeatPulse.UI.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,6 +19,7 @@ namespace UnitTests.BeatPulse.UI.Core
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var tokenSource = new CancellationTokenSource();
+            var settings = Options.Create(new BeatPulseSettings());
 
             var livenessConfiguration = new LivenessConfigurationBuilder()
                 .With("http://www.google.es/healthlivenesspath", "Google Liveness")
@@ -27,7 +30,7 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier, logger);
+            var runner = new LivenessRunner(context, notifier,settings,logger);
 
             await runner.Run(tokenSource.Token);
 
@@ -41,6 +44,7 @@ namespace UnitTests.BeatPulse.UI.Core
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var tokenSource = new CancellationTokenSource();
+            var settings = Options.Create(new BeatPulseSettings());
 
             var googleConfigurationLiveness = new LivenessConfigurationBuilder()
                 .With("http://www.google.es/healthlivenesspath", "Google Liveness")
@@ -56,7 +60,7 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier, logger);
+            var runner = new LivenessRunner(context, notifier,settings, logger);
 
             await runner.Run(tokenSource.Token);
 
@@ -78,6 +82,7 @@ namespace UnitTests.BeatPulse.UI.Core
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var tokenSource = new CancellationTokenSource();
+            var settings = Options.Create(new BeatPulseSettings());
             var livenessName = "Bing Liveness";
 
             var bingConfigurationLiveness = new LivenessConfigurationBuilder()
@@ -89,7 +94,7 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier, logger);
+            var runner = new LivenessRunner(context, notifier,settings, logger);
 
             await runner.Run(tokenSource.Token);
 
@@ -105,6 +110,7 @@ namespace UnitTests.BeatPulse.UI.Core
             var notifier = new MemoryNotifier();
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var tokenSource = new CancellationTokenSource();
+            var settings = Options.Create(new BeatPulseSettings());
             var livenessName = "Bing Liveness";
 
             var bingConfigurationLiveness = new LivenessConfigurationBuilder()
@@ -116,7 +122,7 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier, logger);
+            var runner = new LivenessRunner(context, notifier,settings, logger);
 
             var liveness =  await runner.GetLiveness(CancellationToken.None);
 

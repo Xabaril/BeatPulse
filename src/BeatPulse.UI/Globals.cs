@@ -6,8 +6,6 @@
 
         public const string BEATPULSEUI_SECTION_SETTING_KEY = "BeatPulse-UI";
 
-        public const int NUMBER_OF_LIVENESS_RUN_EXECUTIONS = 5;
-
         public const string DEFAULT_RESPONSE_CONTENT_TYPE = "application/json";
     }
 }

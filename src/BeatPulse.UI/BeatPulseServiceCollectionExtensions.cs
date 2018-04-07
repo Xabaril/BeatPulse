@@ -1,12 +1,13 @@
-﻿using BeatPulse.UI.Core;
+﻿using BeatPulse.UI.Configuration;
+using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
 using BeatPulse.UI.Core.HostedService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,14 @@ namespace BeatPulse.UI
     {
         public static IServiceCollection AddBeatPulseUI(this IServiceCollection services)
         {
+            var configuration = services.BuildServiceProvider()
+                .GetService<IConfiguration>();
+
             services.AddOptions();
+            services.Configure<BeatPulseSettings>((settings)=>
+            {
+                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY, settings);
+            });
 
             services.AddSingleton<IHostedService, LivenessHostedService>();
             services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
@@ -47,13 +55,15 @@ namespace BeatPulse.UI
                 var configuration = scope.ServiceProvider
                     .GetService<IConfiguration>();
 
+                var settings = scope.ServiceProvider
+                    .GetService<IOptions<BeatPulseSettings>>();
+
                 await db.Database.MigrateAsync();
 
-                var configurationSection = new LivenessConfigurationSection();
-
-                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY, configurationSection);
-
-                var liveness = configurationSection.Liveness?.Select(s => new LivenessConfiguration()
+                
+                var liveness = settings.Value?
+                    .Liveness?
+                    .Select(s => new LivenessConfiguration()
                 {
                     LivenessName = s.Name,
                     LivenessUri = s.Uri
@@ -69,18 +79,6 @@ namespace BeatPulse.UI
                     await db.SaveChangesAsync();
                 }
             }
-        }
-
-        class LivenessConfigurationSection
-        {
-            public List<LivenessConfigurationSetting> Liveness { get; set; }
-        }
-
-        class LivenessConfigurationSetting
-        {
-            public string Name { get; set; }
-
-            public string Uri { get; set; }
         }
     }
 }

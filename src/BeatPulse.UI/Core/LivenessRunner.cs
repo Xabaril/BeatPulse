@@ -1,6 +1,8 @@
-﻿using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Configuration;
+using BeatPulse.UI.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +18,14 @@ namespace BeatPulse.UI.Core
         private readonly LivenessDb _context;
         private readonly ILivenessFailureNotifier _failureNotifier;
         private readonly ILogger<LivenessRunner> _logger;
+        private readonly BeatPulseSettings _settings;
 
-        public LivenessRunner(LivenessDb context, ILivenessFailureNotifier failureNotifier, ILogger<LivenessRunner> logger)
+        public LivenessRunner(LivenessDb context, ILivenessFailureNotifier failureNotifier, IOptions<BeatPulseSettings> settings, ILogger<LivenessRunner> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _settings = settings.Value ?? new BeatPulseSettings();
         }
 
         public async Task Run(CancellationToken cancellationToken)
@@ -103,7 +107,7 @@ namespace BeatPulse.UI.Core
             return _context.LivenessExecutionHistory
                 .Where(lh=>lh.LivenessName == livenessName)
                 .OrderByDescending(le => le.ExecutedOn)
-                .Take(Globals.NUMBER_OF_LIVENESS_RUN_EXECUTIONS)
+                .Take(_settings.NumberOfItems)
                 .ToListAsync(cancellationToken);
         }
 
