@@ -1,14 +1,68 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BeatPulse UI</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/beatpulse-ui/beatpulse.css" />
 </head>
+
 <body>
-    <h1>BEATPULSE UI</h1>    
-    <!-- temporal -->
-    <div id="container">Loading...</div>
+
+    <div id="app" class="top-buffer-20">
+        <div class="container">
+            <div class="row">
+                <header>
+                    <h2 class="title">Liveness status</h2>
+                </header>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Url</th>
+                            <th>Message</th>
+                            <th>Executed on</th>
+                        </tr>
+                    </thead>
+                    <tbody v-cloak>
+                        <tr v-for="item in livenessData">
+                            <td>
+                                {{item.Id}}
+                            </td>
+                            <td>
+                                {{ item.LivenessName }}
+                            </td>
+                            <td class="centered">
+                                <img class="status-icon" :src="getStatusPic(item.IsHealthy)">
+                            </td>
+                            <td>
+                                {{ item.LivenessUri }}
+                            </td>
+                            <td>
+                                {{ item.Result }}
+                            </td>
+                            <td>
+                                {{ item.ExecutedOn | formatDate }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-if="livenessData.length == 0" class="loader">Loading...</div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/beatpulse-ui/beatpulse.js"></script>
+    <script type="text/javascript" src="/beatpulse-ui/resources.js"></script>
     <script type="text/javascript" src="/beatpulse-ui/index.js"></script>
 </body>
+
 </html>
