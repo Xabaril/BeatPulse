@@ -1,12 +1,11 @@
-﻿using BeatPulse.UI.Configuration;
-using BeatPulse.UI.Core;
+﻿using BeatPulse.UI.Core;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using UnitTests.BeatPulse.UI.Core.Builders;
 using Xunit;
 
 namespace UnitTests.BeatPulse.UI.Core
@@ -17,12 +16,11 @@ namespace UnitTests.BeatPulse.UI.Core
         public async Task notify_failures_if_liveness_is_down()
         {
             var notifier = new MemoryNotifier();
-            var logger = new Logger<LivenessRunner>(new LoggerFactory());
+            
             var tokenSource = new CancellationTokenSource();
-            var settings = Options.Create(new BeatPulseSettings());
 
             var livenessConfiguration = new LivenessConfigurationBuilder()
-                .With("http://www.google.es/healthlivenesspath", "Google Liveness")
+                .With("http://someserver-1/health", "Failing Liveness")
                 .Build();
 
             var context = new LivenessContextBuilder()
@@ -30,7 +28,13 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier,settings,logger);
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
+                .WithDegradedMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
 
             await runner.Run(tokenSource.Token);
 
@@ -39,90 +43,193 @@ namespace UnitTests.BeatPulse.UI.Core
         }
 
         [Fact]
-        public async Task save_all_execution_histories()
+        public async Task save_execution_history_if_is_new()
         {
             var notifier = new MemoryNotifier();
-            var logger = new Logger<LivenessRunner>(new LoggerFactory());
-            var tokenSource = new CancellationTokenSource();
-            var settings = Options.Create(new BeatPulseSettings());
 
-            var googleConfigurationLiveness = new LivenessConfigurationBuilder()
-                .With("http://www.google.es/healthlivenesspath", "Google Liveness")
+            var tokenSource = new CancellationTokenSource();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-2/health", "Liveness")
                 .Build();
 
-            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
-               .With("http://www.bing.es", "Bing Liveness")
-               .Build();
-
             var context = new LivenessContextBuilder()
-                .WithLiveness(googleConfigurationLiveness)
-                .WithLiveness(bingConfigurationLiveness)
+                .WithLiveness(livenessConfiguration)
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier,settings, logger);
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
+                .WithDegradedMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
 
             await runner.Run(tokenSource.Token);
 
             var history = context.LivenessExecutionHistory
                 .ToList();
 
-            history.Count().Should().Be(2);
+            history.Count().Should().Be(1);
 
-            history.Where(h => h.LivenessName == "Google Liveness")
+            history.Where(h => h.LivenessName == "Liveness")
                 .Single()?.IsHealthy.Should().BeFalse();
+        }
 
-            history.Where(h => h.LivenessName == "Bing Liveness")
+        [Fact]
+        public async Task get_latest_get_single_information_history_for_specified_liveness()
+        {
+            var notifier = new MemoryNotifier();
+
+            var tokenSource = new CancellationTokenSource();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-3/health", "Liveness")
+                .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(livenessConfiguration)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.OK)
+                .WithHealthyMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
+
+            await runner.Run(tokenSource.Token);
+
+            await runner.Run(tokenSource.Token);
+
+            var history = context.LivenessExecutionHistory
+                .ToList();
+
+            history.Count().Should().Be(1);
+
+            history.Where(h => h.LivenessName == "Liveness")
                 .Single()?.IsHealthy.Should().BeTrue();
         }
 
         [Fact]
-        public async Task get_latest_get_latest_history_infirmation_for_specified_liveness()
+        public async Task save_execution_history_update_lastExecuted_if_history_exist_and_the_status_is_the_same()
         {
             var notifier = new MemoryNotifier();
-            var logger = new Logger<LivenessRunner>(new LoggerFactory());
-            var tokenSource = new CancellationTokenSource();
-            var settings = Options.Create(new BeatPulseSettings());
-            var livenessName = "Bing Liveness";
 
-            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
-              .With("http://www.bing.es", livenessName)
-              .Build();
+            var tokenSource = new CancellationTokenSource();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-4/health", "Liveness")
+                .Build();
 
             var context = new LivenessContextBuilder()
-                .WithLiveness(bingConfigurationLiveness)
+                .WithLiveness(livenessConfiguration)
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier,settings, logger);
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.OK)
+                .WithHealthyMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
 
             await runner.Run(tokenSource.Token);
 
-            var history = await runner.GetLatestRun(livenessName, CancellationToken.None);
+            var history1 = context.LivenessExecutionHistory
+                .Single();
 
-            history.Where(h => h.LivenessName == livenessName)
-                .Single()?.IsHealthy.Should().BeTrue();
+            await runner.Run(tokenSource.Token);
+
+            var history2 = context.LivenessExecutionHistory
+                .Single();
+
+            history1.Id.Should().Be(history2.Id);
+            history1.LivenessName.Should().Be(history2.LivenessName);
+            history1.LivenessUri.Should().Be(history2.LivenessUri);
+            history1.OnStateFrom.Should().Be(history2.OnStateFrom);
+            history1.Status.Should().Be(history2.Status);
+        }
+
+        [Fact]
+        public async Task save_execution_history_update_onStateFrom_if_history_exist_and_the_status_is_not_the_same()
+        {
+            var notifier = new MemoryNotifier();
+
+            var tokenSource = new CancellationTokenSource();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-5/health", "Liveness")
+                .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(livenessConfiguration)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runnerBuilderOk = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.OK)
+                .WithHealthyMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runnerBuilderUnavailable = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
+                .WithDegradedMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runnerOk = runnerBuilderOk.Build();
+
+            await runnerOk.Run(tokenSource.Token);
+
+            var history1 = context.LivenessExecutionHistory
+                .Single();
+
+            var status1 = history1.Status;
+            var onStateFrom = history1.OnStateFrom;
+
+            var runnerServiceUnavailable = runnerBuilderUnavailable.Build();
+
+            await runnerServiceUnavailable.Run(tokenSource.Token);
+
+            var history2 = context.LivenessExecutionHistory
+                .Single();
+
+            status1.Should().NotBe(history2.Status);
+            onStateFrom.Should().NotBe(history2.OnStateFrom);
         }
 
         [Fact]
         public async Task get_all_livenes_configuration()
         {
             var notifier = new MemoryNotifier();
-            var logger = new Logger<LivenessRunner>(new LoggerFactory());
+            var livenessName = "livenessName";
             var tokenSource = new CancellationTokenSource();
-            var settings = Options.Create(new BeatPulseSettings());
-            var livenessName = "Bing Liveness";
 
-            var bingConfigurationLiveness = new LivenessConfigurationBuilder()
-              .With("http://www.bing.es", livenessName)
-              .Build();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-6/health", livenessName)
+                .Build();
 
             var context = new LivenessContextBuilder()
-                .WithLiveness(bingConfigurationLiveness)
+                .WithLiveness(livenessConfiguration)
                 .WithRandomDatabaseName()
                 .Build();
 
-            var runner = new LivenessRunner(context, notifier,settings, logger);
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.OK)
+                .WithHealthyMessageContent()
+                .WithLivenessDb(context)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
+
+            await runner.Run(tokenSource.Token);
 
             var liveness =  await runner.GetLiveness(CancellationToken.None);
 
@@ -157,4 +264,6 @@ namespace UnitTests.BeatPulse.UI.Core
             }
         }
     }
+
+    
 }

@@ -28,11 +28,13 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ExecutedOn = table.Column<DateTime>(nullable: false),
                     IsHealthy = table.Column<bool>(nullable: false),
+                    LastExecuted = table.Column<DateTime>(nullable: false),
                     LivenessName = table.Column<string>(maxLength: 500, nullable: false),
+                    LivenessResult = table.Column<string>(maxLength: 2000, nullable: false),
                     LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
-                    Result = table.Column<string>(maxLength: 2000, nullable: false)
+                    OnStateFrom = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {

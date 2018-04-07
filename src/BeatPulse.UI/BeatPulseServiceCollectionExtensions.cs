@@ -21,7 +21,7 @@ namespace BeatPulse.UI
                 .GetService<IConfiguration>();
 
             services.AddOptions();
-            services.Configure<BeatPulseSettings>((settings)=>
+            services.Configure<BeatPulseSettings>((settings) =>
             {
                 configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY, settings);
             });
@@ -58,21 +58,24 @@ namespace BeatPulse.UI
                 var settings = scope.ServiceProvider
                     .GetService<IOptions<BeatPulseSettings>>();
 
+                await db.Database.EnsureDeletedAsync();
+
                 await db.Database.MigrateAsync();
 
-                
+
                 var liveness = settings.Value?
                     .Liveness?
                     .Select(s => new LivenessConfiguration()
-                {
-                    LivenessName = s.Name,
-                    LivenessUri = s.Uri
-                });
+                    {
+                        LivenessName = s.Name,
+                        LivenessUri = s.Uri
+                    });
 
                 if (liveness != null
                     &&
                     liveness.Any())
                 {
+
                     await db.LivenessConfiguration
                         .AddRangeAsync(liveness);
 

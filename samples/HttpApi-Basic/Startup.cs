@@ -36,14 +36,16 @@ namespace HttpApi_Basic
 
                     var response = await httpClient.GetAsync(string.Empty, cancellationToken);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return ("OK", true);
-                    }
-                    else
-                    {
-                        return ("the cat api is broken!", false);
-                    }
+                    return ("the cat api is broken!", false);
+
+                    //if (response.IsSuccessStatusCode)
+                    //{
+                    //    return ("OK", true);
+                    //}
+                    //else
+                    //{
+                    //    return ("the cat api is broken!", false);
+                    //}
 
                 }));
             });

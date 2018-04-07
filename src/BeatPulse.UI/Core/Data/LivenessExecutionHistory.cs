@@ -7,14 +7,18 @@ namespace BeatPulse.UI.Core.Data
     {
         public int Id { get; set; }
 
-        public DateTime ExecutedOn { get; set; }
+        public string Status { get; set; }
+
+        public bool IsHealthy { get; set; }
+
+        public DateTime OnStateFrom { get; set; }
+
+        public DateTime LastExecuted { get; set; }
 
         public string LivenessUri { get; set; }
 
         public string LivenessName { get; set; }
 
-        public bool IsHealthy { get; set; }
-
-        public string Result { get; set; }
+        public string LivenessResult { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <!--<TargetFramework>netcoreapp2.0</TargetFramework>-->
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.UI Is a ASP.NET Core UI viewer of BeatPulse liveness.For more information see http://github.com/Xabaril/CheckPulse </Description>

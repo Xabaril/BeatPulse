@@ -11,9 +11,10 @@ using System;
 namespace BeatPulse.UI.Core.Data.Migrations
 {
     [DbContext(typeof(LivenessDb))]
-    partial class LivenessContextModelSnapshot : ModelSnapshot
+    [Migration("20180407190507_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,21 +43,27 @@ namespace BeatPulse.UI.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("ExecutedOn");
-
                     b.Property<bool>("IsHealthy");
+
+                    b.Property<DateTime>("LastExecuted");
 
                     b.Property<string>("LivenessName")
                         .IsRequired()
                         .HasMaxLength(500);
 
+                    b.Property<string>("LivenessResult")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
                     b.Property<string>("LivenessUri")
                         .IsRequired()
                         .HasMaxLength(500);
 
-                    b.Property<string>("Result")
+                    b.Property<DateTime>("OnStateFrom");
+
+                    b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(2000);
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
