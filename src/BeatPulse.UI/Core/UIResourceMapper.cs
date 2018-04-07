@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core
 {
@@ -37,16 +38,11 @@ namespace BeatPulse.UI.Core
 
             app.Map(suffix, appBuilder =>
             {
-                appBuilder.Run(async context =>
+                appBuilder.Run(context =>
                 {
-                    if (await context.IsAuthorizedAsync())
-                    {                        
-                        context.Response.Redirect($"{suffix}/index.html", permanent: true);
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 401;
-                    }
+                    context.Response.Redirect($"{suffix}/index.html", permanent: true);
+
+                    return Task.CompletedTask;
                 });
             });
         }

@@ -20,35 +20,28 @@ namespace BeatPulse.UI.Core
 
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
         {
-            if (await context.IsAuthorizedAsync())
+            using (var scope = serviceScopeFactory.CreateScope())
             {
-                using (var scope = serviceScopeFactory.CreateScope())
+                var runner = scope.ServiceProvider.GetService<ILivenessRunner>();
+
+                var cancellationToken = new CancellationToken();
+                var registeredLiveness = await runner.GetLiveness(cancellationToken);
+
+                var tasks = new List<Task<List<LivenessExecutionHistory>>>();
+
+                foreach (var item in registeredLiveness)
                 {
-                    var runner = scope.ServiceProvider.GetService<ILivenessRunner>();
-
-                    var cancellationToken = new CancellationToken();
-                    var registeredLiveness = await runner.GetLiveness(cancellationToken);
-
-                    var tasks = new List<Task<List<LivenessExecutionHistory>>>();
-
-                    foreach (var item in registeredLiveness)
-                    {
-                        var livenessTask = runner.GetLatestRun(item.LivenessName, cancellationToken);
-                        tasks.Add(livenessTask);
-                    }
-
-                    await Task.WhenAll(tasks);
-
-                    var responseContent = tasks.SelectMany(t => t.Result);
-
-                    context.Response.ContentType = Globals.DEFAULT_RESPONSE_CONTENT_TYPE;
-
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(responseContent));
+                    var livenessTask = runner.GetLatestRun(item.LivenessName, cancellationToken);
+                    tasks.Add(livenessTask);
                 }
-            }
-            else
-            {
-                context.Response.StatusCode = 401;
+
+                await Task.WhenAll(tasks);
+
+                var responseContent = tasks.SelectMany(t => t.Result);
+
+                context.Response.ContentType = Globals.DEFAULT_RESPONSE_CONTENT_TYPE;
+
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseContent));
             }
         }
     }
