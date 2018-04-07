@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C914651C-704B-4583-8673-3587E509416B}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
+		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
 		global.json = global.json
 	EndProjectSection
@@ -38,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MySql", "src\Beat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.DocumentDb", "src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj", "{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.UI", "src\BeatPulse.UI\BeatPulse.UI.csproj", "{4B711DBB-C014-42D4-8196-3B92C49F6ABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.UI", "src\BeatPulse.UI\BeatPulse.UI.csproj", "{4B711DBB-C014-42D4-8196-3B92C49F6ABF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
