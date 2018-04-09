@@ -1,14 +1,13 @@
-﻿using BeatPulse.UI.Core;
+﻿using BeatPulse.UI.Core.Builders;
 using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitTests.BeatPulse.UI.Core.Builders;
 using Xunit;
 
-namespace UnitTests.BeatPulse.UI.Core
+namespace BeatPulse.UI.Core
 {
     public class liveness_runner_should
     {
@@ -32,6 +31,7 @@ namespace UnitTests.BeatPulse.UI.Core
                 .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
                 .WithDegradedMessageContent()
                 .WithLivenessDb(context)
+                .WithMinimunElapsedSecondsOnNotifications(0)
                 .WithNotifier(notifier);
 
             var runner = runnerBuilder.Build();
@@ -40,6 +40,42 @@ namespace UnitTests.BeatPulse.UI.Core
 
             notifier.ContainsFailureNotificationFor(livenessConfiguration.LivenessName)
                 .Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task dont_notify_failure_if_not_elapsed_configured_elapsed_seconds()
+        {
+            var notifier = new MemoryNotifier();
+
+            var tokenSource = new CancellationTokenSource();
+
+            var livenessConfiguration = new LivenessConfigurationBuilder()
+                .With("http://someserver-1/health", "Failing Liveness")
+                .Build();
+
+            var context = new LivenessContextBuilder()
+                .WithLiveness(livenessConfiguration)
+                .WithRandomDatabaseName()
+                .Build();
+
+            var runnerBuilder = new LivenessRunnerBuilder()
+                .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
+                .WithDegradedMessageContent()
+                .WithLivenessDb(context)
+                .WithMinimunElapsedSecondsOnNotifications(100)
+                .WithNotifier(notifier);
+
+            var runner = runnerBuilder.Build();
+
+            await runner.Run(tokenSource.Token);
+
+            await runner.Run(tokenSource.Token);
+
+            notifier.ContainsFailureNotificationFor(livenessConfiguration.LivenessName)
+                .Should().BeTrue();
+
+            notifier.NumberOfNotificationTimesFor(livenessConfiguration.LivenessName)
+                .Should().Be(1);
         }
 
         [Fact]
@@ -241,18 +277,24 @@ namespace UnitTests.BeatPulse.UI.Core
 
         class MemoryNotifier : ILivenessFailureNotifier
         {
-            Dictionary<string, string> _notifications;
+            Dictionary<string, (int,string)> _notifications;
 
             public MemoryNotifier()
             {
-                _notifications = new Dictionary<string, string>();
+                _notifications = new Dictionary<string,(int, string)>();
             }
 
             public Task NotifyFailure(string name,string content)
             {
                 if (!_notifications.ContainsKey(name))
                 {
-                    _notifications.Add(name, content);
+                    _notifications.Add(name, (1, content));
+                }
+                else
+                {
+                    var (times, liveness) = _notifications[name];
+
+                    _notifications[name] = (++times, liveness);
                 }
 
                 return Task.CompletedTask;
@@ -261,6 +303,11 @@ namespace UnitTests.BeatPulse.UI.Core
             public bool ContainsFailureNotificationFor(string name)
             {
                 return _notifications.ContainsKey(name);
+            }
+
+            public int NumberOfNotificationTimesFor(string name)
+            {
+                return _notifications[name].Item1;
             }
         }
     }

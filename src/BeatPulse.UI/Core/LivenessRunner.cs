@@ -1,6 +1,8 @@
-﻿using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Configuration;
+using BeatPulse.UI.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,17 @@ namespace BeatPulse.UI.Core
     {
         private readonly LivenessDb _context;
         private readonly ILivenessFailureNotifier _failureNotifier;
+        private readonly BeatPulseSettings _settings;
         private readonly ILogger<LivenessRunner> _logger;
 
-        public LivenessRunner(LivenessDb context, ILivenessFailureNotifier failureNotifier, ILogger<LivenessRunner> logger)
+        public LivenessRunner(LivenessDb context,
+            ILivenessFailureNotifier failureNotifier,
+            IOptions<BeatPulseSettings> settings,
+            ILogger<LivenessRunner> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
+            _settings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -49,7 +56,32 @@ namespace BeatPulse.UI.Core
                 {
                     _logger.LogWarning($"LivenessRuner notify liveness failure for {item.LivenessUri}.");
 
-                    await _failureNotifier.NotifyFailure(item.LivenessName, content);
+                    var lastNotification = _context.LivenessFailuresNotifications
+                        .Where(lf => lf.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                        .OrderByDescending(lf => lf.LastNotified)
+                        .Take(1)
+                        .SingleOrDefault();
+
+                    if (lastNotification != null
+                        && 
+                        (DateTime.UtcNow - lastNotification.LastNotified).Seconds < _settings.MinimunSecondsBetweenFailureNotifications)
+                    {
+                        _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
+                    }
+                    else
+                    {
+                        await _failureNotifier.NotifyFailure(item.LivenessName, content);
+
+                        var notification = new LivenessFailureNotification()
+                        {
+                            LivenessName = item.LivenessName,
+                            LastNotified = DateTime.UtcNow
+                        };
+
+                        await SaveNotification(notification);
+
+                        _logger.LogWarning("A new notification failure is created and sent.");
+                    }
                 }
             }
 
@@ -183,9 +215,18 @@ namespace BeatPulse.UI.Core
                     //probably the request can't be performed (invalid domain, etc)
                     _logger.LogWarning($"The response from uri can't be parsed correctly. The response is {content}");
                 }
-                
+
 
                 return LivenessStatus.Down;
+            }
+        }
+
+        private async Task SaveNotification(LivenessFailureNotification notification)
+        {
+            if (notification != null)
+            {
+                await _context.LivenessFailuresNotifications.AddAsync(notification);
+                await _context.SaveChangesAsync();
             }
         }
 

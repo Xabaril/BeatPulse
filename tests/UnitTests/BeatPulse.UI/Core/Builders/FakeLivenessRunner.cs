@@ -1,12 +1,14 @@
-﻿using BeatPulse.UI.Core;
+﻿using BeatPulse.UI.Configuration;
+using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTests.BeatPulse.UI.Core.Builders
+namespace BeatPulse.UI.Core.Builders
 {
     class FakeLivenessRunner : LivenessRunner
     {
@@ -16,8 +18,9 @@ namespace UnitTests.BeatPulse.UI.Core.Builders
         public FakeLivenessRunner(HttpStatusCode httpStatus,string content,
             LivenessDb context, 
             ILivenessFailureNotifier notifier,
+            IOptions<BeatPulseSettings> settings,
             ILogger<LivenessRunner> logger)
-            : base(context, notifier, logger)
+            : base(context, notifier,settings, logger)
         {
             _status = httpStatus;
             _content = content;

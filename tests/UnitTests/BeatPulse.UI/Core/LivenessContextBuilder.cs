@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnitTests.BeatPulse.UI.Core
+namespace BeatPulse.UI.Core
 {
     class LivenessContextBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using BeatPulse.UI.Core.Data;
 using System;
 
-namespace UnitTests.BeatPulse.UI.Core
+namespace BeatPulse.UI.Core
 {
     class LivenessConfigurationBuilder
     {

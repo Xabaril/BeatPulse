@@ -12,6 +12,8 @@ namespace BeatPulse.UI.Core.Data
 
         public DbSet<LivenessExecutionHistory> LivenessExecutionHistory { get; set; }
 
+        public DbSet<LivenessFailureNotification> LivenessFailuresNotifications { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

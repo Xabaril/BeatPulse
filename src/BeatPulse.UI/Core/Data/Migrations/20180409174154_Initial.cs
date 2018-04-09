@@ -40,6 +40,20 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     table.PrimaryKey("PK_LivenessExecutionHistory", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "LivenessFailuresNotifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LastNotified = table.Column<DateTime>(nullable: false),
+                    LivenessName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LivenessFailuresNotifications", x => x.Id);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -49,6 +63,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "LivenessExecutionHistory");
+
+            migrationBuilder.DropTable(
+                name: "LivenessFailuresNotifications");
         }
     }
 }

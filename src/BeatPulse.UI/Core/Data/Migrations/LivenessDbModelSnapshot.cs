@@ -68,6 +68,20 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.ToTable("LivenessExecutionHistory");
                 });
+
+            modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessFailureNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("LastNotified");
+
+                    b.Property<string>("LivenessName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LivenessFailuresNotifications");
+                });
 #pragma warning restore 612, 618
         }
     }
