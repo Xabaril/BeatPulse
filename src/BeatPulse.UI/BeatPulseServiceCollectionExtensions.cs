@@ -62,7 +62,6 @@ namespace BeatPulse.UI
 
                 await db.Database.MigrateAsync();
 
-
                 var liveness = settings.Value?
                     .Liveness?
                     .Select(s => new LivenessConfiguration()

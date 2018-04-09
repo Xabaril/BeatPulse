@@ -16,7 +16,7 @@ namespace BeatPulse.UI.Core.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source = livenessdb");
+                optionsBuilder.UseSqlite("Data Source=livenessdb");
             }
         }
 

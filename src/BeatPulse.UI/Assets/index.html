@@ -25,38 +25,34 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Id</th>
                             <th>Name</th>
                             <th>Status</th>
-                            <th>Url</th>
-                            <th>Message</th>
-                            <th>Executed on</th>
+                            <th>IsHealthy</th>
+                            <th>On state from</th>
+                            <th>Last Execution</th>
                         </tr>
                     </thead>
                     <tbody v-cloak>
                         <tr v-for="item in livenessData">
                             <td>
-                                {{item.Id}}
+                                {{ item.LivenessName }}
                             </td>
                             <td>
-                                {{ item.LivenessName }}
+                                {{ item.Status }}
                             </td>
                             <td class="centered">
                                 <img class="status-icon" :src="getStatusPic(item.IsHealthy)">
                             </td>
                             <td>
-                                {{ item.LivenessUri }}
+                                {{ item.OnStateFrom | formatDate }}
                             </td>
                             <td>
-                                {{ item.Result }}
-                            </td>
-                            <td>
-                                {{ item.ExecutedOn | formatDate }}
+                                {{ item.LastExecuted | formatDate }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div v-if="livenessData.length == 0" class="loader">Loading...</div>
+                <div v-if="livenessData.length == 0" class="loader">Loading liveness results...</div>
             </div>
         </div>
     </div>

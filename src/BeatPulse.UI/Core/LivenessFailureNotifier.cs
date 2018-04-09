@@ -1,5 +1,4 @@
 ﻿using BeatPulse.UI.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -47,7 +46,7 @@ namespace BeatPulse.UI.Core
             }
             else
             {
-                _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri. Set the webhook uri value on {Globals.WEBHOOK_NOTIFICATION_SETTING_KEY} setting key.");
+                _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri. Set the webhook uri value on BeatPulse setttings.");
             }
         }
     }

@@ -85,6 +85,8 @@ namespace BeatPulse
                         }
                     }
                 }
+
+                await context.Response.Body.FlushAsync();
             }
         }
 
@@ -134,6 +136,7 @@ namespace BeatPulse
         Task WriteResponseAsync(HttpContext context, OutputMessage message, bool detailed)
         {
             var defaultContentType = detailed ? "application/json" : "text/plain";
+
             const string noCacheOptions = "no-cache, no-store, must-revalidate";
             const string noCachePragma = "no-cache";
             const string defaultExpires = "0";
@@ -152,7 +155,6 @@ namespace BeatPulse
                 context.Response.Headers["Cache-Control"] = new[] { noCacheOptions };
                 context.Response.Headers["Pragma"] = new[] { noCachePragma };
                 context.Response.Headers["Expires"] = new[] { defaultExpires };
-
             }
 
             var statusCode = message.Checks.All(x => x.IsHealthy) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
@@ -163,6 +165,7 @@ namespace BeatPulse
 
             return context.Response.WriteAsync(content);
         }
+
         Task WriteStatusCodeAsync(HttpContext context, bool detailed, HttpStatusCode httpcode, string reason = null)
         {
             var defaultContentType = detailed ? "application/json" : "text/plain";
