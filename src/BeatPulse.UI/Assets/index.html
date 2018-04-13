@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BeatPulse UI</title>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/beatpulse-ui/beatpulse.css" />
+    <link rel="stylesheet" href="/ui/resources/beatpulse.css" />
 </head>
 
 <body>
@@ -15,50 +15,66 @@
     <div id="app" class="top-buffer-20">
         <div class="container">
             <div class="row">
-                <header>
-                    <h2 class="title">Liveness status</h2>
-                </header>
+                <div class="col">
+                    <h2 class="title">BeatPulse Liveness status</h2>
+                </div>
+                <div class="col text-right">
+                    <label>Refresh every</label>
+                    <input v-model.number="pollingIntervalSetting" type="number" oninput="validity.valid && value > 0 ||(value=10)" class="polling-input"/>
+                    <label>seconds</label>
+                    <button v-on:click="initPolling()" type="button" class="btn btn-info btn-sm">Change</button>
+                </div>                
             </div>
+            
         </div>
         <div class="container">
             <div class="row">
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>IsHealthy</th>
-                            <th>On state from</th>
-                            <th>Last Execution</th>
-                        </tr>
-                    </thead>
-                    <tbody v-cloak>
-                        <tr v-for="item in livenessData">
-                            <td>
-                                {{ item.LivenessName }}
-                            </td>
-                            <td>
-                                {{ item.Status }}
-                            </td>
-                            <td class="centered">
-                                <img class="status-icon" :src="getStatusPic(item.IsHealthy)">
-                            </td>
-                            <td>
-                                {{ item.OnStateFrom | formatDate }}
-                            </td>
-                            <td>
-                                {{ item.LastExecuted | formatDate }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div v-if="livenessData.length == 0" class="loader">Loading liveness results...</div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>IsHealthy</th>
+                                <th>On state from</th>
+                                <th>Last Execution</th>
+                            </tr>
+                        </thead>
+                        <tbody v-cloak>
+                            <tr v-bind:class="renderBackground(item.status)" v-for="item in livenessData">
+                                <td>
+                                    {{ item.livenessName }}
+                                </td>
+                                <td>
+                                    {{ item.status }}
+                                </td>
+                                <td class="centered">
+                                    <img class="status-icon" :src="getStatusPic(item.status)">
+                                </td>
+                                <td>
+                                    {{ item.onStateFrom | formatDate }}
+                                </td>
+                                <td>
+                                    {{ item.lastExecuted | formatDate }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-if="error" class="w-100 alert alert-danger" role="alert">
+                    <strong>Error: </strong> {{error}}
+                </div>
+                <div v-if="livenessData.length == 0 && !error" class="loader">Loading liveness results...</div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="/beatpulse-ui/beatpulse.js"></script>
-    <script type="text/javascript" src="/beatpulse-ui/resources.js"></script>
-    <script type="text/javascript" src="/beatpulse-ui/index.js"></script>
+
+    <script type="text/javascript">
+        var uiEndpoint = "#apiPath#";
+    </script>
+    <script type="text/javascript" src="/ui/resources/beatpulse.js"></script>
+    <script type="text/javascript" src="/ui/resources/resources.js"></script>
+    <script type="text/javascript" src="/ui/resources/index.js"></script>
 </body>
 
 </html>

@@ -6,6 +6,14 @@
     display: none;
 }
 
+.table td  {
+    text-align:center;
+}
+
+.table .thead-dark th {
+    text-align: center;
+}
+
 .status-icon {
     width: 20px;
     height: 20px;
@@ -29,6 +37,13 @@
     animation: load1 1s infinite ease-in-out;
     width: 1em;
     height: 4em;
+}
+
+.polling-input {
+    width: 50px;
+    text-align: center;
+    color: green;
+    font-weight: bold;
 }
 
 .loader {

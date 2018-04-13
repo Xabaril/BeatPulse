@@ -12,7 +12,7 @@ namespace BeatPulse.UI
             app.Map(pathMatch: apiPath, appBuilder => appBuilder.UseMiddleware<UIApiEndpointMiddleware>());
 
             new UIResourcesMapper(
-                new UIEmbeddedResourcesReader(embeddedResourcesAssembly)).Map(app, suffix: uiPath);
+                new UIEmbeddedResourcesReader(embeddedResourcesAssembly)).Map(app, uiPath, apiPath);
 
             return app;
         }
