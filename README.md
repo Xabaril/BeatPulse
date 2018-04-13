@@ -127,7 +127,7 @@ http://your-domain/health/[liveness-segment-path] get the liveness status of the
 
 ## Cache responses
 
-Beatpulse can cache its responses. There are two cache modes:
+BeatPulse can cache its responses. There are two cache modes:
 
 1. By using HTTP Headers. Using this model beatpulse adds a `Cache-Control` header with a value of  `public, max-age=xxx`. It is up to user agents to honor this header.
 2. In-memory. Using this model beatpulse stores the previous response and returns if the cache duration time has not elapsed.
@@ -147,3 +147,51 @@ To enable cache use the method `EnableOutputCache`:
 You can specify the cache method by using a second parameter with a `CacheMode` value (`Header`, `ServerMemory` or `HeaderAndServerMemory`) (default is `Header`).
 
 If you perform two inmediate requests (because using a user-agent that do not follow the `Cache-Control` header) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
+
+## UI
+
+The project BeatPulse.UI is a minimal UI interface for store and show the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you only need add the BeatPulse.UI services and middlewares.
+
+```csharp
+    public class Startup
+    {       
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddBeatPulseUI();
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseBeatPulseUI();
+        }
+    }
+```
+
+This automatically register a new interface on **/beatpulse-ui**. Optionally, *USeBeatPulseUI* can be configured with different UI response path.
+
+![BeatPulseUI](./doc/beatpulseui-1.png)
+
+### Configuration
+
+The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI** settings.
+
+```json
+{
+  "BeatPulse-UI": {
+    "Liveness": [
+      {
+        "Name": "HTTP-Api-Basic",
+        "Uri": "http://localhost:6457/health"
+      }
+    ],
+    "WebHookNotificationUri": "",
+    "EvaluationTimeOnSeconds": 10
+  }
+}
+```
+
+    1.- Liveness: The collection of the liveness uri to watch.
+    2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
+    3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
+
+All the liveness result are stored into a SqLite database persisted to disk with *livenessdb* name.
