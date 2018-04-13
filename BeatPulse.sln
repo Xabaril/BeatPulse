@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C914651C-704B-4583-8673-3587E509416B}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
+		.gitignore = .gitignore
+		build.ps1 = build.ps1
+		build\dependencies.props = build\dependencies.props
 		docker-compose.yml = docker-compose.yml
 		global.json = global.json
 	EndProjectSection
@@ -38,7 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MySql", "src\Beat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.DocumentDb", "src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj", "{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.Sqlite", "src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj", "{2264CD46-5016-4BD0-958C-4B3BC89A0272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Sqlite", "src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj", "{2264CD46-5016-4BD0-958C-4B3BC89A0272}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.UI", "src\BeatPulse.UI\BeatPulse.UI.csproj", "{4B711DBB-C014-42D4-8196-3B92C49F6ABF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http-UI", "samples\Http-UI\Http-UI.csproj", "{998F7CA9-FE29-4261-A294-F304B9023726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +101,14 @@ Global
 		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +126,8 @@ Global
 		{868D83D9-8F44-4CC9-890B-435C843BD30D} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{2264CD46-5016-4BD0-958C-4B3BC89A0272} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{998F7CA9-FE29-4261-A294-F304B9023726} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

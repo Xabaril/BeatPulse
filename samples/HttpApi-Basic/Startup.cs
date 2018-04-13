@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
 
 namespace HttpApi_Basic
 {
@@ -24,27 +22,13 @@ namespace HttpApi_Basic
             services.AddBeatPulse(setup =>
             {
                 //add sql server health check
-                setup.AddSqlServer("Server=tcp:227.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!");
+                setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
                 //add custom health check
-                setup.Add(new ActionLiveness("cat", "catapi", async (httpContext,cancellationToken) =>
+                setup.Add(new ActionLiveness("cat", "catapi", async (httpContext, cancellationToken) =>
                 {
-                    var httpClient = new HttpClient()
-                    {
-                        BaseAddress = new Uri("http://www.google.es")
-                    };
-
-                    var response = await httpClient.GetAsync(string.Empty,cancellationToken);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return ("OK", true);
-                    }
-                    else
-                    {
-                        return ("the cat api is broken!", false);
-                    }
-
+                    return ("the cat api is broken!", false);
+                    //return ("OK", true);
                 }));
             });
 
