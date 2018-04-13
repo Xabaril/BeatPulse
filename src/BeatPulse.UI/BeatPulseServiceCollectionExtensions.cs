@@ -31,7 +31,7 @@ namespace BeatPulse.UI
             services.AddScoped<ILivenessRunner, LivenessRunner>();
             services.AddDbContext<LivenessDb>(db =>
             {
-                db.UseSqlite("Data Source=livenesdb");
+                db.UseSqlite("Data Source=livenessdb");
             });
 
             var serviceProvider = services.BuildServiceProvider();
