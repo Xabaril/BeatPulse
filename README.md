@@ -167,7 +167,7 @@ The project BeatPulse.UI is a minimal UI interface for store and show the livene
     }
 ```
 
-This automatically register a new interface on **/beatpulse-ui**. Optionally, *USeBeatPulseUI* can be configured with different UI response path.
+This automatically register a new interface on **/beatpulse-ui**. Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
