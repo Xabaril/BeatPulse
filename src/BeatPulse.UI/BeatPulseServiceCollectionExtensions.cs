@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +21,14 @@ namespace BeatPulse.UI
         {
             var configuration = services.BuildServiceProvider()
                 .GetService<IConfiguration>();
+
+            services.AddSingleton(sp =>
+           {
+               return new JsonSerializerSettings()
+               {
+                   ContractResolver = new CamelCasePropertyNamesContractResolver()
+               };
+           });
 
             services.AddOptions();
             services.Configure<BeatPulseSettings>((settings) =>

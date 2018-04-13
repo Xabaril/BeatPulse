@@ -12,10 +12,12 @@ namespace BeatPulse.UI.Core
     class UIApiEndpointMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly JsonSerializerSettings _jsonSerializationSettings;
 
-        public UIApiEndpointMiddleware(RequestDelegate next)
+        public UIApiEndpointMiddleware(RequestDelegate next, JsonSerializerSettings jsonSerializationSettings)
         {
             _next = next;
+            _jsonSerializationSettings = jsonSerializationSettings;
         }
 
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
@@ -41,7 +43,7 @@ namespace BeatPulse.UI.Core
 
                 context.Response.ContentType = Globals.DEFAULT_RESPONSE_CONTENT_TYPE;
 
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseContent));
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseContent, _jsonSerializationSettings));
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core
@@ -14,34 +15,30 @@ namespace BeatPulse.UI.Core
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
-        public void Map(IApplicationBuilder app, string suffix)
+        public void Map(IApplicationBuilder app, string uiPath, string apiPath)
         {
             var resources = _reader.GetUIResources;
-
-            // map all resources on assets folders to 
-            // request uri by resource name
+            var UIMain = resources.GetMainUI(apiPath);
 
             foreach (var resource in resources)
             {
-                app.Map($"{suffix}/{resource.FileName}", appBuilder =>
+                app.Map($"{Globals.BEATPULSEUI_RESOURCES_PATH}/{resource.FileName}", appBuilder =>
                 {
                     appBuilder.Run(async context =>
                     {
                         context.Response.ContentType = resource.ContentType;
-
                         await context.Response.WriteAsync(resource.Content);
                     });
                 });
             }
 
-            //redirect default suffix into index.html or return forbidden if is not authorized
-
-            app.Map(suffix, appBuilder =>
+            app.Map($"{uiPath}", appBuilder =>
             {
                 appBuilder.Run(context =>
                 {
-                    context.Response.Redirect($"{suffix}/index.html", permanent: true);
-
+                    context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                    context.Response.ContentType = UIMain.ContentType;
+                    context.Response.WriteAsync(UIMain.Content);
                     return Task.CompletedTask;
                 });
             });
