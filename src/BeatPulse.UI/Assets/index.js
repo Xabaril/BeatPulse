@@ -10,7 +10,8 @@ Vue.filter('formatDate', function (date) {
 var app = new Vue({
     el: '#app',
     data: {
-        livenessData: []
+        livenessData: [],
+        error: ''
     },
     created: function () {
         this.pollingIntervalSetting = localStorage.getItem(beatPulseIntervalStorageKey) || 10;
@@ -18,18 +19,21 @@ var app = new Vue({
     methods: {
         init: function () {
             this.load();
-            this.initPolling();
+            this.initPolling();            
         },
         initPolling: function () {
             localStorage.setItem(beatPulseIntervalStorageKey, this.pollingIntervalSetting);
-            BeatPulse.client.startPolling(this._configuredInterval(), this.load.bind(this));
+            BeatPulse.client.startPolling(this._configuredInterval(), function () {
+                this.error = "";
+                this.load();
+            }.bind(this));
         },
         load: function () {
-            var self = this;
+            var self = this;            
             self.livenessData = [];
             BeatPulse.client.healthCheck().then(response => {
                 self.livenessData = response.data;
-            }).catch(err => self.setError(JSON.stringify(err)));
+            }).catch(err => self.error = JSON.stringify(err));
         },
         _configuredInterval: function () {
             return (localStorage.getItem(beatPulseIntervalStorageKey) || pollingIntervalSetting) * 1000;

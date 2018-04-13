@@ -8,7 +8,7 @@ namespace BeatPulse.UI.Core
     static class UIResourceExtensions
     {
         /// <summary>
-        /// Returns a collection of embedded resources matching the content type specified
+        /// Returns a collection of embedded resources matching the specified content type 
         /// </summary>
         /// <param name="resources"></param>
         /// <param name="contentType">Target content type</param>

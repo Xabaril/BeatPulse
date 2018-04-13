@@ -61,7 +61,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div v-if="livenessData.length == 0" class="loader">Loading liveness results...</div>
+                <div v-if="error" class="w-100 alert alert-danger" role="alert">
+                    <strong>Error: </strong> {{error}}
+                </div>
+                <div v-if="livenessData.length == 0 && !error" class="loader">Loading liveness results...</div>
             </div>
         </div>
     </div>
