@@ -9,7 +9,7 @@ namespace BeatPulse.UI.Core
     {
         Task Run(CancellationToken cancellationToken);
 
-        Task<List<LivenessExecutionHistory>> GetLatestRun(string livenessName,CancellationToken cancellationToken);
+        Task<LivenessExecutionHistory> GetLatestRun(string livenessName,CancellationToken cancellationToken);
 
         Task<List<LivenessConfiguration>> GetLiveness(CancellationToken cancellationToken);
     }

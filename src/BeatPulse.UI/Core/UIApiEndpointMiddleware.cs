@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,10 +15,14 @@ namespace BeatPulse.UI.Core
         private readonly RequestDelegate _next;
         private readonly JsonSerializerSettings _jsonSerializationSettings;
 
-        public UIApiEndpointMiddleware(RequestDelegate next, JsonSerializerSettings jsonSerializationSettings)
+        public UIApiEndpointMiddleware(RequestDelegate next)
         {
             _next = next;
-            _jsonSerializationSettings = jsonSerializationSettings;
+
+            _jsonSerializationSettings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
         }
 
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
@@ -27,9 +32,10 @@ namespace BeatPulse.UI.Core
                 var runner = scope.ServiceProvider.GetService<ILivenessRunner>();
 
                 var cancellationToken = new CancellationToken();
+
                 var registeredLiveness = await runner.GetLiveness(cancellationToken);
 
-                var tasks = new List<Task<List<LivenessExecutionHistory>>>();
+                var tasks = new List<Task<LivenessExecutionHistory>>();
 
                 foreach (var item in registeredLiveness)
                 {
@@ -39,11 +45,12 @@ namespace BeatPulse.UI.Core
 
                 await Task.WhenAll(tasks);
 
-                var responseContent = tasks.SelectMany(t => t.Result);
+                var livenessResult = tasks.Select(t => t.Result);
+                var responseContent = JsonConvert.SerializeObject(livenessResult, _jsonSerializationSettings);
 
                 context.Response.ContentType = Globals.DEFAULT_RESPONSE_CONTENT_TYPE;
 
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseContent, _jsonSerializationSettings));
+                await context.Response.WriteAsync(responseContent);
             }
         }
     }

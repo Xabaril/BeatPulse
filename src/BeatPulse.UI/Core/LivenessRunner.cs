@@ -63,7 +63,7 @@ namespace BeatPulse.UI.Core
                         .SingleOrDefault();
 
                     if (lastNotification != null
-                        && 
+                        &&
                         (DateTime.UtcNow - lastNotification.LastNotified).Seconds < _settings.MinimunSecondsBetweenFailureNotifications)
                     {
                         _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
@@ -88,7 +88,7 @@ namespace BeatPulse.UI.Core
             _logger.LogDebug("LivenessRuner run is completed.");
         }
 
-        public Task<List<LivenessExecutionHistory>> GetLatestRun(string livenessName, CancellationToken cancellationToken)
+        public Task<LivenessExecutionHistory> GetLatestRun(string livenessName, CancellationToken cancellationToken)
         {
             if (String.IsNullOrEmpty(livenessName))
             {
@@ -97,7 +97,7 @@ namespace BeatPulse.UI.Core
 
             return _context.LivenessExecutionHistory
                 .Where(lh => lh.LivenessName == livenessName)
-                .ToListAsync(cancellationToken);
+                .SingleOrDefaultAsync(cancellationToken);
         }
 
         public Task<List<LivenessConfiguration>> GetLiveness(CancellationToken cancellationToken)

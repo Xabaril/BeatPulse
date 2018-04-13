@@ -29,24 +29,7 @@ namespace HttpApi_Basic
                 //add custom health check
                 setup.Add(new ActionLiveness("cat", "catapi", async (httpContext, cancellationToken) =>
                 {
-                    var httpClient = new HttpClient()
-                    {
-                        BaseAddress = new Uri("http://www.google.es")
-                    };
-
-                    var response = await httpClient.GetAsync(string.Empty, cancellationToken);
-
                     return ("the cat api is broken!", false);
-
-                    //if (response.IsSuccessStatusCode)
-                    //{
-                    //    return ("OK", true);
-                    //}
-                    //else
-                    //{
-                    //    return ("the cat api is broken!", false);
-                    //}
-
                 }));
             });
 
