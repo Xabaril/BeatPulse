@@ -76,7 +76,7 @@ Install-Package BeatPulse.SqLite
 
 5. Request *BeatPulse* to get liveness results.
 
-By default, the global path gets the information of all liveness checkers, including the out of box *self* check added. If *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results.
+By default, the global path returns the information of all liveness checkers, including the out of box *self* check added. If *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results.
 
 ``` json
 
@@ -121,9 +121,9 @@ HTTP/1.1 200 OK
 
 Optionally, you can get the result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-domain/health/_self gets the liveness status of the project without executing any configured liveness library. This is usual for the liveness path on k8s pods.
+http://your-domain/health/_self returns liveness status of the project without executing any configured liveness library. This is usual for the liveness path on k8s pods.
 
-http://your-domain/health/[liveness-segment-path] gets the liveness status of the specified liveness libraries. Each liveness library defines a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
+http://your-domain/health/[liveness-segment-path] returns liveness status of the specified liveness libraries. Each liveness library defines a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
 
 ## Cache responses
 
