@@ -31,7 +31,7 @@ Install-Package BeatPulse.DocumentDb
 Install-Package BeatPulse.SqLite
 ```
 
-3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method for register and configure BeatPulse.
+3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method to register and configure BeatPulse.
 
 ``` csharp
  public static IWebHost BuildWebHost(string[] args) =>
@@ -76,7 +76,7 @@ Install-Package BeatPulse.SqLite
 
 5. Request *BeatPulse* to get liveness results.
 
-By default, the global path get the information of all liveness checkers, including the out of box *self* check added. If *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results.
+By default, the global path returns the information of all liveness checkers, including the out of box *self* check added. If *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results.
 
 ``` json
 
@@ -119,11 +119,11 @@ HTTP/1.1 200 OK
 }
 ```
 
-Optionally, you can get result for specific liveness adding the liveness segment path on the beat pulse base path.
+Optionally, you can get the result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-domain/health/_self get the liveness status of the project without execute any configured liveness library. This is usual for the liveness path on k8s pods.
+http://your-domain/health/_self returns liveness status of the project without executing any configured liveness library. This is usual for the liveness path on k8s pods.
 
-http://your-domain/health/[liveness-segment-path] get the liveness status of the specified liveness libraries. Each liveness library define a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
+http://your-domain/health/[liveness-segment-path] returns liveness status of the specified liveness libraries. Each liveness library defines a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
 
 ## Cache responses
 
@@ -146,11 +146,11 @@ To enable cache use the method `EnableOutputCache`:
 
 You can specify the cache method by using a second parameter with a `CacheMode` value (`Header`, `ServerMemory` or `HeaderAndServerMemory`) (default is `Header`).
 
-If you perform two inmediate requests (because using a user-agent that do not follow the `Cache-Control` header) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
+If you perform two inmediate requests (because an user-agent that does not follow the `Cache-Control` header is being used) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
 
 ## UI
 
-The project BeatPulse.UI is a minimal UI interface for store and show the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you only need add the BeatPulse.UI services and middlewares.
+The project BeatPulse.UI is a minimal UI interface that stores and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.
 
 ```csharp
     public class Startup
@@ -167,7 +167,7 @@ The project BeatPulse.UI is a minimal UI interface for store and show the livene
     }
 ```
 
-This automatically register a new interface on **/beatpulse-ui**. Optionally, *UseBeatPulseUI* can be configured with different UI response path.
+This automatically registers a new interface on **/beatpulse-ui**. Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
@@ -190,8 +190,8 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
 }
 ```
 
-    1.- Liveness: The collection of the liveness uri to watch.
+    1.- Liveness: The collection of liveness uris to watch.
     2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
     3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
 
-All the liveness result are stored into a SqLite database persisted to disk with *livenessdb* name.
+All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
