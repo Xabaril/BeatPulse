@@ -15,9 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
 		.gitignore = .gitignore
+		build-docker-images.ps1 = build-docker-images.ps1
 		build.ps1 = build.ps1
 		build\dependencies.props = build\dependencies.props
-		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
 		global.json = global.json
 	EndProjectSection
 EndProject
@@ -46,6 +47,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.UI", "src\BeatPulse.UI\BeatPulse.UI.csproj", "{4B711DBB-C014-42D4-8196-3B92C49F6ABF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http-UI", "samples\Http-UI\Http-UI.csproj", "{998F7CA9-FE29-4261-A294-F304B9023726}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-images", "docker-images", "{E7BEEAE8-1E7B-417E-AF90-207781DACED3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseUI-Image", "docker-images\BeatPulseUI-Image\BeatPulseUI-Image.csproj", "{764C5031-2117-4AE1-8921-E58FBC866824}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +114,10 @@ Global
 		{998F7CA9-FE29-4261-A294-F304B9023726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +137,7 @@ Global
 		{2264CD46-5016-4BD0-958C-4B3BC89A0272} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{4B711DBB-C014-42D4-8196-3B92C49F6ABF} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{998F7CA9-FE29-4261-A294-F304B9023726} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{764C5031-2117-4AE1-8921-E58FBC866824} = {E7BEEAE8-1E7B-417E-AF90-207781DACED3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
