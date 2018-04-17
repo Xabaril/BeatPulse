@@ -18,12 +18,14 @@ namespace BeatPulse
         private readonly RequestDelegate _next;
         private readonly TemplateMatcher _templateMatcher;
         private readonly BeatPulseOptions _options;
+        private readonly IBeatPulseAuthenticationFilter _authorizationFilter;
         private readonly ConcurrentDictionary<string, OutputMessage> _cache;
 
-        public BeatPulseMiddleware(RequestDelegate next, BeatPulseOptions options)
+        public BeatPulseMiddleware(RequestDelegate next, BeatPulseOptions options, IBeatPulseAuthenticationFilter authorizationFilter)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
+            _authorizationFilter = authorizationFilter;
             _cache = new ConcurrentDictionary<string, OutputMessage>();
             _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
                 new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });//match template for uri like /hc/{segment} 
@@ -36,57 +38,63 @@ namespace BeatPulse
             if (!IsBeatPulseRequest(request, out string beatPulsePath))
             {
                 await _next.Invoke(context);
-
                 return;
             }
             else
             {
-                if (TryFromCache(beatPulsePath, out OutputMessage output))
+                if (await IsAuthenticatedRequest(context))
                 {
-                    await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                    if (TryFromCache(beatPulsePath, out OutputMessage output))
+                    {
+                        await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                    }
+                    else
+                    {
+                        output = new OutputMessage();
+
+                        using (var cancellationTokenSource = new CancellationTokenSource())
+                        {
+                            var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
+
+                            if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
+                            {
+                                var responses = await task;
+
+                                if (!responses.Any())
+                                {
+                                    await WriteNotFoundAsync(request.HttpContext, _options.DetailedOutput);
+
+                                    return;
+                                }
+
+                                output.AddHealthCheckMessages(responses);
+                                output.EndAtUtc = DateTime.UtcNow;
+
+                                if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                                {
+                                    _cache.TryAdd(beatPulsePath, output);
+                                }
+
+                                await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                            }
+                            else
+                            {
+                                //timeout
+                                _cache.TryRemove(beatPulsePath, out OutputMessage removed);
+
+                                cancellationTokenSource.Cancel();
+
+                                await WriteTimeoutAsync(request.HttpContext, _options.DetailedOutput);
+                            }
+                        }
+                    }
+
+                    await context.Response.Body.FlushAsync();
                 }
                 else
                 {
-                    output = new OutputMessage();
-
-                    using (var cancellationTokenSource = new CancellationTokenSource())
-                    {
-                        var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
-
-                        if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
-                        {
-                            var responses = await task;
-
-                            if (!responses.Any())
-                            {
-                                await WriteNotFoundAsync(request.HttpContext, _options.DetailedOutput);
-
-                                return;
-                            }
-
-                            output.AddHealthCheckMessages(responses);
-                            output.EndAtUtc = DateTime.UtcNow;
-
-                            if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
-                            {
-                                _cache.TryAdd(beatPulsePath, output);
-                            }
-
-                            await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
-                        }
-                        else
-                        {
-                            //timeout
-                            _cache.TryRemove(beatPulsePath, out OutputMessage removed);
-
-                            cancellationTokenSource.Cancel();
-
-                            await WriteTimeoutAsync(request.HttpContext, _options.DetailedOutput);
-                        }
-                    }
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 }
-
-                await context.Response.Body.FlushAsync();
             }
         }
 
@@ -164,6 +172,12 @@ namespace BeatPulse
                 : Enum.GetName(typeof(HttpStatusCode), statusCode);
 
             return context.Response.WriteAsync(content);
+        }
+
+        async Task<bool> IsAuthenticatedRequest(HttpContext context)
+        {
+            string apiKey = context.Request.Query["apikey"].FirstOrDefault();
+            return await _authorizationFilter.Valid(apiKey);
         }
 
         Task WriteStatusCodeAsync(HttpContext context, bool detailed, HttpStatusCode httpcode, string reason = null)
