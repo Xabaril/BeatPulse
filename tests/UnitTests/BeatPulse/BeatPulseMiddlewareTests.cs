@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BeatPulse.Core.Authentication;
 
 namespace BeatPulse
 {
@@ -510,14 +511,14 @@ namespace BeatPulse
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddSingleton<IBeatPulseAuthenticationFilter, CustomAuthenticationFilter>();
+                    svc.AddSingleton<IBeatPulseAuthenticationFilter>(new ApiKeyAuthenticationFilter("the-api-key"));
                     svc.AddBeatPulse();
                 });
 
             var server = new TestServer(webHostBuilder);
 
             var response = await server.CreateClient()
-                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?apikey=test");
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?api-key=test");
             
             response.StatusCode.Should()
                 .Be(HttpStatusCode.Unauthorized);           
@@ -526,19 +527,21 @@ namespace BeatPulse
         [Fact]
         public async Task response_should_be_ok_when_authorization_filter_validates_request_api_key()
         {
+            const string testApiKey = "1234";
+
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddTransient<IBeatPulseAuthenticationFilter, CustomAuthenticationFilter>();
+                    svc.AddSingleton<IBeatPulseAuthenticationFilter>(new ApiKeyAuthenticationFilter($"{testApiKey}"));
                     svc.AddBeatPulse();
                 });
 
             var server = new TestServer(webHostBuilder);
 
             var response = await server.CreateClient()
-                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?apikey={testApiKey}");
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?api-key={testApiKey}");
 
             response.StatusCode.Should()
                 .Be(HttpStatusCode.OK);
@@ -551,15 +554,6 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
-        }
-
-        private const string testApiKey = "1234";
-        class CustomAuthenticationFilter : IBeatPulseAuthenticationFilter
-        {
-            public Task<bool> Valid(string apiKey)
-            {
-                return Task.FromResult(string.Equals(testApiKey, apiKey, StringComparison.InvariantCultureIgnoreCase));
-            }
-        }
+        }       
     }
 }

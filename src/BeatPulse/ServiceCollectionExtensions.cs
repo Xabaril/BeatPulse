@@ -1,5 +1,6 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
+using BeatPulse.Core.Authentication;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Threading.Tasks;

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace BeatPulse.Core
+namespace BeatPulse.Core.Authentication
 {
     class NoAuthenticationFilter : IBeatPulseAuthenticationFilter
     {
-        public Task<bool> Valid(string apiKey)
+        public Task<bool> IsValid(HttpContext httpContext)
         {
             return Task.FromResult(true);
         }
