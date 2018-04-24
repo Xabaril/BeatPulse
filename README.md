@@ -148,6 +148,56 @@ You can specify the cache method by using a second parameter with a `CacheMode` 
 
 If you perform two inmediate requests (because an user-agent that does not follow the `Cache-Control` header is being used) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
 
+## Authentication
+
+*BeatPulse* support a simple authentication mechanism in order to pre-authenticate *BeatPulse* requests using the **IBeatPulseAuthenticationFilter**.
+
+```csharp
+    public interface IBeatPulseAuthenticationFilter
+    {
+        Task<bool> IsValid(HttpContext httpContext);
+    }
+```
+
+Out-of-box you can authenticate request using a  **api-key** configuring this filter in your service collection.
+
+```csharp
+    services.AddSingleton<IBeatPulseAuthenticationFilter>(new ApiKeyAuthenticationFilter("api-key-secret"));
+```
+
+With this filter, only request with the **api-key** can get results, http://your-server/health?api-key=api-key-secret.
+
+You can create your custom **IBeatPulseAuthenticationFilter** filters creating new implementation and registering it.
+
+```csharp
+    public class HeaderValueAuthenticationFilter : IBeatPulseAuthenticationFilter
+    {
+        private readonly string _headerName;
+        private readonly string _headerValue;
+
+        public HeaderValueAuthenticationFilter(string headerName, string headerValue)
+        {
+            _headerName = headerName ?? throw new ArgumentNullException(nameof(headerName));
+            _headerValue = headerValue ?? throw new ArgumentNullException(nameof(headerValue));
+        }
+        public Task<bool> IsValid(HttpContext httpContext)
+        {
+            var header = httpContext.Request.Headers[_headerName];
+
+            if (String.Equals(header, _headerValue, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        }
+    }
+```
+
+```csharp
+    services.AddSingleton<IBeatPulseAuthenticationFilter>(new HeaderValueAuthenticationFilter("header1", "value1"));
+```
+
 ## UI
 
 The project BeatPulse.UI is a minimal UI interface that stores and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.

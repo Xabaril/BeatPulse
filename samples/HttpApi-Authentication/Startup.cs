@@ -38,7 +38,6 @@ namespace HttpApi_Authentication
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
         }
     }
 }

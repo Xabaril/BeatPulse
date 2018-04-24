@@ -32,16 +32,16 @@ $beatpulseversionentry = select-xml -Path .\build\dependencies.props -XPath "/Pr
 
 $tag = $beatpulseversionentry.node.InnerXML
 
+#Building docker iamge
+
 echo "building docker image with tag: $tag"
 
 exec { & docker build . -f .\docker-images\BeatPulseUI-Image\Dockerfile -t xabarilcoding/beatpulseui:$tag }
 
-echo ""
 echo "Created docker image beatpulse:$tag. You can execute this image using docker run"
-echo ""
-echo "Command Sample"
-echo "docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://www.google.es' -d beatpulseui:dev"
+echo "Sample: docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://www.google.es' -d beatpulseui:dev"
 
+#Publish it
 
 if($PublishToDockerHub){
     docker push xabarilcoding/beatpulseui:$tag 
