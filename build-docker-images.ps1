@@ -1,3 +1,7 @@
+Param(
+    [parameter(Mandatory=$false)][bool]$PublishToDockerHub=$false
+)
+
 # Taken from psake https://github.com/psake/psake
 
 <#
@@ -22,18 +26,23 @@ function Exec
     }
 }
 
-$tag = $(git tag -l --points-at HEAD)
+#Select the UI version from dependencies.props and use it as image version
 
-if ( $tag -eq $null){
-	$tag = "dev"
-}
+$beatpulseversionentry = select-xml -Path .\build\dependencies.props -XPath "/Project/PropertyGroup[contains(@Label,'BeatPulse Package Versions')]/BeatPulseUIPackageVersion"
+
+$tag = $beatpulseversionentry.node.InnerXML
 
 echo "building docker image with tag: $tag"
 
-exec { & docker build . -f .\Dockerfile -t xabarilcoding/beatpulseui:$tag }
+exec { & docker build . -f .\docker-images\BeatPulseUI-Image\Dockerfile -t xabarilcoding/beatpulseui:$tag }
 
 echo ""
 echo "Created docker image beatpulse:$tag. You can execute this image using docker run"
 echo ""
 echo "Command Sample"
 echo "docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://www.google.es' -d beatpulseui:dev"
+
+
+if($PublishToDockerHub){
+    docker push xabarilcoding/beatpulseui:$tag 
+}
