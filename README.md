@@ -150,7 +150,7 @@ If you perform two inmediate requests (because an user-agent that does not follo
 
 ## Authentication
 
-*BeatPulse* support a simple authentication mechanism in order to pre-authenticate *BeatPulse* requests using the **IBeatPulseAuthenticationFilter**.
+*BeatPulse* supports a simple authentication mechanism in order to pre-authenticate *BeatPulse* requests using the **IBeatPulseAuthenticationFilter**.
 
 ```csharp
     public interface IBeatPulseAuthenticationFilter
@@ -159,15 +159,15 @@ If you perform two inmediate requests (because an user-agent that does not follo
     }
 ```
 
-Out-of-box you can authenticate request using a  **api-key** configuring this filter in your service collection.
+Out-of-box you can authenticate requests using an **api-key** query string parameter by configuring the filter below in your service collection.
 
 ```csharp
     services.AddSingleton<IBeatPulseAuthenticationFilter>(new ApiKeyAuthenticationFilter("api-key-secret"));
 ```
 
-With this filter, only request with the **api-key** can get results, http://your-server/health?api-key=api-key-secret.
+With this filter, only requests with the **api-key** query string parameter can get results, http://your-server/health?api-key=api-key-secret.
 
-You can create your custom **IBeatPulseAuthenticationFilter** filters creating new implementation and registering it.
+You can create your custom **IBeatPulseAuthenticationFilter** filters by creating a new implementation and registering it in the service collection.
 
 ```csharp
     public class HeaderValueAuthenticationFilter : IBeatPulseAuthenticationFilter

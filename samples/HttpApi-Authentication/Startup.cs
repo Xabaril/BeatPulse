@@ -17,7 +17,7 @@ namespace HttpApi_Authentication
             services.AddSingleton<IBeatPulseAuthenticationFilter>
                      (new ApiKeyAuthenticationFilter("api-key-secret"));
 
-            // Registers an authorization filter that that will validate the request 
+            // Registers an authorization filter that will validate the request 
             // when the header "header1" is sent with value "value1"
 
             services.AddSingleton<IBeatPulseAuthenticationFilter>
