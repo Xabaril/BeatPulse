@@ -221,6 +221,13 @@ This automatically registers a new interface on **/beatpulse-ui**. Optionally, *
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
+Optionally, you can use the existing **Docker** image [xabarilcoding/beatpulseui](https://hub.docker.com/r/xabarilcoding/beatpulseui/)
+
+```bash
+docker pull xabarilcoding/beatpulseui 
+docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:1.0.0
+```
+
 ### Configuration
 
 The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI** settings.
