@@ -22,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddSingleton(context);
             services.TryAddSingleton<IBeatPulseService, BeatPulseService>();
+            services.TryAddSingleton<IBeatPulseAuthenticationFilter, NoAuthenticationFilter>();
 
             return services;
         }

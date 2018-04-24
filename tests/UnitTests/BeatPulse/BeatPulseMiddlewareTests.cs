@@ -9,6 +9,7 @@ using UnitTests.Base;
 using Xunit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using BeatPulse.Core;
 using Newtonsoft.Json;
 using System;
@@ -501,6 +502,47 @@ namespace BeatPulse
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
+        [Fact]
+        public async Task response_should_be_unauthorized_when_authorization_filter_configured_and_apikey_does_not_match()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddSingleton<IBeatPulseAuthenticationFilter, CustomAuthenticationFilter>();
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?apikey=test");
+            
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.Unauthorized);           
+        }
+
+        [Fact]
+        public async Task response_should_be_ok_when_authorization_filter_validates_request_api_key()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddTransient<IBeatPulseAuthenticationFilter, CustomAuthenticationFilter>();
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?apikey={testApiKey}");
+
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.OK);
+        }
 
         class OutputMessage
         {
@@ -509,6 +551,15 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
+        }
+
+        private const string testApiKey = "1234";
+        class CustomAuthenticationFilter : IBeatPulseAuthenticationFilter
+        {
+            public Task<bool> Valid(string apiKey)
+            {
+                return Task.FromResult(string.Equals(testApiKey, apiKey, StringComparison.InvariantCultureIgnoreCase));
+            }
         }
     }
 }
