@@ -32,7 +32,7 @@ $beatpulseversionentry = select-xml -Path .\build\dependencies.props -XPath "/Pr
 
 $tag = $beatpulseversionentry.node.InnerXML
 
-#Building docker iamge
+#Building docker image
 
 echo "building docker image with tag: $tag"
 
