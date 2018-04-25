@@ -31,7 +31,6 @@ namespace BeatPulse.UI.Core.HostedService
 
             if (_executingTask.IsCompleted)
             {
-                //token cancelled just
                 return _executingTask;
             }
 
@@ -56,9 +55,17 @@ namespace BeatPulse.UI.Core.HostedService
                     var runner = scope.ServiceProvider
                         .GetRequiredService<ILivenessRunner>();
 
-                    await runner.Run(cancellationToken);
+                    try
+                    {
+                        await runner.Run(cancellationToken);
 
-                    _logger.LogDebug("LivenessHostedService executed succesfully.");
+                        _logger.LogDebug("LivenessHostedService executed succesfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        //prevent hosted service exited 
+                        _logger.LogError("LivenessHostedService throw a error:", ex);
+                    }  
                 }
 
                 await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000);

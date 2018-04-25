@@ -50,38 +50,11 @@ namespace BeatPulse.UI.Core
 
                 var (content, isHealthy) = await EvaluateLiveness(item);
 
-                await SaveExecutionHistory(_context, item, content, isHealthy);
+                await SaveExecutionHistory(item, content, isHealthy);
 
                 if (!isHealthy)
                 {
-                    _logger.LogWarning($"LivenessRuner notify liveness failure for {item.LivenessUri}.");
-
-                    var lastNotification = _context.LivenessFailuresNotifications
-                        .Where(lf => lf.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
-                        .OrderByDescending(lf => lf.LastNotified)
-                        .Take(1)
-                        .SingleOrDefault();
-
-                    if (lastNotification != null
-                        &&
-                        (DateTime.UtcNow - lastNotification.LastNotified).Seconds < _settings.MinimunSecondsBetweenFailureNotifications)
-                    {
-                        _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
-                    }
-                    else
-                    {
-                        await _failureNotifier.NotifyFailure(item.LivenessName, content);
-
-                        var notification = new LivenessFailureNotification()
-                        {
-                            LivenessName = item.LivenessName,
-                            LastNotified = DateTime.UtcNow
-                        };
-
-                        await SaveNotification(notification);
-
-                        _logger.LogWarning("A new notification failure is created and sent.");
-                    }
+                    await NotifyFailureIfIsConfigured(item, content);
                 }
             }
 
@@ -90,11 +63,6 @@ namespace BeatPulse.UI.Core
 
         public Task<LivenessExecutionHistory> GetLatestRun(string livenessName, CancellationToken cancellationToken)
         {
-            if (String.IsNullOrEmpty(livenessName))
-            {
-                throw new ArgumentNullException(nameof(livenessName));
-            }
-
             return _context.LivenessExecutionHistory
                 .Where(lh => lh.LivenessName == livenessName)
                 .SingleOrDefaultAsync(cancellationToken);
@@ -108,8 +76,7 @@ namespace BeatPulse.UI.Core
 
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {
-            return new HttpClient()
-                    .GetAsync(uri);
+            return new HttpClient().GetAsync(uri);
         }
 
         private async Task<(string content, bool ishealthy)> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
@@ -135,7 +102,7 @@ namespace BeatPulse.UI.Core
             }
         }
 
-        private async Task SaveExecutionHistory(LivenessDb context, LivenessConfiguration liveness, string content, bool isHealthy)
+        private async Task SaveExecutionHistory(LivenessConfiguration liveness, string content, bool isHealthy)
         {
             _logger.LogDebug("LivenessRuner save a new liveness execution history.");
 
@@ -205,19 +172,51 @@ namespace BeatPulse.UI.Core
                     {
                         var selfLiveness = message.Checks
                             .Where(s => s.Name.Equals("self", StringComparison.InvariantCultureIgnoreCase))
-                            .Single();
+                            .SingleOrDefault();
 
-                        return (selfLiveness.IsHealthy) ? LivenessStatus.Degraded : LivenessStatus.Degraded;
+                        return (selfLiveness.IsHealthy) ? LivenessStatus.Degraded : LivenessStatus.Down;
                     }
                 }
-                catch (JsonReaderException)
+                catch
                 {
-                    //probably the request can't be performed (invalid domain, etc)
+                    //probably the request can't be performed (invalid domain, etc, or unavailable message)
                     _logger.LogWarning($"The response from uri can't be parsed correctly. The response is {content}");
                 }
 
 
                 return LivenessStatus.Down;
+            }
+        }
+
+        private async Task NotifyFailureIfIsConfigured(LivenessConfiguration item, string content)
+        {
+            _logger.LogWarning($"LivenessRuner notify liveness failure for {item.LivenessUri}.");
+
+            var lastNotification = _context.LivenessFailuresNotifications
+                .Where(lf => lf.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                .OrderByDescending(lf => lf.LastNotified)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (lastNotification != null
+                &&
+                (DateTime.UtcNow - lastNotification.LastNotified).Seconds < _settings.MinimunSecondsBetweenFailureNotifications)
+            {
+                _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
+            }
+            else
+            {
+                await _failureNotifier.NotifyFailure(item.LivenessName, content);
+
+                var notification = new LivenessFailureNotification()
+                {
+                    LivenessName = item.LivenessName,
+                    LastNotified = DateTime.UtcNow
+                };
+
+                await SaveNotification(notification);
+
+                _logger.LogWarning("A new notification failure is created and sent.");
             }
         }
 
