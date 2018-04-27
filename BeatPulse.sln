@@ -54,6 +54,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseUI-Image", "docker
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApi-Authentication", "samples\HttpApi-Authentication\HttpApi-Authentication.csproj", "{0F060562-F154-4377-9A5E-F9C1155A7CFB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http-AzureFunctions-WebHook-Samples", "Http-AzureFunctions-WebHook-Samples", "{596E82E1-84B6-4394-B1F5-15EC5F37AEFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Twilio", "Twilio", "{E10B1482-7DB1-4FB1-A66A-D0D891EC3215}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Http-AzureFunctions-Webhook-Samples\Twilio\functions.json = samples\Http-AzureFunctions-Webhook-Samples\Twilio\functions.json
+		samples\Http-AzureFunctions-Webhook-Samples\Twilio\TwilioFunction.csx = samples\Http-AzureFunctions-Webhook-Samples\Twilio\TwilioFunction.csx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sendgrid", "Sendgrid", "{461E0D85-108F-4187-9820-A34D743D2C18}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\function.json = samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\function.json
+		samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx = samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +159,9 @@ Global
 		{998F7CA9-FE29-4261-A294-F304B9023726} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{764C5031-2117-4AE1-8921-E58FBC866824} = {E7BEEAE8-1E7B-417E-AF90-207781DACED3}
 		{0F060562-F154-4377-9A5E-F9C1155A7CFB} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{596E82E1-84B6-4394-B1F5-15EC5F37AEFA} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{E10B1482-7DB1-4FB1-A66A-D0D891EC3215} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
+		{461E0D85-108F-4187-9820-A34D743D2C18} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

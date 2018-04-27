@@ -1,0 +1,22 @@
+{
+    "bindings": [
+      {
+        "type": "sendGrid",
+        "name": "message",
+        "from": "fromemail@host.com",
+        "apiKey": "AzureWebJobsSendGridApiKey",
+        "direction": "out"
+      },
+      {
+        "type": "httpTrigger",
+        "name": "req",
+        "authLevel": "function",
+        "methods": [
+          "get",
+          "post"
+        ],
+        "direction": "in"
+      }
+    ],
+    "disabled": false
+  }
