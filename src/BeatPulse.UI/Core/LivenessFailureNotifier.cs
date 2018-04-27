@@ -27,7 +27,7 @@ namespace BeatPulse.UI.Core
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var payload = new StringContent(content, Encoding.UTF8, Globals.DEFAULT_RESPONSE_CONTENT_TYPE);
+                    var payload = new StringContent($"{livenessName} Failure: {content}", Encoding.UTF8, Globals.DEFAULT_RESPONSE_CONTENT_TYPE);
 
                     try
                     {
