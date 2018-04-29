@@ -199,7 +199,7 @@ namespace BeatPulse
 
         Task WriteNotFoundAsync(HttpContext httpContext, bool detailed) => WriteStatusCodeAsync(httpContext, detailed, HttpStatusCode.NotFound, "Beatpulse Path not found");
 
-        public class OutputMessage
+        private class OutputMessage
         {
             private readonly List<LivenessResult> _messages = new List<LivenessResult>();
 
