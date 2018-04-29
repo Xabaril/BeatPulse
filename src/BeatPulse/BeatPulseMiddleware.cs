@@ -55,7 +55,7 @@ namespace BeatPulse
 
                         using (var cancellationTokenSource = new CancellationTokenSource())
                         {
-                            var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
+                            var task = pulseService.IsHealthy(beatPulsePath, _options, context, cancellationTokenSource.Token);
 
                             if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
                             {
