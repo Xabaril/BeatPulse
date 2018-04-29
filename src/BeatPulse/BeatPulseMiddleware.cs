@@ -41,60 +41,53 @@ namespace BeatPulse
                 await _next.Invoke(context);
                 return;
             }
-            else
+
+            if (!await IsAuthenticatedRequest(context))
             {
-                if (await IsAuthenticatedRequest(context))
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+            }
+
+            if (TryFromCache(beatPulsePath, out OutputMessage output))
+            {
+                await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
+                return;
+            }
+
+            output = new OutputMessage();
+
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
+
+                if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
                 {
-                    if (TryFromCache(beatPulsePath, out OutputMessage output))
+                    var responses = await task;
+
+                    if (!responses.Any())
                     {
-                        await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
-                    }
-                    else
-                    {
-                        output = new OutputMessage();
-
-                        using (var cancellationTokenSource = new CancellationTokenSource())
-                        {
-                            var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
-
-                            if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
-                            {
-                                var responses = await task;
-
-                                if (!responses.Any())
-                                {
-                                    await WriteNotFoundAsync(request.HttpContext, _options.DetailedOutput);
-
-                                    return;
-                                }
-
-                                output.AddHealthCheckMessages(responses);
-                                output.EndAtUtc = DateTime.UtcNow;
-
-                                if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
-                                {
-                                    _cache.TryAdd(beatPulsePath, output);
-                                }
-
-                                await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
-                            }
-                            else
-                            {
-                                //timeout
-                                _cache.TryRemove(beatPulsePath, out OutputMessage removed);
-
-                                cancellationTokenSource.Cancel();
-
-                                await WriteTimeoutAsync(request.HttpContext, _options.DetailedOutput);
-                            }
-                        }
+                        await WriteNotFoundAsync(request.HttpContext, _options.DetailedOutput);
+                        return;
                     }
 
-                    await context.Response.Body.FlushAsync();
+                    output.AddHealthCheckMessages(responses);
+                    output.EndAtUtc = DateTime.UtcNow;
+
+                    if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                    {
+                        _cache.TryAdd(beatPulsePath, output);
+                    }
+
+                    await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
                 }
                 else
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    //timeout
+                    _cache.TryRemove(beatPulsePath, out OutputMessage removed);
+
+                    cancellationTokenSource.Cancel();
+
+                    await WriteTimeoutAsync(request.HttpContext, _options.DetailedOutput);
                 }
             }
         }
@@ -206,7 +199,7 @@ namespace BeatPulse
 
         Task WriteNotFoundAsync(HttpContext httpContext, bool detailed) => WriteStatusCodeAsync(httpContext, detailed, HttpStatusCode.NotFound, "Beatpulse Path not found");
 
-        private class OutputMessage
+        public class OutputMessage
         {
             private readonly List<LivenessResult> _messages = new List<LivenessResult>();
 
