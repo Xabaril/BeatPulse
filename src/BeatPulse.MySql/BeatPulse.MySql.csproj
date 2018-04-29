@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.MySql is the health check package for MySQL on BeatPulse </Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;MySQL</PackageTags>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseMySqlPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

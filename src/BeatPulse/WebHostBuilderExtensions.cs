@@ -12,11 +12,11 @@ namespace Microsoft.AspNetCore.Hosting
             optionsAction?.Invoke(options);
 
             hostBuilder.ConfigureServices(defaultServices =>
-            {
+            {              
                 defaultServices.AddSingleton<IStartupFilter>(new BeatPulseFilter(options));
             });
 
             return hostBuilder;
-        }
+        }       
     }
 }

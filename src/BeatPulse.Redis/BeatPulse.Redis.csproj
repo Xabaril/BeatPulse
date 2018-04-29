@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse.Redis is the health check package for Redis on BeatPulse</Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;Redis</PackageTags>
-    <Version>$(Version)</Version>
+    <Version>$(BeatpulseRedisPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

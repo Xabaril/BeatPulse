@@ -7,8 +7,8 @@
   </PropertyGroup>
   
   <PropertyGroup Label="Package Versions">
-    <HostingAbstractionsVersion>2.0.1</HostingAbstractionsVersion>
-    <ASPNetCoreRoutingVersion>2.0.1</ASPNetCoreRoutingVersion>
+    <HostingAbstractionsVersion>2.0.2</HostingAbstractionsVersion>
+    <ASPNetCoreRoutingVersion>2.0.2</ASPNetCoreRoutingVersion>
     <ASPNetCoreAllPackageVersion>2.0.5</ASPNetCoreAllPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
@@ -19,13 +19,35 @@
     <ASPNetCoreTestHostVersion>2.0.1</ASPNetCoreTestHostVersion>
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
-	<WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
-	<MySqlDataVersion>6.10.6</MySqlDataVersion>
+	  <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
+	  <MySqlDataVersion>6.10.6</MySqlDataVersion>
+    <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
+    <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
+    <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
+    <MicrosoftEntityFrameworkCoreVersion>2.0.2</MicrosoftEntityFrameworkCoreVersion>
+    <MicrosoftEntityFrameworkCoreDesignVersion>2.0.2</MicrosoftEntityFrameworkCoreDesignVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.0.2</MicrosoftEntityFrameworkCoreSqlLiteVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
+    <MicrosoftExtensionConfigurationBinderVersion>2.0.1</MicrosoftExtensionConfigurationBinderVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
     <DotnetXUnitPackageVersion>2.3.1</DotnetXUnitPackageVersion>
     <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
+    <EntityFrameworkCoreToolsVersion>2.0.2</EntityFrameworkCoreToolsVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="BeatPulse Package Versions">
+    <BeatPulsePackageVersion>1.4.0</BeatPulsePackageVersion>
+    <BeatPulseAzureStoragePackageVersion>1.3.3</BeatPulseAzureStoragePackageVersion>
+    <BeatPulseDocumentDbPackageVersion>1.3.3</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>1.3.3</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMySqlPackageVersion>1.3.3</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>1.3.3</BeatpulseNpgSqlPackageVersion>
+    <BeatpulseRedisPackageVersion>1.3.3</BeatpulseRedisPackageVersion>
+    <BeatPulseSqlitePackageVersion>1.3.3</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlServerPackageVersion>1.3.3</BeatPulseSqlServerPackageVersion>    
+    <BeatPulseUIPackageVersion>1.1.1</BeatPulseUIPackageVersion>    
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
@@ -33,7 +55,6 @@
     <PackageProjectUrl>http://github.com/xabaril/BeatPulse</PackageProjectUrl>
     <RepositoryUrl>http://github.com/xabaril/BeatPulse</RepositoryUrl>    
     <Authors>Xabaril Contributors</Authors>
-    <Company>Xabaril</Company>
-    <Version>1.2.0</Version>
+    <Company>Xabaril</Company>    
   </PropertyGroup>
 </Project>

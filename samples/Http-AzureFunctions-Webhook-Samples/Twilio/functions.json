@@ -1,0 +1,24 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "name": "req",
+      "type": "httpTrigger",
+      "direction": "in",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "type": "twilioSms",
+      "name": "message",
+      "to": "+1704XXXXXXX",
+      "from": "+1425XXXXXXX",
+      "accountSid": "TWILIO_SID_APP_SETTING",
+      "authToken": "TWILIO_TOKEN_APP_SETTING",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}

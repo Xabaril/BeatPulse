@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health;MongoDb</PackageTags>
     <Description>BeatPulse.MongoDb is the health check package for MongoDb on BeatPulse</Description>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulseMongoDbPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

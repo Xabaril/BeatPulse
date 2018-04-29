@@ -14,7 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C914651C-704B-4583-8673-3587E509416B}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
-		docker-compose.yml = docker-compose.yml
+		.gitignore = .gitignore
+		build-docker-images.ps1 = build-docker-images.ps1
+		build.ps1 = build.ps1
+		build\dependencies.props = build\dependencies.props
+		Dockerfile = Dockerfile
 		global.json = global.json
 	EndProjectSection
 EndProject
@@ -34,7 +38,35 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MongoDb", "src\Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.AzureStorage", "src\BeatPulse.AzureStorage\BeatPulse.AzureStorage.csproj", "{924EC204-A2E9-4B74-9AE4-6C7C096BC2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.MySql", "src\BeatPulse.MySql\BeatPulse.MySql.csproj", "{868D83D9-8F44-4CC9-890B-435C843BD30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.MySql", "src\BeatPulse.MySql\BeatPulse.MySql.csproj", "{868D83D9-8F44-4CC9-890B-435C843BD30D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.DocumentDb", "src\BeatPulse.DocumentDb\BeatPulse.DocumentDb.csproj", "{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Sqlite", "src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj", "{2264CD46-5016-4BD0-958C-4B3BC89A0272}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.UI", "src\BeatPulse.UI\BeatPulse.UI.csproj", "{4B711DBB-C014-42D4-8196-3B92C49F6ABF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http-UI", "samples\Http-UI\Http-UI.csproj", "{998F7CA9-FE29-4261-A294-F304B9023726}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-images", "docker-images", "{E7BEEAE8-1E7B-417E-AF90-207781DACED3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseUI-Image", "docker-images\BeatPulseUI-Image\BeatPulseUI-Image.csproj", "{764C5031-2117-4AE1-8921-E58FBC866824}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpApi-Authentication", "samples\HttpApi-Authentication\HttpApi-Authentication.csproj", "{0F060562-F154-4377-9A5E-F9C1155A7CFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http-AzureFunctions-WebHook-Samples", "Http-AzureFunctions-WebHook-Samples", "{596E82E1-84B6-4394-B1F5-15EC5F37AEFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Twilio", "Twilio", "{E10B1482-7DB1-4FB1-A66A-D0D891EC3215}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Http-AzureFunctions-Webhook-Samples\Twilio\functions.json = samples\Http-AzureFunctions-Webhook-Samples\Twilio\functions.json
+		samples\Http-AzureFunctions-Webhook-Samples\Twilio\TwilioFunction.csx = samples\Http-AzureFunctions-Webhook-Samples\Twilio\TwilioFunction.csx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sendgrid", "Sendgrid", "{461E0D85-108F-4187-9820-A34D743D2C18}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\function.json = samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\function.json
+		samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx = samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +114,30 @@ Global
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{868D83D9-8F44-4CC9-890B-435C843BD30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2264CD46-5016-4BD0-958C-4B3BC89A0272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{998F7CA9-FE29-4261-A294-F304B9023726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{764C5031-2117-4AE1-8921-E58FBC866824}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +153,15 @@ Global
 		{86E77F50-5306-42DE-9500-E56F3AD3F69C} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{924EC204-A2E9-4B74-9AE4-6C7C096BC2D9} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{868D83D9-8F44-4CC9-890B-435C843BD30D} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{39858BD2-E9CD-4657-8CC3-14376ABA7D4A} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{2264CD46-5016-4BD0-958C-4B3BC89A0272} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{4B711DBB-C014-42D4-8196-3B92C49F6ABF} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{998F7CA9-FE29-4261-A294-F304B9023726} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{764C5031-2117-4AE1-8921-E58FBC866824} = {E7BEEAE8-1E7B-417E-AF90-207781DACED3}
+		{0F060562-F154-4377-9A5E-F9C1155A7CFB} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{596E82E1-84B6-4394-B1F5-15EC5F37AEFA} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{E10B1482-7DB1-4FB1-A66A-D0D891EC3215} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
+		{461E0D85-108F-4187-9820-A34D743D2C18} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

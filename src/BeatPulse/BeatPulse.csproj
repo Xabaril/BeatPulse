@@ -6,7 +6,7 @@
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
     <Description>BeatPulse is a health check library for ASP.NET Core Applications.For more information see http://github.com/Xabaril/CheckPulse </Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health</PackageTags>
-    <Version>$(Version)</Version>
+    <Version>$(BeatPulsePackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>
@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(HostingAbstractionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="$(ASPNetCoreRoutingVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonSoftJsonVersion)" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,9 @@
     <ProjectReference Include="..\..\src\BeatPulse.MySql\BeatPulse.MySql.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Redis\BeatPulse.Redis.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.UI\BeatPulse.UI.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
 

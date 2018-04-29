@@ -1,5 +1,6 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
+using BeatPulse.Core.Authentication;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddSingleton(context);
             services.TryAddSingleton<IBeatPulseService, BeatPulseService>();
+            services.TryAddSingleton<IBeatPulseAuthenticationFilter, NoAuthenticationFilter>();
 
             return services;
         }
