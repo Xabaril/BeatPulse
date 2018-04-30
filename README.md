@@ -112,10 +112,9 @@ HTTP/1.1 200 OK
         "MilliSeconds": 309,
         "Run": true,
         "IsHealthy": true
-    }
-	],
-	"StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-	"EndAtUtc": "2018-02-26T19:30:06.0978236Z",
+    }],
+    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
     "Code": "200",
     "Reason":""
 }
