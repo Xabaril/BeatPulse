@@ -7,6 +7,6 @@ namespace BeatPulse.Core
 {
     public interface IBeatPulseService
     {
-        Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext context, CancellationToken cancellationToken);
+        Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext context);
     }
 }

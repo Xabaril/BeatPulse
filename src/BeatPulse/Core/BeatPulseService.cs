@@ -23,7 +23,7 @@ namespace BeatPulse.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext httpContext, CancellationToken cancellationToken)
+        public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext httpContext)
         {
             _logger.LogInformation($"BeatPulse is checking health on [BeatPulsePath]/{path}");
 
@@ -33,14 +33,7 @@ namespace BeatPulse.Core
 
                 foreach (var liveness in _beatPulseContext.AllLiveness)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        _logger.LogWarning("BeatPulse execution is cancelled");
-
-                        break;
-                    }
-
-                    var healthCheckResult = await RunLiveness(liveness, options, httpContext, cancellationToken);
+                    var healthCheckResult = await RunLiveness(liveness, options, httpContext);
 
                     livenessResults.Add(healthCheckResult);
 
@@ -48,11 +41,7 @@ namespace BeatPulse.Core
                     {
                         //if is unhealthy and not detailed options is true return inmediatly
 
-                        var warningMessage = cancellationToken.IsCancellationRequested
-                            ? $"Liveness {liveness.Name} was cancelled on timeout"
-                            : $"Liveness {liveness.Name} is not healthy";
-
-                        _logger.LogWarning(warningMessage);
+                        _logger.LogWarning($"Liveness {liveness.Name} is not healthy");
 
                         return livenessResults;
                     }
@@ -66,7 +55,7 @@ namespace BeatPulse.Core
 
                 if (liveness != null)
                 {
-                    var livenessResult = await RunLiveness(liveness, options, httpContext, cancellationToken);
+                    var livenessResult = await RunLiveness(liveness, options, httpContext);
 
                     return new[] { livenessResult };
                 }
@@ -75,7 +64,7 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
-        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, BeatPulseOptions options, HttpContext httpContext, CancellationToken cancellationToken)
+        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, BeatPulseOptions options, HttpContext httpContext)
         {
             _logger.LogInformation($"Executing liveness {liveness.Name}.");
 
@@ -85,24 +74,27 @@ namespace BeatPulse.Core
 
             try
             {
-                var livenessTask = liveness.IsHealthy(httpContext, _environment.IsDevelopment(), cancellationToken);
-
-                if (await Task.WhenAny(livenessTask, Task.Delay(options.Timeout, cancellationToken)) == livenessTask)
+                using (var cancellationTokenSource = new CancellationTokenSource())
                 {
-                    // The liveness is executed successfully and get the results
-                    var (message, healthy) = await livenessTask;
+                    var livenessTask = liveness.IsHealthy(httpContext, _environment.IsDevelopment(), cancellationTokenSource.Token);
 
-                    livenessResult.StopCounter(message, healthy);
+                    if (await Task.WhenAny(livenessTask, Task.Delay(options.Timeout, cancellationTokenSource.Token)) == livenessTask)
+                    {
+                        // The liveness is executed successfully and get the results
+                        var (message, healthy) = await livenessTask;
+                        livenessResult.StopCounter(message, healthy);
 
-                    _logger.LogInformation($"The liveness {liveness.Name} is executed.");
-                }
-                else
-                {
-                    // The liveness is timeout ( from configured options)
-                    _logger.LogWarning($"The liveness {liveness.Name} is timeout");
+                        _logger.LogInformation($"The liveness {liveness.Name} is executed.");
+                    }
+                    else
+                    {
+                        // The liveness is timeout ( from configured options)
+                        _logger.LogWarning($"The liveness {liveness.Name} is timeout");
 
-                    livenessResult.StopCounter(BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE, false);
-                }
+                        cancellationTokenSource.Cancel();
+                        livenessResult.StopCounter(BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE, false);
+                    }
+                }   
             }
             catch (Exception ex)
             {

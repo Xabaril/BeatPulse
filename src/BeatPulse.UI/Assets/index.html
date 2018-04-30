@@ -34,7 +34,6 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>Name</th>
-                                <th>Status</th>
                                 <th>IsHealthy</th>
                                 <th>Status</th>
                                 <th>Last Execution</th>
@@ -44,9 +43,6 @@
                             <tr v-bind:class="renderBackground(item.status)" v-for="item in livenessData">
                                 <td>
                                     {{ item.livenessName }}
-                                </td>
-                                <td>
-                                    {{ item.status }}
                                 </td>
                                 <td class="centered">
                                     <img class="status-icon" :src="getStatusPic(item.status)">

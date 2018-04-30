@@ -7,7 +7,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse
@@ -57,33 +56,31 @@ namespace BeatPulse
 
             output = new OutputLivenessMessage();
 
-            using (var cancellationTokenSource = new CancellationTokenSource())
+            var responses = await pulseService.IsHealthy(beatPulsePath, _options, context);
+
+            if (!responses.Any())
             {
-                var responses = await pulseService.IsHealthy(beatPulsePath, _options, context, cancellationTokenSource.Token);
-
-                if (!responses.Any())
-                {
-                    // beat pulse path is not valid across any liveness
-                    // return unavailable with not found reason.
-                    output.SetNotFound();
-                }
-                else
-                {
-                    // beat pulse is executed, set response
-                    // messages and add to cache if is configured.
-                    output.AddHealthCheckMessages(responses);
-                    output.SetExecuted();
-
-                    if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
-                    {
-                        _cache.TryAdd(beatPulsePath, output);
-                    }
-                }
-
-                await request.HttpContext
-                   .Response
-                   .WriteLivenessMessage(_options, output);
+                // beat pulse path is not valid across any liveness
+                // return unavailable with not found reason.
+                output.SetNotFound();
             }
+            else
+            {
+                // beat pulse is executed, set response
+                // messages and add to cache if is configured.
+                output.AddHealthCheckMessages(responses);
+                output.SetExecuted();
+
+                if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                {
+                    _cache.TryAdd(beatPulsePath, output);
+                }
+            }
+
+            await request.HttpContext
+               .Response
+               .WriteLivenessMessage(_options, output);
+
         }
 
         bool TryFromCache(string path, out OutputLivenessMessage message)
