@@ -166,7 +166,7 @@ namespace BeatPulse.UI.Core
             {
                 try
                 {
-                    var message = JsonConvert.DeserializeObject<OutputMessageResponse>(content);
+                    var message = JsonConvert.DeserializeObject<OutputLivenessMessageResponse>(content);
 
                     if (message != null)
                     {
@@ -179,7 +179,7 @@ namespace BeatPulse.UI.Core
                 }
                 catch
                 {
-                    //probably the request can't be performed (invalid domain, etc, or unavailable message)
+                    //probably the request can't be performed (invalid domain,empty or unexpected message)
                     _logger.LogWarning($"The response from uri can't be parsed correctly. The response is {content}");
                 }
 
@@ -229,13 +229,17 @@ namespace BeatPulse.UI.Core
             }
         }
 
-        private class OutputMessageResponse
+        private class OutputLivenessMessageResponse
         {
             public IEnumerable<LivenessResultResponse> Checks { get; set; }
 
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
+
+            public int Code { get; set; }
+
+            public string Reason { get; set; }
 
         }
 

@@ -23,7 +23,7 @@ namespace BeatPulse.UI
             services.AddOptions();
             services.Configure<BeatPulseSettings>((settings) =>
             {
-                configuration.Bind(Globals.BEATPULSEUI_SECTION_SETTING_KEY, settings);
+                configuration.Bind(BeatPulseUIKeys.BEATPULSEUI_SECTION_SETTING_KEY, settings);
             });
 
             services.AddSingleton<IHostedService, LivenessHostedService>();

@@ -313,6 +313,52 @@ namespace BeatPulse
         }
 
         [Fact]
+        public async Task break_the_liveness_execution_if_detailed_output_is_disabled()
+        {
+            var check1IsExecuted = false;
+            var check2IsExecuted = false;
+
+            var healthCheck1 = new ActionLiveness(
+               "check1",
+               "check1",
+               async (httpcontext, cancellationToken) =>
+               {
+                   check1IsExecuted = true;
+                   return ("custom check1 is not working", false);
+               });
+
+            var healthCheck2 = new ActionLiveness(
+              "check2",
+              "check2",
+              async (httpcontext, cancellationToken) =>
+              {
+                  check2IsExecuted = false;
+                  return ("custom check2 is  working", true);
+              });
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(setup=>
+                    {
+                        setup.Add(healthCheck1);
+                        setup.Add(healthCheck2);
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
+            check1IsExecuted.Should().BeTrue();
+            check2IsExecuted.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
         {
             var webHostBuilder = new WebHostBuilder()

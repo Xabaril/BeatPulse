@@ -3,12 +3,10 @@ using BeatPulse.Core.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,14 +18,14 @@ namespace BeatPulse
         private readonly TemplateMatcher _templateMatcher;
         private readonly BeatPulseOptions _options;
         private readonly IEnumerable<IBeatPulseAuthenticationFilter> _authenticationFilters;
-        private readonly ConcurrentDictionary<string, OutputMessage> _cache;
+        private readonly ConcurrentDictionary<string, OutputLivenessMessage> _cache;
 
         public BeatPulseMiddleware(RequestDelegate next, IEnumerable<IBeatPulseAuthenticationFilter> authenticationFilters, BeatPulseOptions options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
             _authenticationFilters = authenticationFilters;
-            _cache = new ConcurrentDictionary<string, OutputMessage>();
+            _cache = new ConcurrentDictionary<string, OutputLivenessMessage>();
             _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
                 new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });//match template for uri like /hc/{segment} 
         }
@@ -48,55 +46,47 @@ namespace BeatPulse
                 return;
             }
 
-            if (TryFromCache(beatPulsePath, out OutputMessage output))
+            if (TryFromCache(beatPulsePath, out OutputLivenessMessage output))
             {
-                await WriteResponseAsync(request.HttpContext, output);
+                await request.HttpContext
+                    .Response
+                    .WriteLivenessMessage(_options, output);
+
                 return;
             }
 
-            output = new OutputMessage();
+            output = new OutputLivenessMessage();
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
-                var task = pulseService.IsHealthy(beatPulsePath, context, cancellationTokenSource.Token);
+                var responses = await pulseService.IsHealthy(beatPulsePath, _options, context, cancellationTokenSource.Token);
 
-                if (await Task.WhenAny(task, Task.Delay(_options.Timeout, cancellationTokenSource.Token)) == task)
+                if (!responses.Any())
                 {
-                    var responses = await task;
-
-                    if (!responses.Any())
-                    {
-                        // beat pulse path is not valid across any liveness
-                        // return unavailable with not found reason.
-                        output.SetNotFound();
-                    }
-                    else
-                    {
-                        // beat pulse is executed, set response
-                        // messages and add to cache if is configured.
-                        output.AddHealthCheckMessages(responses);
-                        output.SetExecuted();
-
-                        if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
-                        {
-                            _cache.TryAdd(beatPulsePath, output);
-                        }
-                    }
+                    // beat pulse path is not valid across any liveness
+                    // return unavailable with not found reason.
+                    output.SetNotFound();
                 }
                 else
                 {
-                    // beat pulse services is timeout, because is configured using BeatPulseOptions on UseBeatPulse method.
-                    // In this case remove from cache if exist and return a ServiceUnavailabe with timeout response resason.
-                    _cache.TryRemove(beatPulsePath, out OutputMessage removed);
-                    cancellationTokenSource.Cancel();
-                    output.SetTimeout();
+                    // beat pulse is executed, set response
+                    // messages and add to cache if is configured.
+                    output.AddHealthCheckMessages(responses);
+                    output.SetExecuted();
+
+                    if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                    {
+                        _cache.TryAdd(beatPulsePath, output);
+                    }
                 }
 
-                await WriteResponseAsync(request.HttpContext, output);
+                await request.HttpContext
+                   .Response
+                   .WriteLivenessMessage(_options, output);
             }
         }
 
-        bool TryFromCache(string path, out OutputMessage message)
+        bool TryFromCache(string path, out OutputLivenessMessage message)
         {
             message = null;
 
@@ -112,7 +102,7 @@ namespace BeatPulse
                 }
                 else
                 {
-                    _cache.TryRemove(path, out OutputMessage removed);
+                    _cache.TryRemove(path, out OutputLivenessMessage removed);
 
                     return false;
                 }
@@ -150,83 +140,6 @@ namespace BeatPulse
             }
 
             return true;
-        }
-
-        Task WriteResponseAsync(HttpContext httpContext, OutputMessage message)
-        {
-            var defaultContentType = _options.DetailedOutput ? "application/json" : "text/plain";
-
-            const string noCacheOptions = "no-cache, no-store, must-revalidate";
-            const string noCachePragma = "no-cache";
-            const string defaultExpires = "0";
-
-            httpContext.Response.Headers["Content-Type"] = new[] { defaultContentType };
-
-            if (_options.CacheOutput)
-            {
-                if (_options.CacheMode == CacheMode.Header || _options.CacheMode == CacheMode.HeaderAndServerMemory)
-                {
-                    httpContext.Response.Headers["Cache-Control"] = new[] { $"public, max-age={_options.CacheDuration}" };
-                }
-            }
-            else
-            {
-                httpContext.Response.Headers["Cache-Control"] = new[] { noCacheOptions };
-                httpContext.Response.Headers["Pragma"] = new[] { noCachePragma };
-                httpContext.Response.Headers["Expires"] = new[] { defaultExpires };
-            }
-
-            httpContext.Response.StatusCode = message.Code;
-
-            var content = _options.DetailedOutput ? JsonConvert.SerializeObject(message)
-                : Enum.GetName(typeof(HttpStatusCode), message.Code);
-
-            return httpContext.Response.WriteAsync(content);
-        }
-
-        private class OutputMessage
-        {
-            const string INVALID_BEATPULSE_PATH = "InvalidBeatPulsePath";
-            const string BEATPULSE_TIMEOUT = "BeatPulseTimeout";
-
-            private readonly List<LivenessResult> _messages = new List<LivenessResult>();
-
-            public IEnumerable<LivenessResult> Checks => _messages;
-
-            public DateTime StartedAtUtc { get; private set; }
-
-            public DateTime EndAtUtc { get; private set; }
-
-            public int Code { get; private set; }
-
-            public string Reason { get; private set; }
-
-            public OutputMessage()
-            {
-                StartedAtUtc = DateTime.UtcNow;
-            }
-
-            public void AddHealthCheckMessages(IEnumerable<LivenessResult> messages) => _messages.AddRange(messages);
-
-            public void SetTimeout()
-            {
-                EndAtUtc = DateTime.UtcNow;
-                Code = StatusCodes.Status503ServiceUnavailable;
-                Reason = BEATPULSE_TIMEOUT;
-            }
-
-            public void SetNotFound()
-            {
-                EndAtUtc = DateTime.UtcNow;
-                Code = StatusCodes.Status503ServiceUnavailable;
-                Reason = INVALID_BEATPULSE_PATH;
-            }
-
-            public void SetExecuted()
-            {
-                EndAtUtc = DateTime.UtcNow;
-                Code = Checks.All(x => x.IsHealthy) ? StatusCodes.Status200OK : StatusCodes.Status503ServiceUnavailable;
-            }
         }
     }
 }

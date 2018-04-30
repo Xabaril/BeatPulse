@@ -115,13 +115,15 @@ HTTP/1.1 200 OK
     }
 	],
 	"StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-	"EndAtUtc": "2018-02-26T19:30:06.0978236Z"
+	"EndAtUtc": "2018-02-26T19:30:06.0978236Z".
+    "Code": "200",
+    "Reason":""
 }
 ```
 
 Optionally, you can get the result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-domain/health/_self returns liveness status of the project without executing any configured liveness library. This is usual for the liveness path on k8s pods.
+http://your-domain/health/_self returns liveness status of the project without executing any other configured liveness library. This is usual for the liveness path on k8s pods.
 
 http://your-domain/health/[liveness-segment-path] returns liveness status of the specified liveness libraries. Each liveness library defines a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
 
@@ -225,7 +227,7 @@ Optionally, you can use the existing **Docker** image [xabarilcoding/beatpulseui
 
 ```bash
 docker pull xabarilcoding/beatpulseui 
-docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:1.0.0
+docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:latest
 ```
 
 ### Configuration
@@ -252,3 +254,29 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
+
+### Notifications
+
+If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post a new notification into this webhook. In the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
+
+```csharp
+    
+    #r "Twilio.API"
+
+    using System;
+    using System.Net;
+    using Twilio;
+
+    public static async Task Run(HttpRequestMessage req, IAsyncCollector<SMSMessage> message, TraceWriter log)
+
+    {
+        string messageContent = await req.Content.ReadAsStringAsync();
+
+        log.Info($"Notifying: {messageContent} to configured phone number");
+
+        var sms = new SMSMessage();
+        sms.Body = messageContent;
+        await message.AddAsync(sms);
+    }
+
+```

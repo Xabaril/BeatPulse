@@ -37,6 +37,7 @@ $tag = $beatpulseversionentry.node.InnerXML
 echo "building docker image with tag: $tag"
 
 exec { & docker build . -f .\docker-images\BeatPulseUI-Image\Dockerfile -t xabarilcoding/beatpulseui:$tag }
+exec { & docker tag xabarilcoding/beatpulseui:$tag xabarilcoding/beatpulseui:latest }
 
 echo "Created docker image beatpulse:$tag. You can execute this image using docker run"
 echo "Sample: docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://www.google.es' -d beatpulseui:dev"
@@ -45,4 +46,5 @@ echo "Sample: docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=h
 
 if($PublishToDockerHub){
     docker push xabarilcoding/beatpulseui:$tag 
+    docker push xabarilcoding/beatpulseui:latest 
 }

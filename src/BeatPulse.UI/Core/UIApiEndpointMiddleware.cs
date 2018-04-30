@@ -48,7 +48,7 @@ namespace BeatPulse.UI.Core
                 var livenessResult = tasks.Select(t => t.Result);
                 var responseContent = JsonConvert.SerializeObject(livenessResult, _jsonSerializationSettings);
 
-                context.Response.ContentType = Globals.DEFAULT_RESPONSE_CONTENT_TYPE;
+                context.Response.ContentType = BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE;
 
                 await context.Response.WriteAsync(responseContent);
             }

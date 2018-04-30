@@ -27,8 +27,9 @@ namespace HttpApi_Basic
                 //add custom health check
                 setup.Add(new ActionLiveness("cat", "catapi", async (httpContext, cancellationToken) =>
                 {
-                    return ("the cat api is broken!", false);
-                    //return ("OK", true);
+                    // await Task.Delay(4000);
+                    //return ("the cat api is broken!", false);
+                    return ("OK", true);
                 }));
             });
 
