@@ -29,8 +29,8 @@ namespace HttpApi_Basic
                 setup.Add(new ActionLiveness("cat", "catapi", async (httpContext, cancellationToken) =>
                 {
                     //await Task.Delay(4000);
-                    //return ("the cat api is broken!", false);
-                    return ("OK", true);
+                    return ("the cat api is broken!", false);
+                    //return ("OK", true);
                 }));
             });
 
