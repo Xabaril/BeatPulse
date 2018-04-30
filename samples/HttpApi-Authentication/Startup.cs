@@ -11,11 +11,16 @@ namespace HttpApi_Authentication
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            // Registers an authorization filter that that will validate the request 
+            // Registers an authorization filter that will validate the request 
             // when api-key parameter is present in the query string with api-key-secret value
 
             services.AddSingleton<IBeatPulseAuthenticationFilter>
                      (new ApiKeyAuthenticationFilter("api-key-secret"));
+
+            // Registers an authorization filter that will validate the request
+            // from local 
+
+            services.AddSingleton<IBeatPulseAuthenticationFilter>(new LocalAuthenticationFilter());
 
             // Registers an authorization filter that will validate the request 
             // when the header "header1" is sent with value "value1"
