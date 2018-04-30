@@ -73,7 +73,7 @@ namespace BeatPulse.UI
                     liveness.Any())
                 {
 
-                    await db.LivenessConfiguration
+                    await db.LivenessConfigurations
                         .AddRangeAsync(liveness);
 
                     await db.SaveChangesAsync();

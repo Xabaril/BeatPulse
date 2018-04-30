@@ -33,9 +33,9 @@ namespace BeatPulse.UI.Core
 
                 var cancellationToken = new CancellationToken();
 
-                var registeredLiveness = await runner.GetLiveness(cancellationToken);
+                var registeredLiveness = await runner.GetConfiguredLiveness(cancellationToken);
 
-                var tasks = new List<Task<LivenessExecutionHistory>>();
+                var tasks = new List<Task<LivenessExecution>>();
 
                 foreach (var item in registeredLiveness)
                 {

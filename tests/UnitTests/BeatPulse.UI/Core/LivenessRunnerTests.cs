@@ -79,7 +79,7 @@ namespace BeatPulse.UI.Core
         }
 
         [Fact]
-        public async Task save_execution_history_if_is_new()
+        public async Task save_execution_if_is_new()
         {
             var notifier = new MemoryNotifier();
 
@@ -104,17 +104,17 @@ namespace BeatPulse.UI.Core
 
             await runner.Run(tokenSource.Token);
 
-            var history = context.LivenessExecutionHistory
+            var execution = context.LivenessExecutions
                 .ToList();
 
-            history.Count().Should().Be(1);
+            execution.Count().Should().Be(1);
 
-            history.Where(h => h.LivenessName == "Liveness")
+            execution.Where(h => h.LivenessName == "Liveness")
                 .Single()?.IsHealthy.Should().BeFalse();
         }
 
         [Fact]
-        public async Task get_latest_get_single_information_history_for_specified_liveness()
+        public async Task get_latest_get_single_information_for_specified_liveness()
         {
             var notifier = new MemoryNotifier();
 
@@ -141,17 +141,17 @@ namespace BeatPulse.UI.Core
 
             await runner.Run(tokenSource.Token);
 
-            var history = context.LivenessExecutionHistory
+            var execution = context.LivenessExecutions
                 .ToList();
 
-            history.Count().Should().Be(1);
+            execution.Count().Should().Be(1);
 
-            history.Where(h => h.LivenessName == "Liveness")
+            execution.Where(h => h.LivenessName == "Liveness")
                 .Single()?.IsHealthy.Should().BeTrue();
         }
 
         [Fact]
-        public async Task save_execution_history_update_lastExecuted_if_history_exist_and_the_status_is_the_same()
+        public async Task save_execution_history_update_lastExecuted_if_execution_exist_and_the_status_is_the_same()
         {
             var notifier = new MemoryNotifier();
 
@@ -176,23 +176,23 @@ namespace BeatPulse.UI.Core
 
             await runner.Run(tokenSource.Token);
 
-            var history1 = context.LivenessExecutionHistory
+            var execution1 = context.LivenessExecutions
                 .Single();
 
             await runner.Run(tokenSource.Token);
 
-            var history2 = context.LivenessExecutionHistory
+            var execution2 = context.LivenessExecutions
                 .Single();
 
-            history1.Id.Should().Be(history2.Id);
-            history1.LivenessName.Should().Be(history2.LivenessName);
-            history1.LivenessUri.Should().Be(history2.LivenessUri);
-            history1.OnStateFrom.Should().Be(history2.OnStateFrom);
-            history1.Status.Should().Be(history2.Status);
+            execution1.Id.Should().Be(execution2.Id);
+            execution1.LivenessName.Should().Be(execution2.LivenessName);
+            execution1.LivenessUri.Should().Be(execution2.LivenessUri);
+            execution1.OnStateFrom.Should().Be(execution2.OnStateFrom);
+            execution1.Status.Should().Be(execution2.Status);
         }
 
         [Fact]
-        public async Task save_execution_history_update_onStateFrom_if_history_exist_and_the_status_is_not_the_same()
+        public async Task save_execution_history_update_onStateFrom_if_execution_exist_and_the_status_is_not_the_same()
         {
             var notifier = new MemoryNotifier();
 
@@ -223,21 +223,21 @@ namespace BeatPulse.UI.Core
 
             await runnerOk.Run(tokenSource.Token);
 
-            var history1 = context.LivenessExecutionHistory
+            var execution1 = context.LivenessExecutions
                 .Single();
 
-            var status1 = history1.Status;
-            var onStateFrom = history1.OnStateFrom;
+            var status1 = execution1.Status;
+            var onStateFrom = execution1.OnStateFrom;
 
             var runnerServiceUnavailable = runnerBuilderUnavailable.Build();
 
             await runnerServiceUnavailable.Run(tokenSource.Token);
 
-            var history2 = context.LivenessExecutionHistory
+            var execution2 = context.LivenessExecutions
                 .Single();
 
-            status1.Should().NotBe(history2.Status);
-            onStateFrom.Should().NotBe(history2.OnStateFrom);
+            status1.Should().NotBe(execution2.Status);
+            onStateFrom.Should().NotBe(execution2.OnStateFrom);
         }
 
         [Fact]
@@ -267,7 +267,7 @@ namespace BeatPulse.UI.Core
 
             await runner.Run(tokenSource.Token);
 
-            var liveness =  await runner.GetLiveness(CancellationToken.None);
+            var liveness =  await runner.GetConfiguredLiveness(CancellationToken.None);
 
             liveness.Count.Should().Be(1);
 

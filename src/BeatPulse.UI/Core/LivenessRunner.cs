@@ -36,7 +36,7 @@ namespace BeatPulse.UI.Core
         {
             _logger.LogDebug("LivenessRuner is on run method.");
 
-            var liveness = await _context.LivenessConfiguration
+            var liveness = await _context.LivenessConfigurations
                     .ToListAsync();
 
             foreach (var item in liveness)
@@ -61,18 +61,20 @@ namespace BeatPulse.UI.Core
             _logger.LogDebug("LivenessRuner run is completed.");
         }
 
-        public Task<LivenessExecutionHistory> GetLatestRun(string livenessName, CancellationToken cancellationToken)
+        public Task<LivenessExecution> GetLatestRun(string livenessName, CancellationToken cancellationToken)
         {
-            return _context.LivenessExecutionHistory
-                .Where(lh => lh.LivenessName == livenessName)
+            return _context.LivenessExecutions
+                .Include(le=>le.History)
+                .Where(le => le.LivenessName.Equals(livenessName, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<List<LivenessConfiguration>> GetLiveness(CancellationToken cancellationToken)
+        public Task<List<LivenessConfiguration>> GetConfiguredLiveness(CancellationToken cancellationToken)
         {
-            return _context.LivenessConfiguration
+            return _context.LivenessConfigurations
                 .ToListAsync(cancellationToken);
         }
+
 
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {
@@ -106,8 +108,9 @@ namespace BeatPulse.UI.Core
         {
             _logger.LogDebug("LivenessRuner save a new liveness execution history.");
 
-            var livenessExecution = await _context.LivenessExecutionHistory
-                .Where(le => le.LivenessName == liveness.LivenessName && le.LivenessUri == liveness.LivenessUri)
+            var livenessExecution = await _context.LivenessExecutions
+                .Include(le=>le.History)
+                .Where(le => le.LivenessName.Equals(liveness.LivenessName,StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync();
 
             var currentStatus = GetDetailedStatusFromContent(isHealthy, content);
@@ -127,6 +130,12 @@ namespace BeatPulse.UI.Core
                 {
                     _logger.LogDebug("LivenessExecutionHistory already exist but on different state, update the values.");
 
+                    livenessExecution.History.Add(new LivenessExecutionHistory()
+                    {
+                        On = lastExecutionTime,
+                        Status = livenessExecution.Status
+                    });
+
                     livenessExecution.IsHealthy = isHealthy;
                     livenessExecution.OnStateFrom = lastExecutionTime;
                     livenessExecution.LastExecuted = lastExecutionTime;
@@ -138,7 +147,7 @@ namespace BeatPulse.UI.Core
             {
                 _logger.LogDebug("LivenessExecutionHistory is a new liveness execution history.");
 
-                livenessExecution = new LivenessExecutionHistory()
+                livenessExecution = new LivenessExecution()
                 {
                     IsHealthy = isHealthy,
                     LastExecuted = lastExecutionTime,
@@ -149,7 +158,7 @@ namespace BeatPulse.UI.Core
                     LivenessUri = liveness.LivenessUri,
                 };
 
-                await _context.LivenessExecutionHistory
+                await _context.LivenessExecutions
                     .AddAsync(livenessExecution);
             }
 

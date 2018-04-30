@@ -51,7 +51,7 @@ namespace BeatPulse.UI.Core
 
             if (_configurations.Any())
             {
-                context.LivenessConfiguration.AddRange(_configurations);
+                context.LivenessConfigurations.AddRange(_configurations);
                 context.SaveChanges();
             }
 

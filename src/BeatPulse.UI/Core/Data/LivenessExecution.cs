@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BeatPulse.UI.Core.Data
 {
 
-    internal class LivenessExecutionHistory
+    internal class LivenessExecution
     {
         public int Id { get; set; }
 
@@ -20,5 +21,7 @@ namespace BeatPulse.UI.Core.Data
         public string LivenessName { get; set; }
 
         public string LivenessResult { get; set; }
+
+        public List<LivenessExecutionHistory> History { get; set; }
     }
 }
