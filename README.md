@@ -284,8 +284,8 @@ If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post
 
 ## Contributors
 
-Unai Zorrilla Castro @unaizorrilla
-Eduard Tomás @eiximenis
-Carlos Landeras @carloslanderas
-Luis Ruiz @lurumad
-Hugo biarge @hbiarge
+1. Unai Zorrilla Castro @unaizorrilla
+2. Eduard Tomás @eiximenis
+3. Carlos Landeras @carloslanderas
+4. Luis Ruiz @lurumad
+5. Hugo biarge @hbiarge
