@@ -32,6 +32,9 @@ var app = new Vue({
             var self = this;            
             self.livenessData = [];
             BeatPulse.client.healthCheck().then(response => {
+                for (var i = 0; i < response.data.length; i++) {
+                    response.data[i].onStateFrom = `${response.data[i].status} ${moment.utc(response.data[i].onStateFrom).fromNow()}`;
+                }
                 self.livenessData = response.data;
             }).catch(err => self.error = JSON.stringify(err));
         },

@@ -16,6 +16,7 @@
     <None Remove="Assets\beatpulse.js" />
     <None Remove="Assets\index.html" />
     <None Remove="Assets\index.js" />
+    <None Remove="Assets\moment.js" />
     <None Remove="Assets\resources.js" />
   </ItemGroup>
 
@@ -27,6 +28,7 @@
     <EmbeddedResource Include="Assets\beatpulse.css" />
     <EmbeddedResource Include="Assets\index.html" />
     <EmbeddedResource Include="Assets\index.js" />
+    <EmbeddedResource Include="Assets\moment.js" />
     <EmbeddedResource Include="Assets\resources.js" />
   </ItemGroup>
 
