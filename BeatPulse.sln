@@ -68,6 +68,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sendgrid", "Sendgrid", "{46
 		samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx = samples\Http-AzureFunctions-Webhook-Samples\Sendgrid\SendgridFunction.csx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.Tracker.ApplicationInsights", "src\BeatPulse.Tracker.ApplicationInsights\BeatPulse.Tracker.ApplicationInsights.csproj", "{7099408E-C113-4FA7-9DC5-C8470BC4B31A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F060562-F154-4377-9A5E-F9C1155A7CFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7099408E-C113-4FA7-9DC5-C8470BC4B31A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7099408E-C113-4FA7-9DC5-C8470BC4B31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7099408E-C113-4FA7-9DC5-C8470BC4B31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7099408E-C113-4FA7-9DC5-C8470BC4B31A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +168,7 @@ Global
 		{596E82E1-84B6-4394-B1F5-15EC5F37AEFA} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{E10B1482-7DB1-4FB1-A66A-D0D891EC3215} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 		{461E0D85-108F-4187-9820-A34D743D2C18} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
+		{7099408E-C113-4FA7-9DC5-C8470BC4B31A} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

@@ -76,6 +76,7 @@ namespace BeatPulse
                                     _cache.TryAdd(beatPulsePath, output);
                                 }
 
+                                pulseService.Track(responses);
                                 await WriteResponseAsync(request.HttpContext, output, _options.DetailedOutput);
                             }
                             else

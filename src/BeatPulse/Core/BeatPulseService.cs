@@ -75,6 +75,17 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
+        public void Track(IEnumerable<LivenessResult> responses)
+        {
+            if (_beatPulseContext.AllTrackers != null)
+            {
+                foreach (var tracker in _beatPulseContext.AllTrackers)
+                {
+                    tracker.Track(responses);
+                }
+            }
+        }
+
         async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, HttpContext httpContext,CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Executing liveness {liveness.Name}.");

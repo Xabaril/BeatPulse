@@ -252,3 +252,37 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
+
+## Tracking pulses
+
+Additionally you can save liveness information in external services. Currently we have developed a tracker for Application Insights you can use. To install this package:
+
+``` Powershell
+Install-Package BeatPulse.Tracker.ApplicationInsights
+```
+
+### Application Insights tracker configuration
+
+In the configuration section where you configured your *BetPulseService* add the tracker:
+``` csharp
+ services.AddBeatPulse(setup =>
+    {
+        //Add Application Insights tracker
+        setup.AddTracker(new ApplicationInsightsTracker());
+    });
+``` 
+It will use your current Application Insights resource by default.
+
+If you were not using previously Application Insights in your project, or if you prefer to use a distinct Application Insights resource for liveness, you can use a different Instrumentation Key in the constructor.
+``` csharp
+ services.AddBeatPulse(setup =>
+    {
+        //Add Application Insights tracker
+        setup.AddTracker(new ApplicationInsightsTracker("instrumentation-key"));
+    });
+``` 
+The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
+- *Name*: Configured liveness name
+- *Message*: Message from liveness
+- *IsHealthy*: boolean with healthy info from liveness.
+- *Run*: 
