@@ -35,6 +35,8 @@ namespace BeatPulse.Core
                 {
                     var healthCheckResult = await RunLiveness(liveness, options, httpContext);
 
+                    this.Track(healthCheckResult);
+                    
                     livenessResults.Add(healthCheckResult);
 
                     if (!healthCheckResult.IsHealthy && !options.DetailedOutput)
@@ -64,7 +66,7 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
-        public void Track(IEnumerable<LivenessResult> responses)
+        public void Track(LivenessResult responses)
         {
             if (_beatPulseContext.AllTrackers != null)
             {

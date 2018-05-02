@@ -71,8 +71,6 @@ namespace BeatPulse
                 output.AddHealthCheckMessages(responses);
                 output.SetExecuted();
 
-                pulseService.Track(responses);
-
                 if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
                 {
                     _cache.TryAdd(beatPulsePath, output);
