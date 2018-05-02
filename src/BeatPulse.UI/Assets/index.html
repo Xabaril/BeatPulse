@@ -20,12 +20,12 @@
                 </div>
                 <div class="col text-right">
                     <label>Refresh every</label>
-                    <input v-model.number="pollingIntervalSetting" type="number" oninput="validity.valid && value > 0 ||(value=10)" class="polling-input"/>
+                    <input v-model.number="pollingIntervalSetting" type="number" oninput="validity.valid && value > 0 ||(value=10)" class="polling-input" />
                     <label>seconds</label>
                     <button v-on:click="initPolling()" type="button" class="btn btn-info btn-sm">Change</button>
-                </div>                
+                </div>
             </div>
-            
+
         </div>
         <div class="container">
             <div class="row">
@@ -34,9 +34,8 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>Name</th>
-                                <th>Status</th>
                                 <th>IsHealthy</th>
-                                <th>On state from</th>
+                                <th>Status</th>
                                 <th>Last Execution</th>
                             </tr>
                         </thead>
@@ -45,14 +44,11 @@
                                 <td>
                                     {{ item.livenessName }}
                                 </td>
-                                <td>
-                                    {{ item.status }}
-                                </td>
                                 <td class="centered">
                                     <img class="status-icon" :src="getStatusPic(item.status)">
                                 </td>
                                 <td>
-                                    {{ item.onStateFrom | formatDate }}
+                                    {{ item.onStateFrom }}
                                 </td>
                                 <td>
                                     {{ item.lastExecuted | formatDate }}
@@ -74,6 +70,7 @@
     </script>
     <script type="text/javascript" src="/ui/resources/beatpulse.js"></script>
     <script type="text/javascript" src="/ui/resources/resources.js"></script>
+    <script type="text/javascript" src="/ui/resources/moment.js"></script>
     <script type="text/javascript" src="/ui/resources/index.js"></script>
 </body>
 

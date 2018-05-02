@@ -25,8 +25,8 @@ namespace BeatPulse.UI.Core
         /// <returns></returns>
         public static UIResource GetMainUI(this IEnumerable<UIResource> resources, string apiPath)
         {
-            var resource = resources.WithContentType(ContentType.HTML).FirstOrDefault(r => r.FileName == Globals.BEATPULSEUI_MAIN_UI_RESOURCE);
-            resource.Content = resource.Content.Replace(Globals.BEATPULSEUI_MAIN_UI_API_TARGET, apiPath);
+            var resource = resources.WithContentType(ContentType.HTML).FirstOrDefault(r => r.FileName == BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_RESOURCE);
+            resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_API_TARGET, apiPath);
             return resource;
         }
     }

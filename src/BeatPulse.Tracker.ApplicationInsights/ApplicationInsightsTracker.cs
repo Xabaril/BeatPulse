@@ -36,7 +36,8 @@ namespace BeatPulse.Tracker.ApplicationInsights
                 var metrics = new Dictionary<string, double>();
                 metrics.Add("Milliseconds", livenessResult.MilliSeconds);
                 _telemetryClient.TrackEvent($"BeatPulse", data, metrics);
-                _telemetryClient.TrackMetric($"BeatPulse:{livenessResult.Name}", livenessResult.MilliSeconds);
+                ///TODO: Is worth or necessary?
+                /// _telemetryClient.TrackMetric($"BeatPulse:{livenessResult.Name}", livenessResult.MilliSeconds);
             }
         }
 

@@ -1,8 +1,7 @@
 ﻿namespace BeatPulse.UI
 {
-    class Globals
+    class BeatPulseUIKeys
     {
-
         public const string BEATPULSEUI_SECTION_SETTING_KEY = "BeatPulse-UI";
         public const string BEATPULSEUI_RESOURCES_PATH = "/ui/resources";
         public const string BEATPULSEUI_MAIN_UI_RESOURCE = "index.html";

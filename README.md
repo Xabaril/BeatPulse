@@ -4,7 +4,9 @@
 
 # Beat Pulse
 
-*BeatPulse* is a simple liveness, readiness library for .NET Core Applications.
+Health checking is the process where load balancers or application delivery controller does periodic check on our applications to make sure that they are up and responding without any problems. If our applications are down for every reason or any of the system that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s... should detect this and stop sending traffic its way and try to restore the services manually or automatically in case of k8s.
+
+*BeatPulse* is a simple liveness, readiness library for .NET Core Applications. 
 
 ## What is the motivation behind it
 
@@ -112,16 +114,17 @@ HTTP/1.1 200 OK
         "MilliSeconds": 309,
         "Run": true,
         "IsHealthy": true
-    }
-	],
-	"StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-	"EndAtUtc": "2018-02-26T19:30:06.0978236Z"
+    }],
+    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "Code": "200",
+    "Reason":""
 }
 ```
 
 Optionally, you can get the result for specific liveness adding the liveness segment path on the beat pulse base path.
 
-http://your-domain/health/_self returns liveness status of the project without executing any configured liveness library. This is usual for the liveness path on k8s pods.
+http://your-domain/health/_self returns liveness status of the project without executing any other configured liveness library. This is usual for the liveness path on k8s pods.
 
 http://your-domain/health/[liveness-segment-path] returns liveness status of the specified liveness libraries. Each liveness library defines a specified path. By default the Sql Server livenes library is *sqlserver*, for Redis is *redis*, for Postgress SQL is *npgsql* and for MongoDb is *mongodb*.
 
@@ -225,7 +228,7 @@ Optionally, you can use the existing **Docker** image [xabarilcoding/beatpulseui
 
 ```bash
 docker pull xabarilcoding/beatpulseui 
-docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:1.0.0
+docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:latest
 ```
 
 ### Configuration
@@ -242,7 +245,8 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
       }
     ],
     "WebHookNotificationUri": "",
-    "EvaluationTimeOnSeconds": 10
+    "EvaluationTimeOnSeconds": 10,
+    "MinimunSecondsBetweenFailureNotifications":60
   }
 }
 ```
@@ -250,8 +254,35 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     1.- Liveness: The collection of liveness uris to watch.
     2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
     3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
+    4.- MinimunSecondsBetweenFailureNotifications: The minimun seconds between failure notifications in order not flooding the notification receiver.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
+
+### Notifications
+
+If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post a new notification into this webhook. In the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
+
+```csharp
+    
+    #r "Twilio.API"
+
+    using System;
+    using System.Net;
+    using Twilio;
+
+    public static async Task Run(HttpRequestMessage req, IAsyncCollector<SMSMessage> message, TraceWriter log)
+
+    {
+        string messageContent = await req.Content.ReadAsStringAsync();
+
+        log.Info($"Notifying: {messageContent} to configured phone number");
+
+        var sms = new SMSMessage();
+        sms.Body = messageContent;
+        await message.AddAsync(sms);
+    }
+
+```
 
 ## Tracking pulses
 
@@ -282,7 +313,16 @@ If you were not using previously Application Insights in your project, or if you
     });
 ``` 
 The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
-- *Name*: Configured liveness name
-- *Message*: Message from liveness
+- *Name*: configured liveness name.
+- *Message*: message from liveness.
 - *IsHealthy*: boolean with healthy info from liveness.
-- *Run*: 
+- *Run*: boolean indicator if liveness has run.
+- *Milliseconds*: milliseconds with the liveness call duration.
+
+## Contributors
+
+1. Unai Zorrilla Castro @unaizorrilla
+2. Eduard Tomás @eiximenis
+3. Carlos Landeras @carloslanderas
+4. Luis Ruiz @lurumad
+5. Hugo biarge @hbiarge

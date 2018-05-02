@@ -34,10 +34,10 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LivenessConfiguration");
+                    b.ToTable("LivenessConfigurations");
                 });
 
-            modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessExecutionHistory", b =>
+            modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessExecution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -66,6 +66,26 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("LivenessExecutions");
+                });
+
+            modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessExecutionHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("LivenessExecutionId");
+
+                    b.Property<DateTime>("On");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LivenessExecutionId");
+
                     b.ToTable("LivenessExecutionHistory");
                 });
 
@@ -76,11 +96,20 @@ namespace BeatPulse.UI.Core.Data.Migrations
 
                     b.Property<DateTime>("LastNotified");
 
-                    b.Property<string>("LivenessName");
+                    b.Property<string>("LivenessName")
+                        .IsRequired()
+                        .HasMaxLength(500);
 
                     b.HasKey("Id");
 
                     b.ToTable("LivenessFailuresNotifications");
+                });
+
+            modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessExecutionHistory", b =>
+                {
+                    b.HasOne("BeatPulse.UI.Core.Data.LivenessExecution")
+                        .WithMany("History")
+                        .HasForeignKey("LivenessExecutionId");
                 });
 #pragma warning restore 612, 618
         }

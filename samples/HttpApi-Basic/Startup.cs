@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace HttpApi_Basic
 {
@@ -27,8 +28,14 @@ namespace HttpApi_Basic
                 //add custom health check
                 setup.Add(new ActionLiveness("cat", "catapi", async (httpContext, cancellationToken) =>
                 {
-                    return ("the cat api is broken!", false);
-                    //return ("OK", true);
+                    if ((DateTime.UtcNow.Minute & 1) == 1)
+                    {
+                        return ("OK", true);
+                    }
+                    else
+                    {
+                        return ("the cat api is broken!", false);
+                    }
                 }));
             });
 
