@@ -22,7 +22,7 @@ namespace FunctionalTests.BeatPulse.Kafka
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task return_false_if_kafka_is_unavailable()
         {
             var config = new Dictionary<string, object>()
@@ -56,7 +56,7 @@ namespace FunctionalTests.BeatPulse.Kafka
                 .Should().Be(HttpStatusCode.ServiceUnavailable);
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task return_true_if_kafka_is_available()
         {
             var config = new Dictionary<string, object>()
