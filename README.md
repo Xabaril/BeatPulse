@@ -4,7 +4,9 @@
 
 # Beat Pulse
 
-*BeatPulse* is a simple liveness, readiness library for .NET Core Applications.
+Health checking is the process where load balancers or application delivery controller does periodic check on our applications to make sure that they are up and responding without any problems. If our applications are down for every reason or any of the system that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s... should detect this and stop sending traffic its way and try to restore the services manually or automatically in case of k8s.
+
+*BeatPulse* is a simple liveness, readiness library for .NET Core Applications. 
 
 ## What is the motivation behind it
 
