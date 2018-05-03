@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using BeatPulse.Core;
 using Microsoft.ApplicationInsights;
@@ -26,16 +28,15 @@ namespace BeatPulse.Tracker.ApplicationInsights
 
         public void Track(LivenessResult livenessResult)
         {
-            var data = new Dictionary<string, string>();
-            data.Add("Name", livenessResult.Name);
-            data.Add("Message", livenessResult.Message);
-            data.Add("IsHealthy", livenessResult.IsHealthy.ToString());
-            data.Add("Run", livenessResult.Run.ToString());
+            var data = livenessResult.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(m => m.PropertyType == typeof(string) || m.PropertyType == typeof(bool))
+                .ToDictionary(prop => prop.Name, prop => prop.GetValue(livenessResult, null).ToString());
 
             var metrics = new Dictionary<string, double>();
             metrics.Add("Milliseconds", livenessResult.MilliSeconds);
             _telemetryClient.TrackEvent($"BeatPulse", data, metrics);
-            
+
             ///TODO: Is worth or necessary?
             _telemetryClient.TrackMetric($"BeatPulse:{livenessResult.Name}", livenessResult.MilliSeconds, data);
         }
