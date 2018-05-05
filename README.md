@@ -28,6 +28,7 @@ Install-Package BeatPulse.MongoDb
 Install-Package BeatPulse.Npgsql
 Install-Package BeatPulse.Redis
 Install-Package BeatPulse.AzureStorage
+Install-Package BeatPulse.AzureServiceBus
 Install-Package BeatPulse.MySql
 Install-Package BeatPulse.DocumentDb
 Install-Package BeatPulse.SqLite
