@@ -29,7 +29,7 @@ namespace BeatPulse.Kafka
             {
                 using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
                 {
-                    var result = await producer.ProduceAsync("betapulse-topic", null, $"Check Kafka healthy on {DateTime.UtcNow}");
+                    var result = await producer.ProduceAsync("betapulse-topic",null, $"Check Kafka healthy on {DateTime.UtcNow}");
 
                     if (result.Error.Code != ErrorCode.NoError)
                     {

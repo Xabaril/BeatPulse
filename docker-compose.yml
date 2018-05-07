@@ -37,7 +37,7 @@ services:
     kafka:
         image: wurstmeister/kafka
         environment:
-            - KAFKA_ADVERTISED_HOST_NAME=kafka
+            - KAFKA_ADVERTISED_HOST_NAME=localhost
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - KAFKA_ADVERTISED_PORT=9092
         ports:
