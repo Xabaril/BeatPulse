@@ -79,7 +79,7 @@ Install-Package BeatPulse.Kafka
 
 5. Request *BeatPulse* to get liveness results.
 
-For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section.](./doc/beatpulse.md)
+For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section.](./doc/beatpulse.md).
 
 ## UI
 
@@ -104,7 +104,7 @@ This automatically registers a new interface on **/beatpulse-ui**. Optionally, *
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
-**BeatPulseUI** exist as *docker images* and * kubernetes helm*. You can read more about [docker images](./doc/ui-docker.md) and [helm](./doc/helm.md).
+**BeatPulseUI** exist as *docker images* and * kubernetes helm*. You can read more about [beat pulse ui docker images](./doc/ui-docker.md) and [beat pulse ui helm](./doc/helm.md).
 
 ### Configuration
 
