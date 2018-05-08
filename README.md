@@ -10,7 +10,7 @@ Health checking is the process where load balancers or application delivery cont
 
 ## What is the motivation behind it
 
-The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and there is no plan to include this feature in ASP.NET Core 2.1.
+The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included  in ASP.NET Core 2.1.
 
 ## Getting Started
 
@@ -79,8 +79,7 @@ Install-Package BeatPulse.Kafka
 
 5. Request *BeatPulse* to get liveness results.
 
-
-You can read more about *BeatPulse* configuration and other features ( cache, authentication... ) on the [specific documentation section.](./doc/beatpulse.md)
+For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section.](./doc/beatpulse.md)
 
 ## UI
 
