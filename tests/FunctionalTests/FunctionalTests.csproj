@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>$(NetCoreTargetVersion)</TargetFramework>
@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Kafka\BeatPulse.Kafka.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MySql\BeatPulse.MySql.csproj" />

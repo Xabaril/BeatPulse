@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextEstensions
+    public static class BeatPulseContextExtensions
     {
         public static BeatPulseContext AddKafka(this BeatPulseContext context, Dictionary<string, object> config)
         {

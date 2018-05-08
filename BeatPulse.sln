@@ -70,6 +70,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sendgrid", "Sendgrid", "{46
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Kafka", "src\BeatPulse.Kafka\BeatPulse.Kafka.csproj", "{FE524787-608D-4F42-9A3A-EE8579B2881B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.IdSvr", "src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj", "{3408D699-F5D7-4ED5-A1F3-ACA497030793}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,6 +146,10 @@ Global
 		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3408D699-F5D7-4ED5-A1F3-ACA497030793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3408D699-F5D7-4ED5-A1F3-ACA497030793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3408D699-F5D7-4ED5-A1F3-ACA497030793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3408D699-F5D7-4ED5-A1F3-ACA497030793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{E10B1482-7DB1-4FB1-A66A-D0D891EC3215} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 		{461E0D85-108F-4187-9820-A34D743D2C18} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 		{FE524787-608D-4F42-9A3A-EE8579B2881B} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{3408D699-F5D7-4ED5-A1F3-ACA497030793} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
