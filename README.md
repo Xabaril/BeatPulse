@@ -231,6 +231,8 @@ docker pull xabarilcoding/beatpulseui
 docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:latest
 ```
 
+> **Note**: Beatpulse-ui is available as a helm chart, for easy installation on a Kubernetes cluster. For more information please read how [install beatpulse-ui on Kubernetes](./helm/readme.md)
+
 ### Configuration
 
 The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI** settings.

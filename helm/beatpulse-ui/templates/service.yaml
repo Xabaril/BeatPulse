@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "beatpulse-ui.fullname" . }}
+  namespace: {{ .Values.namespace.name}}
+  labels:
+    app: {{ template "beatpulse-ui.name" . }}
+    chart: {{ template "beatpulse-ui.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "beatpulse-ui.name" . }}
+    release: {{ .Release.Name }}
