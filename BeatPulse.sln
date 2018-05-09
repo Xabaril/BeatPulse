@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build-docker-images.ps1 = build-docker-images.ps1
 		build.ps1 = build.ps1
 		build\dependencies.props = build\dependencies.props
-		Dockerfile = Dockerfile
+		docker-compose.yml = docker-compose.yml
 		global.json = global.json
 	EndProjectSection
 EndProject
@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sendgrid", "Sendgrid", "{46
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.AzureServiceBus", "src\BeatPulse.AzureServiceBus\BeatPulse.AzureServiceBus.csproj", "{4DF05C98-CAD1-4D42-85B1-D7D4259294A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Kafka", "src\BeatPulse.Kafka\BeatPulse.Kafka.csproj", "{FE524787-608D-4F42-9A3A-EE8579B2881B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -144,6 +146,10 @@ Global
 		{4DF05C98-CAD1-4D42-85B1-D7D4259294A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DF05C98-CAD1-4D42-85B1-D7D4259294A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DF05C98-CAD1-4D42-85B1-D7D4259294A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE524787-608D-4F42-9A3A-EE8579B2881B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{E10B1482-7DB1-4FB1-A66A-D0D891EC3215} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 		{461E0D85-108F-4187-9820-A34D743D2C18} = {596E82E1-84B6-4394-B1F5-15EC5F37AEFA}
 		{4DF05C98-CAD1-4D42-85B1-D7D4259294A4} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{FE524787-608D-4F42-9A3A-EE8579B2881B} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
