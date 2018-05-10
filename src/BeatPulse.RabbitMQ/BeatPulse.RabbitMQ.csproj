@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeatPulse\BeatPulse.csproj" />
+    <ProjectReference Include="..\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
 
 </Project>
