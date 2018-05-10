@@ -78,6 +78,7 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.UI\BeatPulse.UI.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.Kafka\BeatPulse.Kafka.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+	exec { & dotnet pack .\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 } else {
     exec { & dotnet pack .\src\BeatPulse\BeatPulse.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
@@ -91,5 +92,6 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.UI\BeatPulse.UI.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.Kafka\BeatPulse.Kafka.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+	exec { & dotnet pack .\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 }
 

@@ -51,7 +51,8 @@
     <BeatPulseSqlitePackageVersion>1.3.3</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>1.3.3</BeatPulseSqlServerPackageVersion>    
     <BeatPulseUIPackageVersion>1.4.0</BeatPulseUIPackageVersion>
-    <BeatPulseKafkaVersion>1.0.0</BeatPulseKafkaVersion>
+    <BeatPulseKafkaVersion>1.0.1</BeatPulseKafkaVersion>
+    <BeatPulseIdSvrVersion>1.0.0</BeatPulseIdSvrVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
