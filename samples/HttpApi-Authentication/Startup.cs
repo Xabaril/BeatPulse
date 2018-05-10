@@ -4,6 +4,7 @@ using BeatPulse.Core.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace HttpApi_Authentication
 {
@@ -34,9 +35,9 @@ namespace HttpApi_Authentication
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
                 //add custom health check
-                setup.Add(new ActionLiveness("custom", "customapi", async (httpContext, cancellationToken) =>
+                setup.Add(new ActionLiveness("custom", "customapi", (httpContext, cancellationToken) =>
                 {
-                    return ("OK", true);
+                    return Task.FromResult(("OK", true));
                 }));
             });
         }

@@ -31,7 +31,7 @@ namespace BeatPulse.UI.Core
                 .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
                 .WithDegradedMessageContent()
                 .WithLivenessDb(context)
-                .WithMinimunElapsedSecondsOnNotifications(0)
+                .WithMinimumElapsedSecondsOnNotifications(0)
                 .WithNotifier(notifier);
 
             var runner = runnerBuilder.Build();
@@ -62,7 +62,7 @@ namespace BeatPulse.UI.Core
                 .WithHttpStatusCode(HttpStatusCode.ServiceUnavailable)
                 .WithDegradedMessageContent()
                 .WithLivenessDb(context)
-                .WithMinimunElapsedSecondsOnNotifications(100)
+                .WithMinimumElapsedSecondsOnNotifications(100)
                 .WithNotifier(notifier);
 
             var runner = runnerBuilder.Build();

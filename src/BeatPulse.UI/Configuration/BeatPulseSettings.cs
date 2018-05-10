@@ -10,7 +10,7 @@ namespace BeatPulse.UI.Configuration
 
         public int EvaluationTimeOnSeconds { get; set; } = 10;
 
-        public int MinimunSecondsBetweenFailureNotifications { get; set; } = 60 * 10;
+        public int MinimumSecondsBetweenFailureNotifications { get; set; } = 60 * 10;
     }
 
     class LivenessConfigurationSetting
