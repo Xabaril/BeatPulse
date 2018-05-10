@@ -1,12 +1,10 @@
-﻿using Rmq = RabbitMQ;
-
+﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using BeatPulse.Core;
-
-using Microsoft.AspNetCore.Http;
+using Rmq = RabbitMQ;
 
 namespace BeatPulse.RabbitMQ
 {
@@ -27,12 +25,16 @@ namespace BeatPulse.RabbitMQ
         {
             try
             {
-                var factory = new Rmq.Client.ConnectionFactory();
-                factory.Uri = new Uri(_rabbitMqConnectionString);
+                var factory = new Rmq.Client.ConnectionFactory()
+                {
+                    Uri = new Uri(_rabbitMqConnectionString)
+                };
 
                 using (var connection = factory.CreateConnection())
                 {
-                    if (connection.IsOpen)
+                    if (connection.IsOpen
+                        &&
+                        connection.ServerProperties.Any())
                     {
                         return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
                     }
