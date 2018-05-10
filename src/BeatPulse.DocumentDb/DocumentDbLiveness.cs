@@ -11,15 +11,16 @@ namespace BeatPulse.DocumentDb
     {
         public string Name => nameof(DocumentDbLiveness);
 
-        public string DefaultPath => "documentdb";
+        public string Path { get; }
 
-        private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();     
-        
-        public DocumentDbLiveness(DocumentDbOptions documentDbOptions)
+        private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();
+
+        public DocumentDbLiveness(DocumentDbOptions documentDbOptions, string defaultPath)
         {
             _documentDbOptions.UriEndpoint = documentDbOptions.UriEndpoint ?? throw new ArgumentNullException(nameof(documentDbOptions.UriEndpoint));
-            _documentDbOptions.PrimaryKey = documentDbOptions.PrimaryKey ?? throw new ArgumentNullException(nameof(documentDbOptions.PrimaryKey));           
-            
+            _documentDbOptions.PrimaryKey = documentDbOptions.PrimaryKey ?? throw new ArgumentNullException(nameof(documentDbOptions.PrimaryKey));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
+
         }
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {

@@ -13,11 +13,12 @@ namespace BeatPulse.AzureStorage
         CloudStorageAccount storageAccount;
         public string Name => nameof(AzureQueueStorageLiveness);
 
-        public string DefaultPath => "azurequeuestorage";
+        public string Path { get; }
 
-        public AzureQueueStorageLiveness(string connectionString)
+        public AzureQueueStorageLiveness(string connectionString, string defaultPath)
         {
             storageAccount = CloudStorageAccount.Parse(connectionString);
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
