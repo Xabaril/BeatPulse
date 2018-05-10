@@ -12,16 +12,17 @@ namespace BeatPulse.SqlServer
     {
         public string Name => nameof(SqlServerLiveness);
 
-        public string DefaultPath => "sqlserver";
+        public string Path { get; }
 
         private readonly string _connectionString;
 
-        public SqlServerLiveness(string sqlserverconnectionstring)
+        public SqlServerLiveness(string sqlserverconnectionstring, string defaultPath)
         {
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

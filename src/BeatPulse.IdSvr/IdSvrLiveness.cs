@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.IdSvr
 {
-    public class IdSvrLiveness 
+    public class IdSvrLiveness
         : IBeatPulseLiveness
     {
         private readonly Uri _idSvrUri;
 
         public string Name => nameof(IdSvrLiveness);
 
-        public string DefaultPath => "idsvr";
+        public string Path { get; }
 
-        public IdSvrLiveness(Uri idSvrUri)
+        public IdSvrLiveness(Uri idSvrUri, string defaultPath)
         {
-            _idSvrUri = idSvrUri;
+            _idSvrUri = idSvrUri ?? throw new ArgumentNullException(nameof(idSvrUri));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)

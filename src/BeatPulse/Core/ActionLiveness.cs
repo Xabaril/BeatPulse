@@ -14,7 +14,7 @@ namespace BeatPulse.Core
 
         public string Name => _name;
 
-        public string DefaultPath => _defaultPath;
+        public string Path => _defaultPath;
 
         public ActionLiveness(string name, string defaultPath,Func<HttpContext,CancellationToken,Task<(string, bool)>> check)
         {

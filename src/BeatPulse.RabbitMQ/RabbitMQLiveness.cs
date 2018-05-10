@@ -10,16 +10,17 @@ namespace BeatPulse.RabbitMQ
 {
     public class RabbitMQLiveness : IBeatPulseLiveness
     {
-        private readonly string _rabbitMqConnectionString;
-
-        public RabbitMQLiveness(string rabbitMqConnectionString)
-        {
-            _rabbitMqConnectionString = rabbitMqConnectionString ?? throw new ArgumentNullException(nameof(rabbitMqConnectionString));
-        }
-
         public string Name => nameof(RabbitMQLiveness);
 
-        public string DefaultPath => "rabbitmq";
+        public string Path { get; }
+
+        private readonly string _rabbitMqConnectionString;
+
+        public RabbitMQLiveness(string rabbitMqConnectionString, string defaultPath)
+        {
+            _rabbitMqConnectionString = rabbitMqConnectionString ?? throw new ArgumentNullException(nameof(rabbitMqConnectionString));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
+        }
 
         public Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = new CancellationToken())
         {

@@ -12,15 +12,16 @@ namespace BeatPulse.Kafka
 {
     public class KafkaLiveness : IBeatPulseLiveness
     {
-        private readonly Dictionary<string, object> _config;
-
         public string Name => nameof(KafkaLiveness);
 
-        public string DefaultPath => "kafka";
+        public string Path { get; }
 
-        public KafkaLiveness(Dictionary<string, object> config)
+        private readonly Dictionary<string, object> _config;
+
+        public KafkaLiveness(Dictionary<string, object> config, string defaultPath)
         {
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
@@ -29,7 +30,7 @@ namespace BeatPulse.Kafka
             {
                 using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
                 {
-                    var result = await producer.ProduceAsync("betapulse-topic",null, $"Check Kafka healthy on {DateTime.UtcNow}");
+                    var result = await producer.ProduceAsync("betapulse-topic", null, $"Check Kafka healthy on {DateTime.UtcNow}");
 
                     if (result.Error.Code != ErrorCode.NoError)
                     {

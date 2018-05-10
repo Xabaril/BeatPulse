@@ -5,9 +5,9 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddRedis(this BeatPulseContext context, string redisConnectionString)
+        public static BeatPulseContext AddRedis(this BeatPulseContext context, string redisConnectionString, string defaultPath = "redis")
         {
-            context.Add(new RedisLiveness(redisConnectionString));
+            context.Add(new RedisLiveness(redisConnectionString, defaultPath));
 
             return context;
         }
