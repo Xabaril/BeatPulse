@@ -30,6 +30,7 @@
     <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
     <MicrosoftExtensionConfigurationBinderVersion>2.0.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
+    <RabbitMQVersion>5.0.1</RabbitMQVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
@@ -45,6 +46,7 @@
     <BeatPulseMongoDbPackageVersion>1.3.3</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>1.3.3</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>1.3.3</BeatpulseNpgSqlPackageVersion>
+    <BeatPulseRabbitMQPackageVersion>1.3.3</BeatPulseRabbitMQPackageVersion>
     <BeatpulseRedisPackageVersion>1.3.3</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>1.3.3</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>1.3.3</BeatPulseSqlServerPackageVersion>    

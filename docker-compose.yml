@@ -44,6 +44,10 @@ services:
           - ${KAFKA_PORT}:9092
         links: 
           - zookeeper
+    rabbitmq:
+        image: rabbitmq
+        ports:
+          - ${RABBITMQ_PORT}:5672
     idsvr:
         image: nakah/identityserver4
         ports:

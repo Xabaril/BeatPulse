@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using BeatPulse;
+using FluentAssertions;
 using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -8,22 +9,22 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BeatPulse.MongoDb
+namespace BeatPulse.RabbitMQ
 {
     [Collection("execution")]
-    public class mongodb_liveness_should
+    public class rabbitmq_liveness_should
     {
         private readonly ExecutionFixture _fixture;
 
-        public mongodb_liveness_should(ExecutionFixture fixture)
+        public rabbitmq_liveness_should(ExecutionFixture fixture)
         {
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
-        public async Task return_true_if_mongodb_is_available()
+        [SkipOnAppVeyor]
+        public async Task return_true_if_rabbitmq_is_available()
         {
-            var connectionString = @"mongodb://localhost:27017";
+            var connectionString = @"amqp://localhost:5672";
 
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
@@ -32,7 +33,7 @@ namespace BeatPulse.MongoDb
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddMongoDb(connectionString);
+                        context.AddRabbitMQ(connectionString);
                     });
                 });
 
@@ -44,8 +45,8 @@ namespace BeatPulse.MongoDb
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
-        public async Task return_false_if_mongodb_is_not_available()
+        [SkipOnAppVeyor]
+        public async Task return_false_if_rabbitmq_is_not_available()
         {
             var webHostBuilder = new WebHostBuilder()
                .UseStartup<DefaultStartup>()
@@ -54,7 +55,7 @@ namespace BeatPulse.MongoDb
                {
                    services.AddBeatPulse(context =>
                    {
-                       context.AddMongoDb("mongodb://nonexistingdomain:27017");
+                       context.AddRabbitMQ("amqp://nonexistingdomain:5672");
                    });
                });
 

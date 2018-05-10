@@ -321,19 +321,19 @@ namespace BeatPulse
             var healthCheck1 = new ActionLiveness(
                "check1",
                "check1",
-               async (httpcontext, cancellationToken) =>
+               (httpcontext, cancellationToken) =>
                {
                    check1IsExecuted = true;
-                   return ("custom check1 is not working", false);
+                   return Task.FromResult(("custom check1 is not working", false));
                });
 
             var healthCheck2 = new ActionLiveness(
               "check2",
               "check2",
-              async (httpcontext, cancellationToken) =>
+              (httpcontext, cancellationToken) =>
               {
                   check2IsExecuted = false;
-                  return ("custom check2 is  working", true);
+                  return Task.FromResult(("custom check2 is  working", true));
               });
 
             var webHostBuilder = new WebHostBuilder()

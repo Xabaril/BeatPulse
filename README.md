@@ -20,7 +20,7 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 Install-Package BeatPulse
 ```
 
-2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Azure Storage (Blobs, Tables and Queues), DocumentDb, MySQL, SqLite,Kafka, Identity Server and custom lambda liveness*.
+2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Azure Storage (Blobs, Tables and Queues), DocumentDb, MySQL, SqLite, Kafka, RabbitMQ, Identity Server and custom lambda liveness*.
 
 ``` PowerShell
 Install-Package BeatPulse.SqlServer
@@ -32,6 +32,7 @@ Install-Package BeatPulse.MySql
 Install-Package BeatPulse.DocumentDb
 Install-Package BeatPulse.SqLite
 Install-Package BeatPulse.Kafka
+Install-Package BeatPulse.RabbitMQ
 Install-Package BeatPulse.IdSvr
 ```
 
@@ -167,3 +168,4 @@ If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post
 3. Carlos Landeras @carloslanderas
 4. Luis Ruiz @lurumad
 5. Hugo biarge @hbiarge
+6. Matt Channer @mattchanner
