@@ -123,7 +123,7 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     ],
     "WebHookNotificationUri": "",
     "EvaluationTimeOnSeconds": 10,
-    "MinimunSecondsBetweenFailureNotifications":60
+    "MinimumSecondsBetweenFailureNotifications":60
   }
 }
 ```
@@ -131,7 +131,7 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     1.- Liveness: The collection of liveness uris to watch.
     2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
     3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
-    4.- MinimunSecondsBetweenFailureNotifications: The minimun seconds between failure notifications in order not flooding the notification receiver.
+    4.- MinimumSecondsBetweenFailureNotifications: The minimun seconds between failure notifications in order not flooding the notification receiver.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
 
