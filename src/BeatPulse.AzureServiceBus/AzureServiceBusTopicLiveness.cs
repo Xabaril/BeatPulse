@@ -15,13 +15,13 @@ namespace BeatPulse.AzureServiceBus
         private const string TEST_MESSAGE = "BeatpulseTest"; 
 
         public string Name => nameof(AzureServiceBusTopicLiveness);
+        public string Path { get; set; }
 
-        public string DefaultPath => "azureservicebustopic";
-
-        public AzureServiceBusTopicLiveness(string connectionString, string topicName)
+        public AzureServiceBusTopicLiveness(string connectionString, string topicName, string defaultPath)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _topicName = topicName ?? throw new ArgumentNullException(nameof(topicName));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)

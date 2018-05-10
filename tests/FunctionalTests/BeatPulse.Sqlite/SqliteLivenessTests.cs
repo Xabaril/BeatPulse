@@ -25,7 +25,7 @@ namespace FunctionalTests.BeatPulse.Sqlite
 
         [Fact]
         public async void be_healthy_when_sqlite_is_available()
-        {         
+        {
 
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
@@ -34,7 +34,7 @@ namespace FunctionalTests.BeatPulse.Sqlite
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddSqlite($"Data Source=sqlite.db", "select name from sqlite_master where type='table'");
+                        context.AddSqlite($"Data Source=sqlite.db", healthQuery: "select name from sqlite_master where type='table'");
                     });
                 });
 
@@ -48,8 +48,7 @@ namespace FunctionalTests.BeatPulse.Sqlite
 
         [Fact]
         public async Task be_unhealthy_when_sqlite_is_unavailable()
-        {          
-
+        {
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
                 .UseBeatPulse()
@@ -57,7 +56,7 @@ namespace FunctionalTests.BeatPulse.Sqlite
                 {
                     services.AddBeatPulse(context =>
                     {
-                        context.AddSqlite("Data Source=fake.db", "Select * from Users");
+                        context.AddSqlite("Data Source=fake.db", healthQuery: "Select * from Users");
                     });
                 });
 
@@ -67,6 +66,6 @@ namespace FunctionalTests.BeatPulse.Sqlite
                 .GetAsync();
 
             response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
-        }       
+        }
     }
 }

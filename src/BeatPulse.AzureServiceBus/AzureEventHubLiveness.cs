@@ -15,12 +15,13 @@ namespace BeatPulse.AzureServiceBus
         private readonly string _eventHubName;
 
         public string Name => nameof(AzureEventHubLiveness);
+        public string Path { get; }
 
-        public string DefaultPath => "azureeventhub";
-        public AzureEventHubLiveness(string connectionString, string eventHubName)
+        public AzureEventHubLiveness(string connectionString, string eventHubName, string defaultPath)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _eventHubName = eventHubName ?? throw new ArgumentNullException(nameof(eventHubName));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {

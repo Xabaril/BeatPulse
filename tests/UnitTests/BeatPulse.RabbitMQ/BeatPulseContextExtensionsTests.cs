@@ -7,12 +7,12 @@ using System.Linq;
 using UnitTests.Base;
 using Xunit;
 
-namespace BeatPulse.Redis
+namespace BeatPulse.RabbitMQ
 {
     public class beat_pulse_context_should
     {
         [Fact]
-        public void register_redis_liveness()
+        public void register_rabbitmq_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -21,7 +21,7 @@ namespace BeatPulse.Redis
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddRedis("the-redis-options");
+                        context.AddRabbitMQ("the-rabbitmq-options");
                     });
                 });
 
@@ -31,7 +31,7 @@ namespace BeatPulse.Redis
                 .GetService<BeatPulseContext>();
 
             beatPulseContex.AllLiveness
-                .Where(hc => hc.GetType() == typeof(RedisLiveness))
+                .Where(hc => hc.GetType() == typeof(RabbitMQLiveness))
                 .Should().HaveCount(1);
 
         }

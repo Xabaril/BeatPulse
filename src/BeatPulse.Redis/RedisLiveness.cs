@@ -14,11 +14,12 @@ namespace BeatPulse.Redis
 
         public string Name => nameof(RedisLiveness);
 
-        public string DefaultPath => "redis";
+        public string Path { get; }
 
-        public RedisLiveness(string redisConnectionString)
+        public RedisLiveness(string redisConnectionString, string defaultPath)
         {
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
@@ -36,7 +37,7 @@ namespace BeatPulse.Redis
 
                 return (message, false);
             }
-            
+
         }
     }
 }

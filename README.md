@@ -20,7 +20,7 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 Install-Package BeatPulse
 ```
 
-2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Azure Storage (Blobs, Tables and Queues), DocumentDb, MySQL, SqLite,Kafka and custom lambda liveness*.
+2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Azure Storage (Blobs, Tables and Queues), Azure Service Bus (Event Hub, Service Bus queues and topics), DocumentDb, MySQL, SqLite, Kafka, RabbitMQ, Identity Server and custom lambda liveness*.
 
 ``` PowerShell
 Install-Package BeatPulse.SqlServer
@@ -33,6 +33,8 @@ Install-Package BeatPulse.MySql
 Install-Package BeatPulse.DocumentDb
 Install-Package BeatPulse.SqLite
 Install-Package BeatPulse.Kafka
+Install-Package BeatPulse.RabbitMQ
+Install-Package BeatPulse.IdSvr
 ```
 
 3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method to register and configure BeatPulse.
@@ -80,7 +82,7 @@ Install-Package BeatPulse.Kafka
 
 5. Request *BeatPulse* to get liveness results.
 
-For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section.](./doc/beatpulse.md).
+For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section](./doc/beatpulse.md).
 
 ## UI
 
@@ -105,7 +107,7 @@ This automatically registers a new interface on **/beatpulse-ui**. Optionally, *
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
-**BeatPulseUI** exist as *docker images* and * kubernetes helm*. You can read more about [beat pulse ui docker images](./doc/ui-docker.md) and [beat pulse ui helm](./doc/helm.md).
+**BeatPulseUI** exist also as *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
 ### Configuration
 
@@ -167,3 +169,4 @@ If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post
 3. Carlos Landeras @carloslanderas
 4. Luis Ruiz @lurumad
 5. Hugo biarge @hbiarge
+6. Matt Channer @mattchanner

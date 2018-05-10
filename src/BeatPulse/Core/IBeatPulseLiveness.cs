@@ -8,7 +8,7 @@ namespace BeatPulse.Core
     {
         string Name { get; }
 
-        string DefaultPath { get; }
+        string Path { get; }
 
         Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default);
     }

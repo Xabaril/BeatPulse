@@ -15,13 +15,13 @@ namespace BeatPulse.AzureServiceBus
         private const string TEST_MESSAGE = "BeatpulseTest";
 
         public string Name => nameof(AzureServiceBusQueueLiveness);
+        public string Path { get; }
 
-        public string DefaultPath => "azureservicebusqueue";
-
-        public AzureServiceBusQueueLiveness(string connectionString, string queueName)
+        public AzureServiceBusQueueLiveness(string connectionString, string queueName, string defaultPath)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _queueName = queueName ?? throw new ArgumentNullException(nameof(queueName));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)

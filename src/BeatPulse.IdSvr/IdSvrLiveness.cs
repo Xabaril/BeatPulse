@@ -1,43 +1,45 @@
 ﻿using BeatPulse.Core;
-using Confluent.Kafka;
-using Confluent.Kafka.Serialization;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BeatPulse.Kafka
+namespace BeatPulse.IdSvr
 {
-    public class KafkaLiveness : IBeatPulseLiveness
+    public class IdSvrLiveness
+        : IBeatPulseLiveness
     {
-        public string Name => nameof(KafkaLiveness);
+        private readonly Uri _idSvrUri;
+
+        public string Name => nameof(IdSvrLiveness);
 
         public string Path { get; }
 
-        private readonly Dictionary<string, object> _config;
-
-        public KafkaLiveness(Dictionary<string, object> config, string defaultPath)
+        public IdSvrLiveness(Uri idSvrUri, string defaultPath)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _idSvrUri = idSvrUri ?? throw new ArgumentNullException(nameof(idSvrUri));
             Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {
+            const string IDSVR_DISCOVER_CONFIGURATION_SEGMENT = ".well-known/openid-configuration";
+
             try
             {
-                using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
+                using (var httpClient = new HttpClient() { BaseAddress = _idSvrUri })
                 {
-                    var result = await producer.ProduceAsync("betapulse-topic", null, $"Check Kafka healthy on {DateTime.UtcNow}");
+                    var response = await httpClient.GetAsync(IDSVR_DISCOVER_CONFIGURATION_SEGMENT);
 
-                    if (result.Error.Code != ErrorCode.NoError)
+                    if (!response.IsSuccessStatusCode)
                     {
                         var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
-                            : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
+                            : $"Discover endpoint is not responding with 200 OK, the current status is {response.StatusCode} and the content { (await response.Content.ReadAsStringAsync())}";
+
                         return (message, false);
                     }
+
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
