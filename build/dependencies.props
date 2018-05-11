@@ -30,6 +30,8 @@
     <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
     <MicrosoftExtensionConfigurationBinderVersion>2.0.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
+    <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
+    <MicrosoftAzureServiceBusVersion>2.0.0</MicrosoftAzureServiceBusVersion>
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
   </PropertyGroup>
 
@@ -53,6 +55,7 @@
     <BeatPulseKafkaVersion>1.4.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>1.4.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>1.4.0</BeatPulseIdSvrVersion>
+	  <BeatPulseAzureServiceBusVersion>1.4.0</BeatPulseAzureServiceBusVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
