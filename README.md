@@ -194,7 +194,7 @@ You must scape the json before setting the **Payload** property in the configura
 ```
 When the liveness returns **Down** you should received the notification in your Teams channel:
 
-![BeatPulseUI](./doc/webhook.PNG)
+![BeatPulseUI](./doc/webhook.png)
 
 Also, in the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
 
