@@ -122,7 +122,13 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
         "Uri": "http://localhost:6457/health"
       }
     ],
-    "WebHookNotificationUri": "",
+    "Webhooks": [
+      {
+        "Name": "",
+        "Uri": "",
+        "Payload": ""
+      }
+    ],
     "EvaluationTimeOnSeconds": 10,
     "MinimumSecondsBetweenFailureNotifications":60
   }
@@ -131,14 +137,66 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
 
     1.- Liveness: The collection of liveness uris to watch.
     2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
-    3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
+    3.- Webhooks: If any liveness return a *Down* result, this collections will be used to notify the error status. (Payload is the json payload and must be scape. For mor information see Notifications section)
     4.- MinimumSecondsBetweenFailureNotifications: The minimun seconds between failure notifications in order not flooding the notification receiver.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
 
 ### Notifications
 
-If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post a new notification into this webhook. In the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
+If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two values:
+
+    1.- [[LIVENESS]] The name of the liveness that returns *Down*.
+    2.- [[FAILURE]] A detail message with the failure.
+
+For example, if you want to notify the failures to an incoming webhook in Microsoft Teams you can use this payload:
+
+```json
+{
+  "@context": "http://schema.org/extensions",
+  "@type": "MessageCard",
+  "themeColor": "0072C6",
+  "title": "[[LIVENESS]] has failed!",
+  "text": "[[FAILURE]]. Click **Learn More** to go to BeatPulseUI!",
+  "potentialAction": [
+    {
+      "@type": "OpenUri",
+      "name": "Learn More",
+      "targets": [
+        { "os": "default", "uri": "http://localhost:52665/beatpulse-ui" }
+      ]
+    }
+  ]
+}
+```
+
+You must scape the json before setting the **Payload** property in the configuration file:
+
+```json
+{
+  "BeatPulse-UI": {
+    "Liveness": [
+      {
+        "Name": "HTTP-Api-Basic",
+        "Uri": "http://localhost:6457/health"
+      }
+    ],
+    "Webhooks": [
+      {
+        "Name": "Teams",
+        "Uri": "https://outlook.office.com/webhook/...",
+        "Payload": "{\r\n  \"@context\": \"http://schema.org/extensions\",\r\n  \"@type\": \"MessageCard\",\r\n  \"themeColor\": \"0072C6\",\r\n  \"title\": \"[[LIVENESS]] has failed!\",\r\n  \"text\": \"[[FAILURE]] Click **Learn More** to go to BeatPulseUI Portal\",\r\n  \"potentialAction\": [\r\n    {\r\n      \"@type\": \"OpenUri\",\r\n      \"name\": \"Lear More\",\r\n      \"targets\": [\r\n        { \"os\": \"default\", \"uri\": \"http://localhost:52665/beatpulse-ui\" }\r\n      ]\r\n    }\r\n  ]\r\n}"
+      }
+    ],
+    "EvaluationTimeOnSeconds": 10
+  }
+}
+```
+When the liveness returns **Down** you should received the notification in your Teams channel:
+
+![BeatPulseUI](./doc/webhook.PNG)
+
+Also, in the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
 
 ```csharp
     
