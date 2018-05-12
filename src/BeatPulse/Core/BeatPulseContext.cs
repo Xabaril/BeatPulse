@@ -15,17 +15,17 @@ namespace BeatPulse.Core
                 throw new ArgumentNullException(nameof(liveness));
             }
 
-            var defaultPath = liveness.DefaultPath;
+            var path = liveness.Path;
 
-            if (!string.IsNullOrEmpty(defaultPath))
+            if (!string.IsNullOrEmpty(path))
             {
-                if (!_activeLiveness.ContainsKey(defaultPath))
+                if (!_activeLiveness.ContainsKey(path))
                 {
-                    _activeLiveness.Add(defaultPath, liveness);
+                    _activeLiveness.Add(path, liveness);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"The path {defaultPath} is already configured.");
+                    throw new InvalidOperationException($"The path {path} is already configured.");
                 }
 
                 return this;

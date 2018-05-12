@@ -24,8 +24,31 @@ services:
         ports:
             - ${MONGODB_PORT}:27017
     mysql:
-        image: mysql
+        image: mysql:5.7
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
         ports:
             - ${MYSQL_PORT}:3306
+    zookeeper:
+        image: confluent/zookeeper
+        ports:
+            - ${ZOOKEEPER_PORT}:2181
+
+    kafka:
+        image: confluent/kafka
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=localhost
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+            - KAFKA_ADVERTISED_PORT=9092
+        ports:
+          - ${KAFKA_PORT}:9092
+        links: 
+          - zookeeper
+    rabbitmq:
+        image: rabbitmq
+        ports:
+          - ${RABBITMQ_PORT}:5672
+    idsvr:
+        image: nakah/identityserver4
+        ports:
+          - ${IDSVR_PORT}:8888

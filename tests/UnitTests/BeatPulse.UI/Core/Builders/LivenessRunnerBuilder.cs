@@ -12,7 +12,7 @@ namespace BeatPulse.UI.Core.Builders
         string _content;
         ILivenessFailureNotifier _notifier;
         LivenessDb _livenessDb;
-        int _minimunElapsedNotificationSeconds = 0;
+        int _minimumElapsedNotificationSeconds = 0;
 
         public LivenessRunnerBuilder WithHttpStatusCode(HttpStatusCode httpStatus)
         {
@@ -49,9 +49,9 @@ namespace BeatPulse.UI.Core.Builders
             return this;
         }
 
-        public LivenessRunnerBuilder WithMinimunElapsedSecondsOnNotifications(int elapsedSeconds)
+        public LivenessRunnerBuilder WithMinimumElapsedSecondsOnNotifications(int elapsedSeconds)
         {
-            _minimunElapsedNotificationSeconds = elapsedSeconds;
+            _minimumElapsedNotificationSeconds = elapsedSeconds;
 
             return this;
         }
@@ -61,7 +61,7 @@ namespace BeatPulse.UI.Core.Builders
             var logger = new Logger<LivenessRunner>(new LoggerFactory());
             var options = Options.Create(new BeatPulseSettings()
             {
-                MinimunSecondsBetweenFailureNotifications = _minimunElapsedNotificationSeconds
+                MinimumSecondsBetweenFailureNotifications = _minimumElapsedNotificationSeconds
             });
 
             return new FakeLivenessRunner(_status, _content, _livenessDb, _notifier,options, logger);

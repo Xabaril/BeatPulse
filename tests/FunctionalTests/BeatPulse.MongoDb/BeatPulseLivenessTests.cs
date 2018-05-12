@@ -8,7 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BeatPulse.SqlServer
+namespace BeatPulse.MongoDb
 {
     [Collection("execution")]
     public class mongodb_liveness_should
@@ -23,9 +23,6 @@ namespace BeatPulse.SqlServer
         [Fact]
         public async Task return_true_if_mongodb_is_available()
         {
-            //read appveyor services default values on
-            //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
-
             var connectionString = @"mongodb://localhost:27017";
 
             var webHostBuilder = new WebHostBuilder()

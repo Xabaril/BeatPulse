@@ -81,7 +81,7 @@ namespace BeatPulse.Core
         {
             _logger.LogInformation($"Executing liveness {liveness.Name}.");
 
-            var livenessResult = new LivenessResult(liveness.Name, liveness.DefaultPath);
+            var livenessResult = new LivenessResult(liveness.Name, liveness.Path);
 
             livenessResult.StartCounter();
 

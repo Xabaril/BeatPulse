@@ -40,7 +40,7 @@ namespace BeatPulse.Core
             liveness.Name
                 .Should().Be(nameof(defaultName));
 
-            liveness.DefaultPath
+            liveness.Path
                 .Should().Be(nameof(defaultPath));
         }
     }

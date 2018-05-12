@@ -8,22 +8,23 @@ namespace BeatPulse.MySql
 {
     public class MySqlLiveness : IBeatPulseLiveness
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public string Name => nameof(MySqlLiveness);
 
-        public string DefaultPath => "mysql";
+        public string Path { get; }
 
-        public MySqlLiveness(string connectionString)
+        public MySqlLiveness(string connectionString, string defaultPath)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
         public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {
             try
             {
-                using (var connection = new MySqlConnection(connectionString))
+                using (var connection = new MySqlConnection(_connectionString))
                 {
                     await connection.OpenAsync(cancellationToken);
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);

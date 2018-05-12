@@ -10,19 +10,19 @@ namespace BeatPulse.NpgSql
     public class NpgSqlLiveness
         : IBeatPulseLiveness
     {
-        private readonly string _npgsqlConnectionString;
-
         public string Name => nameof(NpgSqlLiveness);
 
-        public string DefaultPath => "npgsql";
+        public string Path { get; }
 
+        private readonly string _npgsqlConnectionString;
 
-        public NpgSqlLiveness(string npgsqlConnectionString)
+        public NpgSqlLiveness(string npgsqlConnectionString, string defaultPath)
         {
             _npgsqlConnectionString = npgsqlConnectionString ?? throw new ArgumentNullException(nameof(npgsqlConnectionString));
+            Path = defaultPath ?? throw new ArgumentNullException(nameof(Path));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context,bool isDevelopment,CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
         {
             using (var connection = new NpgsqlConnection(_npgsqlConnectionString))
             {
