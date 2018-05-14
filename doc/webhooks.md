@@ -2,7 +2,7 @@
 
 ## Microsoft Teams
 
-![BeatPulseUI](./doc/webhook_teams.png)
+![BeatPulseUI](./webhook_teams.png)
 
 If you want to send failure notifications to Microsoft Teams the payload to be used is:
 
