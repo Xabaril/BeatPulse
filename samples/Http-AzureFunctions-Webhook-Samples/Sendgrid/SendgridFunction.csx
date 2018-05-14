@@ -6,9 +6,10 @@ public static async Task Run(HttpRequestMessage req, IAsyncCollector<Mail> messa
 {
     const string targetEmail = "youemail@host.com";
 
-    string data = await req.Content.ReadAsStringAsync();
+    string jsonContent = await req.Content.ReadAsStringAsync();
+    dynamic payload = JObject.Parse(jsonContent);
 
-    log.Info($"Notifying {data} to {targetEmail}");
+    log.Info($"Notifying a new failure notification to configured phone number");
 
     var mail = new Mail
     {
@@ -21,7 +22,7 @@ public static async Task Run(HttpRequestMessage req, IAsyncCollector<Mail> messa
     Content content = new Content
     {
         Type = "text/plain",
-        Value = data
+        Value = $"The liveness {payload.liveness} is failing with message {payload.message}"
     };
 
     mail.AddContent(content);

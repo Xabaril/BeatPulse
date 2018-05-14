@@ -11,8 +11,6 @@ namespace BeatPulse.UI.Core
     class LivenessFailureNotifier
         : ILivenessFailureNotifier
     {
-        private const string Liveness = "[[LIVENESS]]";
-        private const string Failure = "[[FAILURE]]";
         private readonly ILogger<LivenessFailureNotifier> _logger;
         private readonly BeatPulseSettings _settings;
 
@@ -29,14 +27,15 @@ namespace BeatPulse.UI.Core
                 if (webHook.Uri == null || !Uri.TryCreate(webHook.Uri, UriKind.Absolute, out Uri webHookUri))
                 {
                     _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri ({webHook.Name}). Set the webhook uri value on BeatPulse setttings.");
+
                     continue;
                 }
 
                 using (var httpClient = new HttpClient())
                 {
                     webHook.Payload = webHook.Payload
-                        .Replace(Liveness, livenessName)
-                        .Replace(Failure, content);
+                        .Replace(BeatPulseUIKeys.LIVENESS_BOOKMARK, livenessName)
+                        .Replace(BeatPulseUIKeys.FAILURE_BOOKMARK, content);
 
                     var payload = new StringContent(webHook.Payload, Encoding.UTF8, BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE);
 
@@ -51,10 +50,9 @@ namespace BeatPulse.UI.Core
                     }
                     catch (Exception exception)
                     {
-                        _logger.LogError($"The failure notification is not executed successfully.", exception);
+                        _logger.LogError($"The failure notification for {webHook.Name} is not executed successfully.", exception);
                     }
                 }
-
             }
         }
     }

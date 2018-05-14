@@ -4,7 +4,7 @@ By default, the global path returns the aggregated state of all liveness checker
 
 If all liveness are up and running, *BeatPulse* return HTTP 200 OK.
 
-``` json
+``` bash
 curl http://your-domain/hc 
 GET /hc HTTP/1.1
 Host: your-domain
@@ -16,7 +16,7 @@ OK
 
 If some liveness is not working, *BeatPulse* return HTTP 503 ServiceUnavailable.
 
-``` json
+``` bash
 curl http://your-domain/hc 
 GET /hc HTTP/1.1
 Host: your-domain
@@ -28,7 +28,7 @@ ServiceUnavailable
 
 When *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results. If you use *BeatPulse UI* detailed information is mandatory.
 
-``` json
+``` bash
 
 curl http://your-domain/hc
 GET /hc HTTP/1.1
@@ -71,7 +71,7 @@ HTTP/1.1 200 OK
 
 If you need to know the status of a particular service you can add the liveess name as a new segment into the liveness uri. In our later case, if you need a liveness uri for SqlServer  add /sqlserver to the *BeatPulse* request uri. The flag *DetailedOutput* is also working with particular checks.
 
-``` json
+``` bash
 
 curl http://your-domain/hc/sqlserver
 GET /hc HTTP/1.1

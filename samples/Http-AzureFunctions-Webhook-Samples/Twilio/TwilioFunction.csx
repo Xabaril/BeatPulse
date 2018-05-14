@@ -1,18 +1,20 @@
-﻿
-#r "Twilio.API"
+﻿#r "Twilio.API"
+#r "Newtonsoft.Json"
 
 using System;
 using System.Net;
 using Twilio;
+using Newtonsoft.Json.Linq;
 
 public static async Task Run(HttpRequestMessage req, IAsyncCollector<SMSMessage> message, TraceWriter log)
 
 {
-    string messageContent = await req.Content.ReadAsStringAsync();
+    string jsonContent = await req.Content.ReadAsStringAsync();
+    dynamic payload = JObject.Parse(jsonContent);
 
-    log.Info($"Notifying: {messageContent} to configured phone number");
+    log.Info($"Notifying a new failure notification to configured phone number");
 
     var sms = new SMSMessage();
-    sms.Body = messageContent;
+    sms.Body = $"The liveness {payload.liveness} is failing with message {payload.message}";
     await message.AddAsync(sms);
 }

@@ -82,7 +82,17 @@ Install-Package BeatPulse.IdSvr
 
 5. Request *BeatPulse* to get liveness results.
 
-For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section](./doc/beatpulse.md).
+``` bash
+curl http://your-domain/hc 
+GET /hc HTTP/1.1
+Host: your-domain
+User-Agent: curl/7.49.0
+Accept: */*
+HTTP/1.1 200 OK
+OK
+```
+
+For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
 ## UI
 
@@ -103,7 +113,9 @@ The project BeatPulse.UI is a minimal UI interface that store and shows the live
     }
 ```
 
-This automatically registers a new interface on **/beatpulse-ui**. Optionally, *UseBeatPulseUI* can be configured with different UI response path.
+This automatically registers a new interface on **/beatpulse-ui**. 
+
+> Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
@@ -142,89 +154,28 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
 
-### Notifications
+### Failure Notifications
 
-If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two values:
+If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two bookmarks:
 
     1.- [[LIVENESS]] The name of the liveness that returns *Down*.
     2.- [[FAILURE]] A detail message with the failure.
 
-For example, if you want to notify the failures to an incoming webhook in Microsoft Teams you can use this payload:
+The [web hooks secions](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
 
-```json
-{
-  "@context": "http://schema.org/extensions",
-  "@type": "MessageCard",
-  "themeColor": "0072C6",
-  "title": "[[LIVENESS]] has failed!",
-  "text": "[[FAILURE]]. Click **Learn More** to go to BeatPulseUI!",
-  "potentialAction": [
-    {
-      "@type": "OpenUri",
-      "name": "Learn More",
-      "targets": [
-        { "os": "default", "uri": "http://localhost:52665/beatpulse-ui" }
-      ]
-    }
-  ]
-}
-```
 
-You must scape the json before setting the **Payload** property in the configuration file:
 
-```json
-{
-  "BeatPulse-UI": {
-    "Liveness": [
-      {
-        "Name": "HTTP-Api-Basic",
-        "Uri": "http://localhost:6457/health"
-      }
-    ],
-    "Webhooks": [
-      {
-        "Name": "Teams",
-        "Uri": "https://outlook.office.com/webhook/...",
-        "Payload": "{\r\n  \"@context\": \"http://schema.org/extensions\",\r\n  \"@type\": \"MessageCard\",\r\n  \"themeColor\": \"0072C6\",\r\n  \"title\": \"[[LIVENESS]] has failed!\",\r\n  \"text\": \"[[FAILURE]] Click **Learn More** to go to BeatPulseUI Portal\",\r\n  \"potentialAction\": [\r\n    {\r\n      \"@type\": \"OpenUri\",\r\n      \"name\": \"Lear More\",\r\n      \"targets\": [\r\n        { \"os\": \"default\", \"uri\": \"http://localhost:52665/beatpulse-ui\" }\r\n      ]\r\n    }\r\n  ]\r\n}"
-      }
-    ],
-    "EvaluationTimeOnSeconds": 10
-  }
-}
-```
-When the liveness returns **Down** you should received the notification in your Teams channel:
+## Contributing 
 
-![BeatPulseUI](./doc/webhook.png)
+BeatPulse wouldn't be possible without the time and effort of its contributors. The team is made up of Unai Zorrilla Castro @unaizorrilla, Luis Ruiz Pavón @lurumad, Carlos Landeras @carloslanderas and Eduard Tomás @eiximenis.
 
-Also, in the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
+*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner.
 
-```csharp
-    
-    #r "Twilio.API"
+If you want to contribute to a project and make it better, your help is very welcome. You can contribute with helpful bug reports, feature request and also new features with pull requests.
 
-    using System;
-    using System.Net;
-    using Twilio;
+## How to make a clean pull request
 
-    public static async Task Run(HttpRequestMessage req, IAsyncCollector<SMSMessage> message, TraceWriter log)
-
-    {
-        string messageContent = await req.Content.ReadAsStringAsync();
-
-        log.Info($"Notifying: {messageContent} to configured phone number");
-
-        var sms = new SMSMessage();
-        sms.Body = messageContent;
-        await message.AddAsync(sms);
-    }
-
-```
-
-## Contributors
-
-1. Unai Zorrilla Castro @unaizorrilla
-2. Eduard Tomás @eiximenis
-3. Carlos Landeras @carloslanderas
-4. Luis Ruiz @lurumad
-5. Hugo biarge @hbiarge
-6. Matt Channer @mattchanner
+1. Read and follow the [Don't push your pull requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/)
+2. Build.ps1 is working on local and AppVeyor.
+3. Follow the code guidelines and conventions.
+4. New features is not only code, tests and documentation is also mandatory.
