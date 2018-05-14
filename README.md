@@ -161,7 +161,7 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically post a new
     1.- [[LIVENESS]] The name of the liveness that returns *Down*.
     2.- [[FAILURE]] A detail message with the failure.
 
-The [web hooks secions](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
+The [web hooks section](./doc/webhook_teams.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
 
 
 
