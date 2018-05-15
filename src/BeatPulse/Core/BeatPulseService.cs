@@ -16,11 +16,12 @@ namespace BeatPulse.Core
         private readonly ILogger<BeatPulseService> _logger;
         private readonly IHostingEnvironment _environment;
 
-        public BeatPulseService(BeatPulseContext context, IHostingEnvironment environment, ILogger<BeatPulseService> logger)
+        public BeatPulseService(BeatPulseContext context, IHostingEnvironment environment, ILogger<BeatPulseService> logger, IServiceProvider serviceProvider)
         {
             _beatPulseContext = context ?? throw new ArgumentNullException(nameof(context));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            context.UseServiceProvider(serviceProvider);
         }
 
         public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext httpContext)

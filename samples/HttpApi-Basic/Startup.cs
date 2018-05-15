@@ -6,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace HttpApi_Basic
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -26,9 +28,11 @@ namespace HttpApi_Basic
                 //add sql server health check
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
-                //add custom health check
-                setup.Add(new ActionLiveness("cat", "catapi", (httpContext, cancellationToken) =>
+                //add custom health check using factory method. Using factory method allows us to get services through IServiceProvider
+                setup.Add("catapi", sp => new ActionLiveness("cat", "catapi", (httpContext, cancellationToken) =>
                 {
+                    var log = sp.GetRequiredService<ILogger<ActionLiveness>>();
+                    log.LogInformation("Running ActionLiveness");
                     if ((DateTime.UtcNow.Minute & 1) == 1)
                     {
                         return Task.FromResult(("OK", true));
