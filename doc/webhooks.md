@@ -135,3 +135,44 @@ public static async Task Run(HttpRequestMessage req, IAsyncCollector<Mail> messa
   }
 }
 ```
+
+## Slack
+
+If you want to send BeatPulse failure notifications to Slack channel the payload to be used follow the rules described [here](https://api.slack.com/incoming-webhooks).
+
+Next **json** is a payload sample for Slack web hook integration:
+
+```json
+{
+  "text": "The livneess [[LIVENESS]] is failing with the error message [[FAILURE]]. <http://yourappstatus|Click here> to get more details",
+  "channel": "#general",
+  "link_names": 1,
+  "username": "monkey-bot",
+  "icon_emoji": ":monkey_face:"
+}
+```
+
+And the BeatPulseUI configuration:
+
+```json
+{
+  "BeatPulse-UI": {
+    "Liveness": [
+      {
+        "Name": "HTTP-Api-Basic",
+        "Uri": "http://localhost:6457/health"
+      }
+    ],
+    "Webhooks": [
+      {
+        "Name": "Slack",
+        "Uri": "https://hooks.slack.com/services/.../...",
+        "Payload": "{\"text\":\"The livneess [[LIVENESS]] is failing with the error message [[FAILURE]]. <http://yourappstatus|Click here> to get more details.\",\"channel\":\"#general\",\"link_names\": 1,\"username\":\"monkey-bot\",\"icon_emoji\":\":monkey_face:\"}"
+      }
+    ],
+    "EvaluationTimeOnSeconds": 10
+  }
+}
+```
+
+> Review [Slack Documentation](https://accionaenergia.slack.com/apps/new/A0F7XDUAZ-incoming-webhooks) to get more information about creating incoming web hook integrations.
