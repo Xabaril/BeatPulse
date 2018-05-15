@@ -21,7 +21,7 @@ namespace BeatPulse.Core
             _beatPulseContext = context ?? throw new ArgumentNullException(nameof(context));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            context.UseServiceProvider(serviceProvider);
+            _beatPulseContext.UseServiceProvider(serviceProvider);
         }
 
         public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions options, HttpContext httpContext)

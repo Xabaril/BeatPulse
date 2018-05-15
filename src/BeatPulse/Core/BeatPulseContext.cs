@@ -20,6 +20,7 @@ namespace BeatPulse.Core
             }
 
             var path = registration.Path;
+
             if (!string.IsNullOrEmpty(path))
             {
                 if (!_registeredLiveness.ContainsKey(path))

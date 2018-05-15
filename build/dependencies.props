@@ -42,7 +42,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>1.4.5</BeatPulsePackageVersion>
+    <BeatPulsePackageVersion>1.5.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>1.4.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>1.4.0</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>1.4.0</BeatPulseMongoDbPackageVersion>
