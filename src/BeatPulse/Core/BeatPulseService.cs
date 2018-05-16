@@ -66,7 +66,7 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
-        public void Track(LivenessResult responses)
+        private void Track(LivenessResult responses)
         {
             if (_beatPulseContext.AllTrackers != null)
             {
