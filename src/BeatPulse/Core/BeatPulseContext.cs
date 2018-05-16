@@ -1,27 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeatPulse.Core
 {
     public sealed class BeatPulseContext
     {
-        private readonly Dictionary<string, IBeatPulseLiveness> _activeLiveness = new Dictionary<string, IBeatPulseLiveness>();
+        private readonly Dictionary<string, IBeatPulseLivenessRegistration> _registeredLiveness = new Dictionary<string, IBeatPulseLivenessRegistration>();
         private readonly Dictionary<string, IBeatPulseTracker> _activeTrackers = new Dictionary<string, IBeatPulseTracker>();
 
-        public BeatPulseContext Add(IBeatPulseLiveness liveness)
+        private IServiceProvider _serviceProvider;
+
+        internal void UseServiceProvider(IServiceProvider sp) => _serviceProvider = sp;
+
+        public BeatPulseContext Add(IBeatPulseLivenessRegistration registration)
         {
-            if (liveness == null)
+            if (registration == null)
             {
-                throw new ArgumentNullException(nameof(liveness));
+                throw new ArgumentNullException(nameof(registration));
             }
 
-            var path = liveness.Path;
+            var path = registration.Path;
 
             if (!string.IsNullOrEmpty(path))
             {
-                if (!_activeLiveness.ContainsKey(path))
+                if (!_registeredLiveness.ContainsKey(path))
                 {
-                    _activeLiveness.Add(path, liveness);
+                    _registeredLiveness.Add(path, registration);
                 }
                 else
                 {
@@ -33,6 +38,7 @@ namespace BeatPulse.Core
             else
             {
                 throw new InvalidOperationException("The global path is automatically used for beat pulse.");
+
             }
         }
 
@@ -59,16 +65,16 @@ namespace BeatPulse.Core
 
         internal IBeatPulseLiveness FindLiveness(string path)
         {
-            _activeLiveness.TryGetValue(path, out IBeatPulseLiveness check);
+            _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check);
 
-            return check;
+            return check?.GetOrCreateLiveness(_serviceProvider);
         }
 
         internal IEnumerable<IBeatPulseLiveness> AllLiveness
         {
             get
             {
-                return _activeLiveness.Values;
+                return _registeredLiveness.Values.Select(r => r.GetOrCreateLiveness(_serviceProvider));
             }
         }
 

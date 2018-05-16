@@ -82,7 +82,17 @@ Install-Package BeatPulse.IdSvr
 
 5. Request *BeatPulse* to get liveness results.
 
-For more information about *BeatPulse* configuration and other features ( cache, authentication... ) see the [specific documentation section](./doc/beatpulse.md).
+``` bash
+curl http://your-domain/hc 
+GET /hc HTTP/1.1
+Host: your-domain
+User-Agent: curl/7.49.0
+Accept: */*
+HTTP/1.1 200 OK
+OK
+```
+
+For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
 ## UI
 
@@ -103,7 +113,9 @@ The project BeatPulse.UI is a minimal UI interface that store and shows the live
     }
 ```
 
-This automatically registers a new interface on **/beatpulse-ui**. Optionally, *UseBeatPulseUI* can be configured with different UI response path.
+This automatically registers a new interface on **/beatpulse-ui**. 
+
+> Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
 ![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
 
@@ -122,7 +134,13 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
         "Uri": "http://localhost:6457/health"
       }
     ],
-    "WebHookNotificationUri": "",
+    "Webhooks": [
+      {
+        "Name": "",
+        "Uri": "",
+        "Payload": ""
+      }
+    ],
     "EvaluationTimeOnSeconds": 10,
     "MinimumSecondsBetweenFailureNotifications":60
   }
@@ -131,36 +149,26 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
 
     1.- Liveness: The collection of liveness uris to watch.
     2.- EvaluationTimeOnSeconds: Number of elapsed seconds between liveness checks.
-    3.- WebHookNotificationUri: If any liveness return a *Down* result, this uri is used to notify the error status.
+    3.- Webhooks: If any liveness return a *Down* result, this collections will be used to notify the error status. (Payload is the json payload and must be scape. For mor information see Notifications section)
     4.- MinimumSecondsBetweenFailureNotifications: The minimun seconds between failure notifications in order not flooding the notification receiver.
 
 All liveness results are stored into a SqLite database persisted to disk with *livenessdb* name.
 
-### Notifications
+### Failure Notifications
 
-If the **WebHookNotificationUri** is configured, BeatPulse-UI automatically post a new notification into this webhook. In the samples folders exist some **Azure Functions** to show howto recive the failure and send this using sms or mail transports.
+If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two bookmarks:
 
-```csharp
-    
-    #r "Twilio.API"
+    1.- [[LIVENESS]] The name of the liveness that returns *Down*.
+    2.- [[FAILURE]] A detail message with the failure.
 
-    using System;
-    using System.Net;
-    using Twilio;
+The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
 
-    public static async Task Run(HttpRequestMessage req, IAsyncCollector<SMSMessage> message, TraceWriter log)
 
-    {
-        string messageContent = await req.Content.ReadAsStringAsync();
 
-        log.Info($"Notifying: {messageContent} to configured phone number");
 
-        var sms = new SMSMessage();
-        sms.Body = messageContent;
-        await message.AddAsync(sms);
-    }
+*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner.
 
-```
+If you want to contribute to a project and make it better, your help is very welcome. You can contribute with helpful bug reports, feature request and also new features with pull requests.
 
 ## Tracking pulses
 
@@ -197,11 +205,11 @@ The information will be saved to Application Insights as *custom events* using e
 - *Run*: boolean indicator if liveness has run.
 - *Milliseconds*: milliseconds with the liveness call duration.
 
-## Contributors
+## Contributing 
 
-1. Unai Zorrilla Castro @unaizorrilla
-2. Eduard Tomás @eiximenis
-3. Carlos Landeras @carloslanderas
-4. Luis Ruiz @lurumad
-5. Hugo biarge @hbiarge
-6. Matt Channer @mattchanner
+BeatPulse wouldn't be possible without the time and effort of its contributors. The team is made up of Unai Zorrilla Castro @unaizorrilla, Luis Ruiz Pavón @lurumad, Carlos Landeras @carloslanderas and Eduard Tomás @eiximenis.
+
+1. Read and follow the [Don't push your pull requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/)
+2. Build.ps1 is working on local and AppVeyor.
+3. Follow the code guidelines and conventions.
+4. New features is not only code, tests and documentation is also mandatory.

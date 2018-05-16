@@ -42,7 +42,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>1.4.5</BeatPulsePackageVersion>
+    <BeatPulsePackageVersion>1.5.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>1.4.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>1.4.0</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>1.4.0</BeatPulseMongoDbPackageVersion>
@@ -51,7 +51,7 @@
     <BeatpulseRedisPackageVersion>1.4.0</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>1.4.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>1.4.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>1.4.5</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>1.5.0</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>1.4.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>1.4.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>1.4.0</BeatPulseIdSvrVersion>

@@ -6,7 +6,7 @@ namespace BeatPulse.UI.Configuration
     {
         public List<LivenessConfigurationSetting> Liveness { get; set; }
 
-        public string WebHookNotificationUri { get; set; }
+        public List<WebHookNotification> Webhooks { get; set; }
 
         public int EvaluationTimeOnSeconds { get; set; } = 10;
 
@@ -18,5 +18,12 @@ namespace BeatPulse.UI.Configuration
         public string Name { get; set; }
 
         public string Uri { get; set; }
+    }
+
+    class WebHookNotification
+    {
+        public string Name { get; set; }
+        public string Uri { get; set; }
+        public string Payload { get; set; }
     }
 }

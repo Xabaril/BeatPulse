@@ -12,3 +12,5 @@ You can use the environment variables to configure all properties on *BeatPulseU
 ```bash
 docker run --name ui -p 5000:80 -e 'BeatPulse-UI:Liveness:0:Name=httpBasic' -e 'BeatPulse-UI:Liveness:0:Uri=http://the-livenes-server-path' -d beatpulseui:latest
 ```
+
+Read the [DockerHub full description](https://hub.docker.com/r/xabarilcoding/beatpulseui/) to get more information about BeatPulse docker configuration.

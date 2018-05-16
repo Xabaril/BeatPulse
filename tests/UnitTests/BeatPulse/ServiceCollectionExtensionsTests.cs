@@ -40,6 +40,17 @@ namespace BeatPulse
         }
 
         [Fact]
+        public void set_valid_serviceprovider_to_context_to_allow_resolve_serviced_liveness()
+        {
+            var service = _serviceProvider.GetService<IBeatPulseService>(); // Need to resolve IBeatPulseService because its it who injects IServiceProvider to context
+            var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>(); 
+            string path2;
+            beatPulseContext.FindLiveness(nameof(path2))
+                 .Should()
+                 .NotBeNull();
+        }
+
+        [Fact]
         public void execute_the_context_setup()
         {
             var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
@@ -54,17 +65,26 @@ namespace BeatPulse
 
         class DefaultStartup
         {
+            class FooService { }
             public void ConfigureServices(IServiceCollection services)
             {
                 string name;
                 string path;
+                string path2;
 
                 var taskResult = Task.FromResult((string.Empty, true));
 
                 services.AddBeatPulse(context =>
                 {
                     context.Add(new ActionLiveness(nameof(name), nameof(path), (httpcontext, cancellationToken) => taskResult));
+                    context.Add(nameof(path2), sp =>
+                    {
+                        var service = sp.GetRequiredService<FooService>();
+                        return new ActionLiveness(nameof(path2), nameof(path2), (httpcontext, cancellationToken) => taskResult);
+                    });
                 });
+
+                services.AddTransient<FooService>();
             }
 
             public void Configure(IApplicationBuilder app)

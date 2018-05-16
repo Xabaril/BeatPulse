@@ -22,12 +22,22 @@ namespace BeatPulse.UI.Core
 
         public async Task NotifyFailure(string livenessName, string content)
         {
-            if (_settings.WebHookNotificationUri != null
-                && Uri.TryCreate(_settings.WebHookNotificationUri, UriKind.Absolute, out Uri webHookUri))
+            foreach (var webHook in _settings.Webhooks)
             {
+                if (webHook.Uri == null || !Uri.TryCreate(webHook.Uri, UriKind.Absolute, out Uri webHookUri))
+                {
+                    _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri ({webHook.Name}). Set the webhook uri value on BeatPulse setttings.");
+
+                    continue;
+                }
+
                 using (var httpClient = new HttpClient())
                 {
-                    var payload = new StringContent($"{livenessName} Failure: {content}", Encoding.UTF8, BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE);
+                    webHook.Payload = webHook.Payload
+                        .Replace(BeatPulseUIKeys.LIVENESS_BOOKMARK, livenessName)
+                        .Replace(BeatPulseUIKeys.FAILURE_BOOKMARK, content);
+
+                    var payload = new StringContent(webHook.Payload, Encoding.UTF8, BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE);
 
                     try
                     {
@@ -35,18 +45,14 @@ namespace BeatPulse.UI.Core
 
                         if (!response.IsSuccessStatusCode)
                         {
-                            _logger.LogError($"The failure notification is not executed successfully. The error code is {response.StatusCode}.");
+                            _logger.LogError($"The failure notification is not executed successfully for {webHook.Name} webhook. The error code is {response.StatusCode}.");
                         }
                     }
                     catch (Exception exception)
                     {
-                        _logger.LogError($"The failure notification is not executed successfully.", exception);
+                        _logger.LogError($"The failure notification for {webHook.Name} is not executed successfully.", exception);
                     }
                 }
-            }
-            else
-            {
-                _logger.LogWarning($"The web hook notification uri is not stablished or is not an absolute Uri. Set the webhook uri value on BeatPulse setttings.");
             }
         }
     }
