@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BeatPulse;
-using BeatPulse.Core;
-using BeatPulse.SqlServer;
-using BeatPulse.Tracker.ApplicationInsights;
+﻿using BeatPulse.Core;
 using FluentAssertions;
-using FluentAssertions.Primitives;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using UnitTests.Base;
 using Xunit;
 
-namespace BeatPulse.Tracker.AppInsights
+namespace BeatPulse.ApplicationInsightsTracker
 {
     public class beat_pulse_context_should
     {
@@ -38,7 +31,7 @@ namespace BeatPulse.Tracker.AppInsights
                 .GetService<BeatPulseContext>();
 
             beatPulseContext.AllTrackers
-                .Where(hc => hc.GetType() == typeof(ApplicationInsightsTracker))
+                .Where(hc => hc.GetType() == typeof(AITracker))
                 .Should().HaveCount(1);
         }
 
@@ -62,9 +55,8 @@ namespace BeatPulse.Tracker.AppInsights
                 .GetService<BeatPulseContext>();
 
             beatPulseContext.AllTrackers
-                .Where(hc => hc.GetType() == typeof(ApplicationInsightsTracker))
+                .Where(hc => hc.GetType() == typeof(AITracker))
                 .Should().HaveCount(1);
         }
-
     }
 }

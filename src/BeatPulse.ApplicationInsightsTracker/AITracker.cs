@@ -5,22 +5,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 
-namespace BeatPulse.Tracker.ApplicationInsights
+namespace BeatPulse.ApplicationInsightsTracker
 {
-    public class ApplicationInsightsTracker
+    public class AITracker
         : IBeatPulseTracker
     {
-        public string Name => nameof(ApplicationInsightsTracker);
+        const string EVENT_NAME = "BeatPulse";
+        const string METRIC_NAME = "ResponseTime";
+
+        public string Name => nameof(AITracker);
 
         private TelemetryClient _telemetryClient;
 
-        public ApplicationInsightsTracker(string instrumentationKey = null)
+        public AITracker()
         {
-            var configuration = instrumentationKey != null
-                ? new TelemetryConfiguration(instrumentationKey)
-                : TelemetryConfiguration.Active;
-
-            _telemetryClient = new TelemetryClient(configuration);
+            _telemetryClient = new TelemetryClient(TelemetryConfiguration.Active);
         }
 
         public Task Track(LivenessResult livenessResult)
@@ -35,11 +34,11 @@ namespace BeatPulse.Tracker.ApplicationInsights
 
             var metrics = new Dictionary<string, double>()
             {
-                {"ResponseTime",livenessResult.MilliSeconds }
+                {METRIC_NAME,livenessResult.MilliSeconds }
             };
 
 
-            _telemetryClient.TrackEvent($"BeatPulse", properties, metrics);
+            _telemetryClient.TrackEvent(EVENT_NAME, properties, metrics);
 
             return Task.CompletedTask;
         }

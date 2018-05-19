@@ -24,7 +24,7 @@ services:
         ports:
             - ${MONGODB_PORT}:27017
     mysql:
-        image: mysql:5.7
+        image: mysql
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
         ports:

@@ -51,7 +51,7 @@ namespace BeatPulse.Core
 
             var trackerKey = nameof(tracker);
 
-            if (_activeTrackers.ContainsKey(trackerKey))
+            if (!_activeTrackers.ContainsKey(trackerKey))
             {
                 _activeTrackers.Add(trackerKey, tracker);
             }
