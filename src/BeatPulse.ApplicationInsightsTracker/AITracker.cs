@@ -2,6 +2,7 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -39,6 +40,10 @@ namespace BeatPulse.ApplicationInsightsTracker
 
 
             _telemetryClient.TrackEvent(EVENT_NAME, properties, metrics);
+
+            Debug.WriteLine(TelemetryConfiguration.Active.InstrumentationKey);
+            Debug.WriteLine(TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode);
+
 
             return Task.CompletedTask;
         }
