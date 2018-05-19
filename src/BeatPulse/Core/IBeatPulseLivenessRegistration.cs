@@ -6,6 +6,6 @@ namespace BeatPulse.Core
     {
         string Path { get; }
 
-        IBeatPulseLiveness GetOrCreateLiveness(IServiceProvider sp);
+        IBeatPulseLiveness GetOrCreateLiveness(IServiceProvider serviceProvider);
     }
 }

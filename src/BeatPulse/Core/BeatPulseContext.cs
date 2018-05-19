@@ -6,8 +6,11 @@ namespace BeatPulse.Core
 {
     public sealed class BeatPulseContext
     {
-        private readonly Dictionary<string, IBeatPulseLivenessRegistration> _registeredLiveness = new Dictionary<string, IBeatPulseLivenessRegistration>();
-        private readonly Dictionary<string, IBeatPulseTracker> _activeTrackers = new Dictionary<string, IBeatPulseTracker>();
+        private readonly Dictionary<string, IBeatPulseLivenessRegistration> _registeredLiveness
+            = new Dictionary<string, IBeatPulseLivenessRegistration>();
+
+        private readonly Dictionary<string, IBeatPulseTrackerRegistration> _activeTrackers
+            = new Dictionary<string, IBeatPulseTrackerRegistration>();
 
         private IServiceProvider _serviceProvider;
 
@@ -42,22 +45,22 @@ namespace BeatPulse.Core
             }
         }
 
-        public BeatPulseContext AddTracker(IBeatPulseTracker tracker)
+        public BeatPulseContext AddTracker(IBeatPulseTrackerRegistration registration)
         {
-            if (tracker == null)
+            if (registration == null)
             {
-                throw new ArgumentNullException(nameof(tracker));
+                throw new ArgumentNullException(nameof(registration));
             }
 
-            var trackerKey = nameof(tracker);
+            var name = registration.Name;
 
-            if (!_activeTrackers.ContainsKey(trackerKey))
+            if (!_activeTrackers.ContainsKey(name))
             {
-                _activeTrackers.Add(trackerKey, tracker);
+                _activeTrackers.Add(name, registration);
             }
             else
             {
-                throw new InvalidOperationException($"The tracker {trackerKey} is already registered.");
+                throw new InvalidOperationException($"The tracker {registration.Name} is already registered.");
             }
 
             return this;
@@ -74,7 +77,7 @@ namespace BeatPulse.Core
         {
             get
             {
-                return _registeredLiveness.Values.Select(r => r.GetOrCreateLiveness(_serviceProvider));
+                return _registeredLiveness.Values.Select(registration => registration.GetOrCreateLiveness(_serviceProvider));
             }
         }
 
@@ -82,7 +85,7 @@ namespace BeatPulse.Core
         {
             get
             {
-                return _activeTrackers.Values;
+                return _activeTrackers.Values.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
             }
         }
     }

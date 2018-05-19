@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,6 +19,7 @@ namespace BeatPulse
         {
             _serviceProvider = WebHost.CreateDefaultBuilder()
                 .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
                 .Build()
                 .Services;
         }
@@ -32,7 +34,7 @@ namespace BeatPulse
         }
 
         [Fact]
-        public void register_beat_pulse_contxt()
+        public void register_beat_pulse_context()
         {
             _serviceProvider.GetService<BeatPulseContext>()
                 .Should()
@@ -40,14 +42,43 @@ namespace BeatPulse
         }
 
         [Fact]
-        public void set_valid_serviceprovider_to_context_to_allow_resolve_serviced_liveness()
+        public void set_valid_serviceprovider_to_context_to_allow_resolve_liveness()
         {
-            var service = _serviceProvider.GetService<IBeatPulseService>(); // Need to resolve IBeatPulseService because its it who injects IServiceProvider to context
-            var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>(); 
+            // Need to resolve IBeatPulseService because its 
+            // it who injects IServiceProvider to context.
+
+            var beatPulseService = _serviceProvider.GetService<IBeatPulseService>();
+            var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
+
             string path2;
             beatPulseContext.FindLiveness(nameof(path2))
                  .Should()
                  .NotBeNull();
+        }
+
+        [Fact]
+        public void set_valid_serviceprovider_to_context_to_allow_resolve_trackers()
+        {
+            // Need to resolve IBeatPulseService because its 
+            // it who injects IServiceProvider to context.
+
+            var beatPulseService = _serviceProvider.GetService<IBeatPulseService>();
+            var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
+
+            var testTrackerName = nameof(TestTracker);
+            var testTrackerWithDependenciesName = nameof(TestTrackerWithDependencies);
+
+            beatPulseContext.AllTrackers
+                .Where(tracker => tracker.Name.Equals(testTrackerName))
+                .SingleOrDefault()
+                .Should()
+                .NotBeNull();
+
+            beatPulseContext.AllTrackers
+               .Where(tracker => tracker.Name.Equals(testTrackerWithDependenciesName))
+               .SingleOrDefault()
+               .Should()
+               .NotBeNull();
         }
 
         [Fact]
@@ -63,9 +94,10 @@ namespace BeatPulse
 
         }
 
+        class FooService { }
+
         class DefaultStartup
         {
-            class FooService { }
             public void ConfigureServices(IServiceCollection services)
             {
                 string name;
@@ -76,11 +108,23 @@ namespace BeatPulse
 
                 services.AddBeatPulse(context =>
                 {
+                    //liveness 
+
                     context.AddLiveness(new ActionLiveness(nameof(name), nameof(path), (httpcontext, cancellationToken) => taskResult));
                     context.AddLiveness(nameof(path2), sp =>
                     {
                         var service = sp.GetRequiredService<FooService>();
                         return new ActionLiveness(nameof(path2), nameof(path2), (httpcontext, cancellationToken) => taskResult);
+                    });
+
+                    //trackers
+
+                    context.AddTracker(new TestTracker());
+                    context.AddTracker(nameof(TestTrackerWithDependencies), sp =>
+                    {
+                        var fooService = sp.GetRequiredService<FooService>();
+
+                        return new TestTrackerWithDependencies(fooService);
                     });
                 });
 
@@ -89,6 +133,33 @@ namespace BeatPulse
 
             public void Configure(IApplicationBuilder app)
             {
+            }
+        }
+
+        class TestTrackerWithDependencies : IBeatPulseTracker
+        {
+            private FooService _fooService;
+
+            public string Name => nameof(TestTrackerWithDependencies);
+
+            public TestTrackerWithDependencies(FooService fooService)
+            {
+                _fooService = fooService;
+            }
+
+            public Task Track(LivenessResult response)
+            {
+                return Task.CompletedTask;
+            }
+        }
+
+        class TestTracker : IBeatPulseTracker
+        {
+            public string Name => nameof(TestTracker);
+
+            public Task Track(LivenessResult response)
+            {
+                return Task.CompletedTask;
             }
         }
     }

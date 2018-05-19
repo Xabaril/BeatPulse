@@ -2,7 +2,6 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ namespace BeatPulse.ApplicationInsightsTracker
         : IBeatPulseTracker
     {
         const string EVENT_NAME = "BeatPulse";
-        const string METRIC_NAME = "ResponseTime";
+        const string METRIC_NAME = "BeatPulse:ResponseTime";
 
         public string Name => nameof(AITracker);
 
@@ -40,10 +39,6 @@ namespace BeatPulse.ApplicationInsightsTracker
 
 
             _telemetryClient.TrackEvent(EVENT_NAME, properties, metrics);
-
-            Debug.WriteLine(TelemetryConfiguration.Active.InstrumentationKey);
-            Debug.WriteLine(TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode);
-
 
             return Task.CompletedTask;
         }

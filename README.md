@@ -153,32 +153,35 @@ Install-Package BeatPulse.Tracker.ApplicationInsights
 
 ### Application Insights tracker configuration
 
-In the configuration section where you configured your *BetPulseService* add the tracker:
-``` csharp
- services.AddBeatPulse(setup =>
-    {
-        //Add Application Insights tracker
-        setup.AddTracker(new ApplicationInsightsTracker());
-    });
-``` 
+In the configuration section where you configured your *BetPulseService* add the tracker,
+
+```csharp
+    public class Startup
+    {       
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddApplicationInsightsTracker();
+            });
+        }
+    }
+```
+
+
 It will use your current Application Insights resource by default.
 
-If you were not using previously Application Insights in your project, or if you prefer to use a distinct Application Insights resource for liveness, you can use a different Instrumentation Key in the constructor.
-``` csharp
- services.AddBeatPulse(setup =>
-    {
-        //Add Application Insights tracker
-        setup.AddTracker(new ApplicationInsightsTracker("instrumentation-key"));
-    });
-``` 
-The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
-- *Name*: configured liveness name.
-- *Message*: message from liveness.
-- *IsHealthy*: boolean with healthy info from liveness.
-- *Run*: boolean indicator if liveness has run.
-- *Milliseconds*: milliseconds with the liveness call duration.
+> Remember set UseApplicationInsights in your program.cs.
 
-## Contributing 
+The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
+
+- *Name*: Configured liveness name.
+- *Message*: Message from liveness.
+- *IsHealthy*: Boolean with healthy info from liveness.
+- *Run*: Boolean indicator if liveness has run.
+- *BeatPulse:ResponseTime*: Milliseconds with the liveness call duration.
+
+## Contributing
 
 BeatPulse wouldn't be possible without the time and effort of its contributors. The team is made up of Unai Zorrilla Castro @unaizorrilla, Luis Ruiz Pavón @lurumad, Carlos Landeras @carloslanderas and Eduard Tomás @eiximenis.
 

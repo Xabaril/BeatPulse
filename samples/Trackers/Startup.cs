@@ -34,9 +34,6 @@ namespace Trackers
                 setup.AddApplicationInsightsTracker();
 
             }).AddMvc();
-
-            var obj = services.BuildServiceProvider()
-                .GetRequiredService<TelemetryClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
