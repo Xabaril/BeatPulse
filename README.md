@@ -148,7 +148,7 @@ The [web hooks section](./doc/webhooks.md) contain more information and webhook 
 Additionally you can save liveness information in external services. Currently we have developed a tracker for Application Insights you can use. To install this package:
 
 ``` Powershell
-Install-Package BeatPulse.Tracker.ApplicationInsights
+Install-Package BeatPulse.ApplicationInsightsTracker
 ```
 
 ### Application Insights tracker configuration
