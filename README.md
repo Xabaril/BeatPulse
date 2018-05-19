@@ -55,26 +55,6 @@ Install-Package BeatPulse.IdSvr
 ``` csharp
     services.AddBeatPulse(setup =>
     {
-        //add custom liveness
-        setup.Add(new ActionLiveness("cat", "catapi", async  httpContext =>
-        {
-            var httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("http://www.google.es")
-            };
-
-            var response = await httpClient.GetAsync(string.Empty);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return ("OK", true);
-            }
-            else
-            {
-                return ("the cat api is broken!", false);
-            }
-        }));
-
         //add sql server liveness
         setup.AddSqlServer("your-connection-string");
     });
@@ -163,13 +143,6 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically post a new
 
 The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
 
-
-
-
-*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner.
-
-If you want to contribute to a project and make it better, your help is very welcome. You can contribute with helpful bug reports, feature request and also new features with pull requests.
-
 ## Tracking pulses
 
 Additionally you can save liveness information in external services. Currently we have developed a tracker for Application Insights you can use. To install this package:
@@ -208,6 +181,10 @@ The information will be saved to Application Insights as *custom events* using e
 ## Contributing 
 
 BeatPulse wouldn't be possible without the time and effort of its contributors. The team is made up of Unai Zorrilla Castro @unaizorrilla, Luis Ruiz Pavón @lurumad, Carlos Landeras @carloslanderas and Eduard Tomás @eiximenis.
+
+*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner.
+
+If you want to contribute to a project and make it better, your help is very welcome. You can contribute with helpful bug reports, feature request and also new features with pull requests.
 
 1. Read and follow the [Don't push your pull requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/)
 2. Build.ps1 is working on local and AppVeyor.

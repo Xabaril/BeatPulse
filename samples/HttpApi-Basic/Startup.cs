@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace HttpApi_Basic
 {
@@ -25,14 +25,15 @@ namespace HttpApi_Basic
         {
             services.AddBeatPulse(setup =>
             {
-                //add sql server health check
+                //add sql server liveness
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
-                //add custom health check using factory method. Using factory method allows us to get services through IServiceProvider
-                setup.Add("catapi", sp => new ActionLiveness("cat", "catapi", (httpContext, cancellationToken) =>
+                //add custom liveness using factory method. Using factory method allows us to get services through IServiceProvider
+                setup.AddLiveness("catapi", sp => new ActionLiveness("cat", "catapi", (httpContext, cancellationToken) =>
                 {
                     var log = sp.GetRequiredService<ILogger<ActionLiveness>>();
                     log.LogInformation("Running ActionLiveness");
+
                     if ((DateTime.UtcNow.Minute & 1) == 1)
                     {
                         return Task.FromResult(("OK", true));

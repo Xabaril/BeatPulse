@@ -76,8 +76,8 @@ namespace BeatPulse
 
                 services.AddBeatPulse(context =>
                 {
-                    context.Add(new ActionLiveness(nameof(name), nameof(path), (httpcontext, cancellationToken) => taskResult));
-                    context.Add(nameof(path2), sp =>
+                    context.AddLiveness(new ActionLiveness(nameof(name), nameof(path), (httpcontext, cancellationToken) => taskResult));
+                    context.AddLiveness(nameof(path2), sp =>
                     {
                         var service = sp.GetRequiredService<FooService>();
                         return new ActionLiveness(nameof(path2), nameof(path2), (httpcontext, cancellationToken) => taskResult);

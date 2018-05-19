@@ -13,7 +13,7 @@ namespace BeatPulse.Core
 
         internal void UseServiceProvider(IServiceProvider sp) => _serviceProvider = sp;
 
-        public BeatPulseContext Add(IBeatPulseLivenessRegistration registration)
+        public BeatPulseContext AddLiveness(IBeatPulseLivenessRegistration registration)
         {
             if (registration == null)
             {
@@ -44,23 +44,23 @@ namespace BeatPulse.Core
 
         public BeatPulseContext AddTracker(IBeatPulseTracker tracker)
         {
-            var trackerName = nameof(tracker);
             if (tracker == null)
             {
-                throw new ArgumentNullException(trackerName);
+                throw new ArgumentNullException(nameof(tracker));
             }
 
-            if (!_activeTrackers.ContainsKey(trackerName))
+            var trackerKey = nameof(tracker);
+
+            if (_activeTrackers.ContainsKey(trackerKey))
             {
-                _activeTrackers.Add(trackerName, tracker);
+                _activeTrackers.Add(trackerKey, tracker);
             }
             else
             {
-                throw new InvalidOperationException($"The tracker {trackerName} is already registered");
+                throw new InvalidOperationException($"The tracker {trackerKey} is already registered.");
             }
 
             return this;
-
         }
 
         internal IBeatPulseLiveness FindLiveness(string path)
@@ -83,7 +83,6 @@ namespace BeatPulse.Core
             get
             {
                 return _activeTrackers.Values;
-
             }
         }
     }

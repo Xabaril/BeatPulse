@@ -9,7 +9,7 @@ namespace BeatPulse.DocumentDb
         {
             var documentDbOptions = new DocumentDbOptions();
             options(documentDbOptions);
-            context.Add(new DocumentDbLiveness(documentDbOptions, defaultPath));
+            context.AddLiveness(new DocumentDbLiveness(documentDbOptions, defaultPath));
             return context;
         }
     }

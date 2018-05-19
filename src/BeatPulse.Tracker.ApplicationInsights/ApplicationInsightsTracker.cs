@@ -1,43 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using BeatPulse.Core;
+﻿using BeatPulse.Core;
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace BeatPulse.Tracker.ApplicationInsights
 {
-    public class ApplicationInsightsTracker : IBeatPulseTracker
+    public class ApplicationInsightsTracker
+        : IBeatPulseTracker
     {
         public string Name => nameof(ApplicationInsightsTracker);
 
         private TelemetryClient _telemetryClient;
 
-        public ApplicationInsightsTracker(string instrumentationKey)
+        public ApplicationInsightsTracker(string instrumentationKey = null)
         {
-            _telemetryClient = new TelemetryClient(new TelemetryConfiguration(instrumentationKey));
+            var configuration = instrumentationKey != null
+                ? new TelemetryConfiguration(instrumentationKey)
+                : TelemetryConfiguration.Active;
+
+            _telemetryClient = new TelemetryClient(configuration);
         }
 
-        public ApplicationInsightsTracker()
+        public Task Track(LivenessResult livenessResult)
         {
-            _telemetryClient = new TelemetryClient();
+            var properties = new Dictionary<string, string>()
+            {
+                {nameof(livenessResult.IsHealthy),livenessResult.IsHealthy.ToString(CultureInfo.InvariantCulture)},
+                {nameof(livenessResult.Run),livenessResult.Run.ToString(CultureInfo.InvariantCulture)},
+                {nameof(livenessResult.Path),livenessResult.Path},
+                {nameof(livenessResult.Name),livenessResult.Name}
+            };
+
+            var metrics = new Dictionary<string, double>()
+            {
+                {"ResponseTime",livenessResult.MilliSeconds }
+            };
+
+
+            _telemetryClient.TrackEvent($"BeatPulse", properties, metrics);
+
+            return Task.CompletedTask;
         }
-
-        public void Track(LivenessResult livenessResult)
-        {
-            var data = livenessResult.GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(m => m.PropertyType == typeof(string) || m.PropertyType == typeof(bool))
-                .ToDictionary(prop => prop.Name, prop => prop.GetValue(livenessResult, null).ToString());
-
-            var metrics = new Dictionary<string, double>();
-            metrics.Add("Milliseconds", livenessResult.MilliSeconds);
-            _telemetryClient.TrackEvent($"BeatPulse", data, metrics);
-
-        }
-
     }
 }

@@ -64,7 +64,7 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.Add(healthCheck);
+                        context.AddLiveness(healthCheck);
                     });
                 });
 
@@ -101,7 +101,7 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.Add(healthCheck);
+                        context.AddLiveness(healthCheck);
                     });
                 });
 
@@ -137,7 +137,7 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.Add(healthCheck);
+                        context.AddLiveness(healthCheck);
                     });
                 });
 
@@ -179,7 +179,7 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.Add(healthCheck);
+                        context.AddLiveness(healthCheck);
                     });
                 });
 
@@ -343,8 +343,8 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(setup=>
                     {
-                        setup.Add(healthCheck1);
-                        setup.Add(healthCheck2);
+                        setup.AddLiveness(healthCheck1);
+                        setup.AddLiveness(healthCheck2);
                     });
                 });
 

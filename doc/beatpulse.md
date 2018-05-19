@@ -168,5 +168,6 @@ You can create your custom **IBeatPulseAuthenticationFilter** filters by creatin
 ```
 
 ```csharp
-    services.AddSingleton<IBeatPulseAuthenticationFilter>(new HeaderValueAuthenticationFilter("header1", "value1"));
+    services.AddSingleton<IBeatPulseAuthenticationFilter>(
+        new HeaderValueAuthenticationFilter("header1", "value1"));
 ```

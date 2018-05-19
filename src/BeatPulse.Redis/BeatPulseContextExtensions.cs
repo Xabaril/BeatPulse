@@ -7,7 +7,7 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddRedis(this BeatPulseContext context, string redisConnectionString, string defaultPath = "redis")
         {
-            context.Add(new RedisLiveness(redisConnectionString, defaultPath));
+            context.AddLiveness(new RedisLiveness(redisConnectionString, defaultPath));
 
             return context;
         }

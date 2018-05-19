@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 
 namespace BeatPulse.Core
 {
     public interface IBeatPulseTracker
     {
         string Name { get; }
-        void Track(LivenessResult response);
+
+        Task Track(LivenessResult response);
     }
 }

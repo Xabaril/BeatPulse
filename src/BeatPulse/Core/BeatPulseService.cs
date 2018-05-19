@@ -36,8 +36,8 @@ namespace BeatPulse.Core
                 {
                     var healthCheckResult = await RunLiveness(liveness, options, httpContext);
 
-                    this.Track(healthCheckResult);
-                    
+                    await RunTrackers(healthCheckResult);
+
                     livenessResults.Add(healthCheckResult);
 
                     if (!healthCheckResult.IsHealthy && !options.DetailedOutput)
@@ -67,15 +67,24 @@ namespace BeatPulse.Core
             return Enumerable.Empty<LivenessResult>();
         }
 
-        private void Track(LivenessResult responses)
+        Task RunTrackers(LivenessResult responses)
         {
-            if (_beatPulseContext.AllTrackers != null)
-            {
+            _logger.LogInformation("Sending liveness result to all configured trackers.");
+
+            var trackerTasks = new List<Task>();
+
+            if (_beatPulseContext.AllTrackers != null
+                && _beatPulseContext.AllTrackers.Any())
+            { 
                 foreach (var tracker in _beatPulseContext.AllTrackers)
                 {
-                    tracker.Track(responses);
+                    _logger.LogInformation($"Sending liveness result to track {tracker.Name}.");
+
+                    trackerTasks.Add(tracker.Track(responses));
                 }
             }
+
+            return Task.WhenAll(trackerTasks);
         }
 
         async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, BeatPulseOptions options, HttpContext httpContext)
@@ -108,7 +117,7 @@ namespace BeatPulse.Core
                         cancellationTokenSource.Cancel();
                         livenessResult.StopCounter(BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE, false);
                     }
-                }   
+                }
             }
             catch (Exception ex)
             {

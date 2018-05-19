@@ -1,22 +1,14 @@
-﻿using System;
-using BeatPulse.Core;
+﻿using BeatPulse.Core;
+using BeatPulse.Tracker.ApplicationInsights;
 
-namespace BeatPulse.Tracker.ApplicationInsights
+namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context,
-            string instrumentationKey)
+        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context, string instrumentationKey = null)
         {
             context.AddTracker(new ApplicationInsightsTracker(instrumentationKey));
 
-            return context;
-
-        }
-
-        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context)
-        {
-            context.AddTracker(new ApplicationInsightsTracker());
             return context;
         }
     }

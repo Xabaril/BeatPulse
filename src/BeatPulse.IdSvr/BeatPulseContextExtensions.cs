@@ -8,7 +8,7 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddIdentityServer(this BeatPulseContext context, Uri idSvrUri, string defaultPath = "idsvr")
         {
-            context.Add(new IdSvrLiveness(idSvrUri, defaultPath));
+            context.AddLiveness(new IdSvrLiveness(idSvrUri, defaultPath));
             return context;
         }
     }

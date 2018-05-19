@@ -10,19 +10,19 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddAzureEventHub(this BeatPulseContext context, string connectionString, string eventHubName, string defaultPath = "azureeventhub")
         {
-            context.Add(new AzureEventHubLiveness(connectionString, eventHubName, defaultPath));
+            context.AddLiveness(new AzureEventHubLiveness(connectionString, eventHubName, defaultPath));
             return context;
         }
 
         public static BeatPulseContext AddAzureServiceBusQueue(this BeatPulseContext context, string connectionString, string queueName, string defaultPath = "azureservicebusqueue")
         {
-            context.Add(new AzureServiceBusQueueLiveness(connectionString, queueName, defaultPath));
+            context.AddLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName, defaultPath));
             return context;
         }
 
         public static BeatPulseContext AddAzureServiceBusTopic(this BeatPulseContext context, string connectionString, string topicName, string defaultPath = "azureservicebustopic")
         {
-            context.Add(new AzureServiceBusTopicLiveness(connectionString, topicName, defaultPath));
+            context.AddLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName, defaultPath));
             return context;
         }
     }

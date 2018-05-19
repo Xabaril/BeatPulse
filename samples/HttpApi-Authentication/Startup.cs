@@ -35,7 +35,7 @@ namespace HttpApi_Authentication
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
                 //add custom health check
-                setup.Add(new ActionLiveness("custom", "customapi", (httpContext, cancellationToken) =>
+                setup.AddLiveness(new ActionLiveness("custom", "customapi", (httpContext, cancellationToken) =>
                 {
                     return Task.FromResult(("OK", true));
                 }));
