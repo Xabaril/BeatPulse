@@ -20,7 +20,7 @@
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
     <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
-    <MySqlDataVersion>6.10.6</MySqlDataVersion>
+    <MySqlConnectorVersion>0.40.4</MySqlConnectorVersion>
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
     <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
     <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
@@ -47,7 +47,7 @@
     <BeatPulseAzureStoragePackageVersion>1.4.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>1.4.0</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>1.4.0</BeatPulseMongoDbPackageVersion>
-    <BeatPulseMySqlPackageVersion>1.4.0</BeatPulseMySqlPackageVersion>
+    <BeatPulseMySqlPackageVersion>1.5.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>1.4.0</BeatpulseNpgSqlPackageVersion>
     <BeatpulseRedisPackageVersion>1.4.0</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>1.4.0</BeatPulseSqlitePackageVersion>
