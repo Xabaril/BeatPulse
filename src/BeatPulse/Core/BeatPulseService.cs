@@ -73,9 +73,8 @@ namespace BeatPulse.Core
 
             var trackerTasks = new List<Task>();
 
-            if (_beatPulseContext.AllTrackers != null
-                && _beatPulseContext.AllTrackers.Any())
-            { 
+            if (_beatPulseContext.AllTrackers != null)
+            {
                 foreach (var tracker in _beatPulseContext.AllTrackers)
                 {
                     _logger.LogInformation($"Sending liveness result to track {tracker.Name}.");
