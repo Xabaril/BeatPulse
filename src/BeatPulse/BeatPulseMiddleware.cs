@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BeatPulse
 {
-    class BeatPulseMiddleware
+    public class BeatPulseMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly TemplateMatcher _templateMatcher;
