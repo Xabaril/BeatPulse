@@ -29,6 +29,11 @@ namespace BeatPulse.NpgSql
                 try
                 {
                     await connection.OpenAsync(cancellationToken);
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT 1;";
+                        await command.ExecuteScalarAsync();
+                    }
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }

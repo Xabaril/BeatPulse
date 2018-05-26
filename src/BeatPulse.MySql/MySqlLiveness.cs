@@ -27,7 +27,10 @@ namespace BeatPulse.MySql
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     await connection.OpenAsync(cancellationToken);
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    if (await connection.PingAsync(cancellationToken))
+                        return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    else
+                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name), false);
                 }
             }
             catch (Exception ex)
