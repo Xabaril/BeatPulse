@@ -47,11 +47,11 @@
     <BeatPulseAzureStoragePackageVersion>1.7.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>1.7.0</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>1.7.0</BeatPulseMongoDbPackageVersion>
-    <BeatPulseMySqlPackageVersion>1.7.0</BeatPulseMySqlPackageVersion>
-    <BeatpulseNpgSqlPackageVersion>1.7.0</BeatpulseNpgSqlPackageVersion>
+    <BeatPulseMySqlPackageVersion>1.7.1</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>1.7.1</BeatpulseNpgSqlPackageVersion>
     <BeatpulseRedisPackageVersion>1.7.0</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>1.7.0</BeatPulseSqlitePackageVersion>
-    <BeatPulseSqlServerPackageVersion>1.7.0</BeatPulseSqlServerPackageVersion>
+    <BeatPulseSqlServerPackageVersion>1.7.1</BeatPulseSqlServerPackageVersion>
     <BeatPulseUIPackageVersion>1.7.0</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>1.7.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>1.7.0</BeatPulseRabbitMQPackageVersion>
