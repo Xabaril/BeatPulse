@@ -145,41 +145,9 @@ The [web hooks section](./doc/webhooks.md) contain more information and webhook 
 
 ## Tracking pulses
 
-Additionally you can save liveness information in external services. Currently we have developed a tracker for Application Insights you can use. To install this package:
+Additionally you can save liveness information in external services. Currently we have developed different trackers you can use.
 
-``` Powershell
-Install-Package BeatPulse.ApplicationInsightsTracker
-```
-
-### Application Insights tracker configuration
-
-In the configuration section where you configured your *BetPulseService* add the tracker,
-
-```csharp
-    public class Startup
-    {       
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddBeatPulse(setup =>
-            {
-                setup.AddApplicationInsightsTracker();
-            });
-        }
-    }
-```
-
-
-It will use your current Application Insights resource by default.
-
-> Remember set UseApplicationInsights in your program.cs.
-
-The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
-
-- *Name*: Configured liveness name.
-- *Message*: Message from liveness.
-- *IsHealthy*: Boolean with healthy info from liveness.
-- *Run*: Boolean indicator if liveness has run.
-- *BeatPulse:ResponseTime*: Milliseconds with the liveness call duration.
+1.- [Application Insights Tracker](./doc/ai-tracker.md)
 
 ## Contributing
 
