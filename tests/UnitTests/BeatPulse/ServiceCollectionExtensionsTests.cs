@@ -110,11 +110,20 @@ namespace BeatPulse
                 {
                     //liveness 
 
-                    context.AddLiveness(new ActionLiveness(nameof(name), nameof(path), (httpcontext, cancellationToken) => taskResult));
-                    context.AddLiveness(nameof(path2), sp =>
+                    context.AddLiveness(nameof(name), opt =>
                     {
-                        var service = sp.GetRequiredService<FooService>();
-                        return new ActionLiveness(nameof(path2), nameof(path2), (httpcontext, cancellationToken) => taskResult);
+                        opt.UsePath(nameof(path));
+                        opt.UseLiveness(new ActionLiveness((httpcontext, cancellationToken) => taskResult));
+                    });
+
+                    context.AddLiveness(nameof(path2), opt =>
+                    {
+                        opt.UseFactory(sp =>
+                        {
+                            var service = sp.GetRequiredService<FooService>();
+                            return new ActionLiveness((httpcontext, cancellationToken) => taskResult);
+                        });
+                        opt.UsePath(nameof(path2));
                     });
 
                     //trackers

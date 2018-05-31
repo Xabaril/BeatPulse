@@ -53,9 +53,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (httpcontext,cancellationToken) => Task.FromResult(("custom check is working", true)));
+                (httpcontext, cancellationToken) => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.EnableDetailedOutput())
@@ -64,7 +62,11 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -90,9 +92,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (httpcontext,cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
+                (httpcontext, cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -101,7 +101,11 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -126,8 +130,6 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
                 (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
@@ -137,7 +139,11 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -163,9 +169,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                async (httpcontext,cancellationToken) =>
+                async (httpcontext, cancellationToken) =>
                 {
                     await Task.Delay(100);
 
@@ -179,7 +183,11 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -319,8 +327,6 @@ namespace BeatPulse
             var check2IsExecuted = false;
 
             var healthCheck1 = new ActionLiveness(
-               "check1",
-               "check1",
                (httpcontext, cancellationToken) =>
                {
                    check1IsExecuted = true;
@@ -328,8 +334,6 @@ namespace BeatPulse
                });
 
             var healthCheck2 = new ActionLiveness(
-              "check2",
-              "check2",
               (httpcontext, cancellationToken) =>
               {
                   check2IsExecuted = false;
@@ -341,11 +345,20 @@ namespace BeatPulse
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddBeatPulse(setup=>
+                    svc.AddBeatPulse(context =>
                     {
-                        setup.AddLiveness(healthCheck1);
-                        setup.AddLiveness(healthCheck2);
+                        context.AddLiveness("check1", opt =>
+                        {
+                            opt.UsePath("check1");
+                            opt.UseLiveness(healthCheck1);
+                        });
+                        context.AddLiveness("check2", opt =>
+                        {
+                            opt.UsePath("check2");
+                            opt.UseLiveness(healthCheck2);
+                        });
                     });
+
                 });
 
             var server = new TestServer(webHostBuilder);
@@ -565,9 +578,9 @@ namespace BeatPulse
 
             var response = await server.CreateClient()
                 .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?api-key=test");
-            
+
             response.StatusCode.Should()
-                .Be(HttpStatusCode.Unauthorized);           
+                .Be(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -600,6 +613,6 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
-        }       
+        }
     }
 }

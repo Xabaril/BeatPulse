@@ -10,38 +10,13 @@ namespace BeatPulse.Core
         [Fact]
         public async Task execute_definded_action_for_health_check()
         {
-            var taskResult = Task.FromResult((string.Empty,false));
+            var taskResult = Task.FromResult((string.Empty, false));
+            var livenessContext = new LivenessContext() { IsDevelopment = false };
+            var liveness = new ActionLiveness((context, cancellationToken) => taskResult);
 
-            string defaultName;
-            string defaultPath;
-
-            var liveness = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (context,cancellationToken) => taskResult);
-
-            (await liveness.IsHealthy(new DefaultHttpContext(),isDevelopment:false))
-                .Should().Be(taskResult.Result);
+            (await liveness.IsHealthy(new DefaultHttpContext(), livenessContext))
+                    .Should().Be(taskResult.Result);
         }
 
-        [Fact]
-        public void get_specified_properties()
-        {
-            var taskResult = Task.FromResult((string.Empty, true));
-
-            string defaultName;
-            string defaultPath;
-
-            var liveness = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (httpcontext, cancellationToken) => taskResult);
-
-            liveness.Name
-                .Should().Be(nameof(defaultName));
-
-            liveness.Path
-                .Should().Be(nameof(defaultPath));
-        }
     }
 }
