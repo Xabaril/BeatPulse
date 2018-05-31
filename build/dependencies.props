@@ -58,6 +58,7 @@
     <BeatPulseIdSvrVersion>1.7.0</BeatPulseIdSvrVersion>
 	  <BeatPulseAzureServiceBusVersion>1.7.0</BeatPulseAzureServiceBusVersion>
     <BeatPulseAITrackerVersion>1.7.0</BeatPulseAITrackerVersion>
+    <BeatPulsePrometheusTrackerVersion>1.7.0</BeatPulsePrometheusTrackerVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

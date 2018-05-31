@@ -43,4 +43,4 @@ In the configuration section where you configured your *BetPulseService* add the
             });
         }
     }
-
+```
