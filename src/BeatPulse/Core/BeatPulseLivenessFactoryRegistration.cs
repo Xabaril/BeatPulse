@@ -8,9 +8,11 @@ namespace BeatPulse.Core
         private readonly Func<IServiceProvider, IBeatPulseLiveness> _creator;
 
         public string Path { get; }
+        public string Name { get; }
        
-        public BeatPulseLivenessFactoryRegistration(string path, Func<IServiceProvider, IBeatPulseLiveness> creator)
+        public BeatPulseLivenessFactoryRegistration(Func<IServiceProvider, IBeatPulseLiveness> creator, string name, string path)
         {
+            Name = name;
             Path = path;
             _creator = creator ?? throw new ArgumentNullException(nameof(creator));
         }

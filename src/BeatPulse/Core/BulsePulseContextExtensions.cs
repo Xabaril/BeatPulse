@@ -4,11 +4,14 @@ namespace BeatPulse.Core
 {
     public static class BulsePulseContextExtensions
     {
-        public static BeatPulseContext AddLiveness(this BeatPulseContext ctx, IBeatPulseLiveness liveness)
-            => ctx.AddLiveness(new BeatPulseLivenessInstanceRegistration(liveness));
+        public static BeatPulseContext AddLiveness(this BeatPulseContext ctx, string name, Action<BeatPulseLivenessRegistrationOptions> optionsAction)
+        {
+            var options = new BeatPulseLivenessRegistrationOptions(name);
+            optionsAction(options);
+            ctx.AddLiveness(BeatPulseLivenessRegistrationCreator.CreateUsingOptions(options));
+            return ctx;
+        }
 
-        public static BeatPulseContext AddLiveness(this BeatPulseContext ctx, string path, Func<IServiceProvider, IBeatPulseLiveness> creator)
-            => ctx.AddLiveness(new BeatPulseLivenessFactoryRegistration(path, creator));
 
         public static BeatPulseContext AddTracker(this BeatPulseContext ctx, IBeatPulseTracker tracker)
             => ctx.AddTracker(new BeatPulseTrackerInstanceRegistration(tracker));

@@ -73,6 +73,13 @@ namespace BeatPulse.Core
             return check?.GetOrCreateLiveness(_serviceProvider);
         }
 
+        internal IBeatPulseLivenessRegistration FindLivenessRegistration(string path)
+        {
+            return _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check) ? check : null;
+        }
+
+
+
         internal IEnumerable<IBeatPulseLiveness> AllLiveness
         {
             get
@@ -80,6 +87,10 @@ namespace BeatPulse.Core
                 return _registeredLiveness.Values.Select(registration => registration.GetOrCreateLiveness(_serviceProvider));
             }
         }
+
+        internal IBeatPulseLiveness GetLivenessFromRegistration(IBeatPulseLivenessRegistration registration) => registration.GetOrCreateLiveness(_serviceProvider);
+
+        internal IEnumerable<IBeatPulseLivenessRegistration> AllLivenessRegistrations => _registeredLiveness.Values;
 
         internal IEnumerable<IBeatPulseTracker> AllTrackers
         {
