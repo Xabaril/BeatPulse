@@ -26,10 +26,14 @@ namespace Trackers
         {
             services.AddBeatPulse(setup =>
             {
-                setup.AddLiveness(new ActionLiveness("Cat-API", "catapi", (_, __) =>
+                setup.AddLiveness("Cat-API", opt =>
                 {
-                    return Task.FromResult(("OK", true));
-                }));
+                    opt.UsePath("catapi");
+                    opt.UseLiveness(new ActionLiveness((_, __) =>
+                    {
+                        return Task.FromResult(("OK", true));
+                    }));
+                });
 
                 setup.AddApplicationInsightsTracker();
 

@@ -35,10 +35,15 @@ namespace HttpApi_Authentication
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
                 //add custom health check
-                setup.AddLiveness(new ActionLiveness("custom", "customapi", (httpContext, cancellationToken) =>
-                {
-                    return Task.FromResult(("OK", true));
-                }));
+                setup.AddLiveness("custom",
+                    opt =>
+                    {
+                        opt.UsePath("customapi");
+                        opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
+                        {
+                            return Task.FromResult(("OK", true));
+                        }));
+                    });
             });
         }
 

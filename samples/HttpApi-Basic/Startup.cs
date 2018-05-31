@@ -29,20 +29,26 @@ namespace HttpApi_Basic
                 setup.AddSqlServer("Server=.;Initial Catalog=master;Integrated Security=true");
 
                 //add custom liveness using factory method. Using factory method allows us to get services through IServiceProvider
-                setup.AddLiveness("catapi", sp => new ActionLiveness("cat", "catapi", (httpContext, cancellationToken) =>
-                {
-                    var log = sp.GetRequiredService<ILogger<ActionLiveness>>();
-                    log.LogInformation("Running ActionLiveness");
 
-                    if ((DateTime.UtcNow.Minute & 1) == 1)
+                setup.AddLiveness("cat", opt =>
+                {
+                    opt.UsePath("catapi");
+                    opt.UseFactory(sp => new ActionLiveness((httpContext, cancellationToken) =>
                     {
-                        return Task.FromResult(("OK", true));
-                    }
-                    else
-                    {
-                        return Task.FromResult(("the cat api is broken!", false));
-                    }
-                }));
+                        var log = sp.GetRequiredService<ILogger<ActionLiveness>>();
+                        log.LogInformation("Running ActionLiveness");
+
+                        if ((DateTime.UtcNow.Minute & 1) == 1)
+                        {
+                            return Task.FromResult(("OK", true));
+                        }
+                        else
+                        {
+                            return Task.FromResult(("the cat api is broken!", false));
+                        }
+                    }));
+                });
+
             });
 
             services.AddMvc();
