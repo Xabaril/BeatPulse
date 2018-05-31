@@ -78,8 +78,8 @@ For more information about *BeatPulse* configuration and other features ( cache,
 
 Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use.
 
-    1.- [Application Insights Tracker](./doc/ai-tracker.md)
-    2.- [Prometheus Tracker](./doc/prometheus_tracker.md)
+ [Application Insights Tracker](./doc/ai-tracker.md)
+ [Prometheus Tracker](./doc/prometheus_tracker.md)
 
 ## UI
 
