@@ -9,20 +9,15 @@ namespace BeatPulse.Sqlite
 {
     public class SqliteLiveness : IBeatPulseLiveness
     {
-        public string Name => nameof(SqliteLiveness);
-
-        public string Path { get; }
-
         private string _connectionString;
         private string _healthQuery;
 
-        public SqliteLiveness(string connectionString, string healthQuery, string defaultPath)
+        public SqliteLiveness(string connectionString, string healthQuery)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             SqliteConnection connection = null;
 
@@ -43,7 +38,9 @@ namespace BeatPulse.Sqlite
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var isDevelopment = livenessContext.IsDevelopment;
+                var name = livenessContext.Name;
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

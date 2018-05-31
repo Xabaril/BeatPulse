@@ -10,19 +10,15 @@ namespace BeatPulse.NpgSql
     public class NpgSqlLiveness
         : IBeatPulseLiveness
     {
-        public string Name => nameof(NpgSqlLiveness);
-
-        public string Path { get; }
-
+        
         private readonly string _npgsqlConnectionString;
 
-        public NpgSqlLiveness(string npgsqlConnectionString, string defaultPath)
+        public NpgSqlLiveness(string npgsqlConnectionString)
         {
             _npgsqlConnectionString = npgsqlConnectionString ?? throw new ArgumentNullException(nameof(npgsqlConnectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(Path));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             using (var connection = new NpgsqlConnection(_npgsqlConnectionString))
             {
@@ -39,7 +35,9 @@ namespace BeatPulse.NpgSql
                 }
                 catch (Exception ex)
                 {
-                    var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                    var isDevelopment = livenessContext.IsDevelopment;
+                    var name = livenessContext.Name;
+                    var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                     return (message, false);

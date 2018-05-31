@@ -14,16 +14,13 @@ namespace BeatPulse.AzureServiceBus
         private readonly string _connectionString;
         private readonly string _eventHubName;
 
-        public string Name => nameof(AzureEventHubLiveness);
-        public string Path { get; }
-
-        public AzureEventHubLiveness(string connectionString, string eventHubName, string defaultPath)
+    
+        public AzureEventHubLiveness(string connectionString, string eventHubName)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _eventHubName = eventHubName ?? throw new ArgumentNullException(nameof(eventHubName));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {                
@@ -39,7 +36,9 @@ namespace BeatPulse.AzureServiceBus
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var isDevelopment = livenessContext.IsDevelopment;
+                var name = livenessContext.Name;
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

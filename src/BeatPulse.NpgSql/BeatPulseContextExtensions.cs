@@ -7,9 +7,12 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddNpgSql(this BeatPulseContext context, string npgsqlConnectionString, string defaultPath = "npgsql")
         {
-            context.AddLiveness(new NpgSqlLiveness(npgsqlConnectionString,defaultPath));
+            return  context.AddLiveness(nameof(NpgSqlLiveness), opt =>
+            {
+                opt.UsePath(defaultPath);
+                opt.UseLiveness(new NpgSqlLiveness(npgsqlConnectionString));
+            });
 
-            return context;
-        }
+      }
     }
 }

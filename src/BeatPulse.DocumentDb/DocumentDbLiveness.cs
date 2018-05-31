@@ -9,20 +9,16 @@ namespace BeatPulse.DocumentDb
 {
     public class DocumentDbLiveness : IBeatPulseLiveness
     {
-        public string Name => nameof(DocumentDbLiveness);
-
-        public string Path { get; }
 
         private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();
 
-        public DocumentDbLiveness(DocumentDbOptions documentDbOptions, string defaultPath)
+        public DocumentDbLiveness(DocumentDbOptions documentDbOptions)
         {
             _documentDbOptions.UriEndpoint = documentDbOptions.UriEndpoint ?? throw new ArgumentNullException(nameof(documentDbOptions.UriEndpoint));
             _documentDbOptions.PrimaryKey = documentDbOptions.PrimaryKey ?? throw new ArgumentNullException(nameof(documentDbOptions.PrimaryKey));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
 
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -35,7 +31,9 @@ namespace BeatPulse.DocumentDb
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var isDevelopment = livenessContext.IsDevelopment;
+                var name = livenessContext.Name;
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

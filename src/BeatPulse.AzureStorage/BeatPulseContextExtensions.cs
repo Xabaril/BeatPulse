@@ -7,20 +7,31 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddAzureBlobStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azureblobstorage")
         {
-            context.AddLiveness(new AzureBlobStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(nameof(AzureBlobStorageLiveness), opt =>
+            {
+                opt.UseLiveness(new AzureBlobStorageLiveness(connectionString));
+                opt.UsePath(defaultPath);
+            });
         }
 
         public static BeatPulseContext AddAzureTableStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azuretablestorage")
         {
-            context.AddLiveness(new AzureTableStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(nameof(AzureTableStorageLiveness), opt =>
+            {
+                opt.UseLiveness(new AzureTableStorageLiveness(connectionString));
+                opt.UsePath(defaultPath);
+            });
+
         }
 
         public static BeatPulseContext AddAzureQueueStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azurequeuestorage")
         {
-            context.AddLiveness(new AzureQueueStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(nameof(AzureQueueStorageLiveness), opt =>
+            {
+                opt.UseLiveness(new AzureQueueStorageLiveness(connectionString));
+                opt.UsePath(defaultPath);
+            });
+
         }
     }
 }

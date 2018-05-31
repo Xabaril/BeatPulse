@@ -11,17 +11,13 @@ namespace BeatPulse.AzureStorage
     public class AzureQueueStorageLiveness : IBeatPulseLiveness
     {
         CloudStorageAccount storageAccount;
-        public string Name => nameof(AzureQueueStorageLiveness);
 
-        public string Path { get; }
-
-        public AzureQueueStorageLiveness(string connectionString, string defaultPath)
+        public AzureQueueStorageLiveness(string connectionString)
         {
             storageAccount = CloudStorageAccount.Parse(connectionString);
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -31,7 +27,9 @@ namespace BeatPulse.AzureStorage
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var isDevelopment = livenessContext.IsDevelopment;
+                var name = livenessContext.Name;
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

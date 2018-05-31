@@ -7,9 +7,11 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddRabbitMQ(this BeatPulseContext context, string rabbitMQConnectionString, string defaultPath = "rabbitmq")
         {
-            context.AddLiveness(new RabbitMQLiveness(rabbitMQConnectionString, defaultPath));
-
-            return context;
+            return context.AddLiveness(nameof(RabbitMQLiveness), opt =>
+            {
+                opt.UsePath(defaultPath);
+                opt.UseLiveness(new RabbitMQLiveness(rabbitMQConnectionString));
+            });
         }
     }
 }

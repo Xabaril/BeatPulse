@@ -14,18 +14,16 @@ namespace BeatPulse.AzureServiceBus
         private readonly string _topicName;
         private const string TEST_MESSAGE = "BeatpulseTest"; 
 
-        public string Name => nameof(AzureServiceBusTopicLiveness);
-        public string Path { get; set; }
 
-        public AzureServiceBusTopicLiveness(string connectionString, string topicName, string defaultPath)
+        public AzureServiceBusTopicLiveness(string connectionString, string topicName)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _topicName = topicName ?? throw new ArgumentNullException(nameof(topicName));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
+
             try
             {
                 var topicClient = new TopicClient(_connectionString, _topicName);
@@ -40,7 +38,9 @@ namespace BeatPulse.AzureServiceBus
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var isDevelopment = livenessContext.IsDevelopment;
+                var name = livenessContext.Name;
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

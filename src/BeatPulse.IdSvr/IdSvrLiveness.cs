@@ -12,20 +12,16 @@ namespace BeatPulse.IdSvr
     {
         private readonly Uri _idSvrUri;
 
-        public string Name => nameof(IdSvrLiveness);
-
-        public string Path { get; }
-
-        public IdSvrLiveness(Uri idSvrUri, string defaultPath)
+        public IdSvrLiveness(Uri idSvrUri)
         {
             _idSvrUri = idSvrUri ?? throw new ArgumentNullException(nameof(idSvrUri));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
             const string IDSVR_DISCOVER_CONFIGURATION_SEGMENT = ".well-known/openid-configuration";
-
+            var isDevelopment = livenessContext.IsDevelopment;
+            var name = livenessContext.Name;
             try
             {
                 using (var httpClient = new HttpClient() { BaseAddress = _idSvrUri })
@@ -34,7 +30,7 @@ namespace BeatPulse.IdSvr
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                        var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                             : $"Discover endpoint is not responding with 200 OK, the current status is {response.StatusCode} and the content { (await response.Content.ReadAsStringAsync())}";
 
                         return (message, false);
@@ -45,7 +41,7 @@ namespace BeatPulse.IdSvr
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

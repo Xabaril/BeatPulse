@@ -10,20 +10,17 @@ namespace BeatPulse.SqlServer
     public class SqlServerLiveness
         : IBeatPulseLiveness
     {
-        public string Name => nameof(SqlServerLiveness);
-
-        public string Path { get; }
-
+        
         private readonly string _connectionString;
 
-        public SqlServerLiveness(string sqlserverconnectionstring, string defaultPath)
+        public SqlServerLiveness(string sqlserverconnectionstring)
         {
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 try
@@ -39,7 +36,9 @@ namespace BeatPulse.SqlServer
                 }
                 catch (Exception ex)
                 {
-                    var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                    var isDevelopment = livenessContext.IsDevelopment;
+                    var name = livenessContext.Name;
+                    var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                     return (message, false);

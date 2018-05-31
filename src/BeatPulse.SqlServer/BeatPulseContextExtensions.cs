@@ -7,9 +7,11 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddSqlServer(this BeatPulseContext context, string connectionString, string defaultPath = "sqlserver")
         {
-            context.AddLiveness(new SqlServerLiveness(connectionString, defaultPath));
-
-            return context;
+            return context.AddLiveness(nameof(SqlServerLiveness), opt =>
+            {
+                opt.UsePath(defaultPath);
+                opt.UseLiveness(new SqlServerLiveness(connectionString));
+            });
         }
     }
 }

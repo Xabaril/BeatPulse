@@ -10,18 +10,17 @@ namespace BeatPulse.MySql
     {
         private readonly string _connectionString;
 
-        public string Name => nameof(MySqlLiveness);
 
-        public string Path { get; }
 
-        public MySqlLiveness(string connectionString, string defaultPath)
+        public MySqlLiveness(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
         {
+            var isDevelopment = livenessContext.IsDevelopment;
+            var name = livenessContext.Name;
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
@@ -30,12 +29,12 @@ namespace BeatPulse.MySql
                     if (await connection.PingAsync(cancellationToken))
                         return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                     else
-                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name), false);
+                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name), false);
                 }
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);
