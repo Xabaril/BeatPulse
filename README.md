@@ -74,6 +74,13 @@ OK
 
 For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
+## Tracking pulses
+
+Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use.
+
+    1.- [Application Insights Tracker](./doc/ai-tracker.md)
+    2.- [Prometheus Tracker](./doc/prometheus_tracker.md)
+
 ## UI
 
 The project BeatPulse.UI is a minimal UI interface that store and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.
@@ -97,7 +104,7 @@ This automatically registers a new interface on **/beatpulse-ui**.
 
 > Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
-![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
+![BeatPulseUI](./doc/images/ui-home.PNG)
 
 **BeatPulseUI** exist also as *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
@@ -142,13 +149,6 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically post a new
     2.- [[FAILURE]] A detail message with the failure.
 
 The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
-
-## Tracking pulses
-
-Additionally you can save liveness information in external services. Currently we have developed different trackers you can use.
-
-1.- [Application Insights Tracker](./doc/ai-tracker.md)
-2.- [Prometheus Tracker](./doc/prometheus_tracker.md)
 
 ## Contributing
 

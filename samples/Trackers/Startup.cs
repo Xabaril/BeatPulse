@@ -32,10 +32,10 @@ namespace Trackers
                 }));
 
                 //setup.AddApplicationInsightsTracker();
-                //setup.AddPrometheusTracker(new Uri("http://localhost:9091"), new Dictionary<string, string>()
-                //{
-                //    {"MachineName",Environment.MachineName}
-                //});
+                setup.AddPrometheusTracker(new Uri("http://localhost:9091"), new Dictionary<string, string>()
+                {
+                    {"MachineName",Environment.MachineName}
+                });
 
             }).AddMvc();
         }
