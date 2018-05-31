@@ -20,7 +20,7 @@ The *Tracker* project on samples directory contain a example of *Prometheus* tra
     });
 ```
 
-Now, you can use Grafana to create dashboards using the *BeatPulse* information. Browse to *http://localhost:3000** and create a new data source for *Prometheus*.
+Now, you can use Grafana to create dashboards using the *BeatPulse* information. Browse to *http://localhost:3000* and create a new data source for *Prometheus*.
 
 > Grafana use admin:admin as default credentials 
 
