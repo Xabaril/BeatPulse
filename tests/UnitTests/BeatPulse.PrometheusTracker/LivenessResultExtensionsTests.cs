@@ -25,7 +25,7 @@ namespace UnitTests.BeatPulse.PrometheusTracker
 
             livenessResult.GetPrometheusMetrics()
                 .Should()
-                .Contain($"beatpulse_pulse_ishealty{{ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_ishealthy{{ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace UnitTests.BeatPulse.PrometheusTracker
 
             prometheusMetrics
                 .Should()
-                .Contain($"beatpulse_pulse_ishealty{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_ishealthy{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
         }
     }
 }
