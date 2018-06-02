@@ -105,7 +105,7 @@ This automatically registers a new interface on **/beatpulse-ui**.
 
 > Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
-![BeatPulseUI](./doc/images/ui-home.PNG)
+![BeatPulseUI](./doc/images/ui-home.png)
 
 **BeatPulseUI** exist also as *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
