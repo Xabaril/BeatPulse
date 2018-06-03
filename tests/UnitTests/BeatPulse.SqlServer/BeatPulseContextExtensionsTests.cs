@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using BeatPulse.SqlServer;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -32,7 +31,7 @@ namespace BeatPulse.SqlServer
                 .GetService<BeatPulseContext>();
 
             beatPulseContex.GetAllLivenessRegistrations()
-                .Where(hc => hc.GetType() == typeof(SqlServerLiveness))
+                .Where(hc => hc.Name == nameof(SqlServerLiveness))
                 .Should().HaveCount(1);
 
         }

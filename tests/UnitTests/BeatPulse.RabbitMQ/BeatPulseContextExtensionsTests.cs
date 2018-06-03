@@ -31,7 +31,7 @@ namespace BeatPulse.RabbitMQ
                 .GetService<BeatPulseContext>();
 
             beatPulseContex.GetAllLivenessRegistrations()
-                .Where(hc => hc.GetType() == typeof(RabbitMQLiveness))
+                .Where(hc => hc.Name == nameof(RabbitMQLiveness))
                 .Should().HaveCount(1);
 
         }

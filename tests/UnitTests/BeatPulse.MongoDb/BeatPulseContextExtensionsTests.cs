@@ -31,7 +31,7 @@ namespace BeatPulse.MongoDb
                 .GetService<BeatPulseContext>();
 
             beatPulseContex.GetAllLivenessRegistrations()
-                .Where(hc => hc.GetType() == typeof(MongoDbLiveness))
+                .Where(hc => hc.Name == nameof(MongoDbLiveness))
                 .Should().HaveCount(1);
 
         }

@@ -67,13 +67,13 @@ namespace BeatPulse
 
           
             beatPulseContext.AllTrackers
-                .Where(tracker => tracker.GetType().IsInstanceOfType(typeof(TestTracker)))
+                .Where(tracker => tracker.GetType() == (typeof(TestTracker)))
                 .SingleOrDefault()
                 .Should()
                 .NotBeNull();
 
             beatPulseContext.AllTrackers
-               .Where(tracker => tracker.GetType().IsInstanceOfType(typeof(TestTrackerWithDependencies)))
+               .Where(tracker => tracker.GetType() == (typeof(TestTrackerWithDependencies)))
                .SingleOrDefault()
                .Should()
                .NotBeNull();

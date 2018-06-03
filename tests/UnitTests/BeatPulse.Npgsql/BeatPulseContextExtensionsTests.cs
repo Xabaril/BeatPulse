@@ -32,7 +32,7 @@ namespace BeatPulse.Npgsql
                 .GetService<BeatPulseContext>();
 
             beatPulseContex.GetAllLivenessRegistrations()
-                .Where(hc => hc.GetType() == typeof(NpgSqlLiveness))
+                .Where(hc => hc.Name == nameof(NpgSqlLiveness))
                 .Should().HaveCount(1);
 
         }
