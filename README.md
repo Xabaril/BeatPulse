@@ -12,7 +12,7 @@ Health checking is the process where load balancers or application delivery cont
 
 The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included  in ASP.NET Core 2.1.
 
-## Getting Started
+## Getting Started 
 
 1. Install the Nuget Package into your ASP.NET Core application.
 
