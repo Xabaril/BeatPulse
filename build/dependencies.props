@@ -2,7 +2,7 @@
   <PropertyGroup Label="SDK Versions">
     <NetStandardTargetVersion>netstandard2.0</NetStandardTargetVersion>
     <NetCoreTargetVersion>netcoreapp2.0</NetCoreTargetVersion>
-    <MicrosoftNETTestSdkPackageVersion>15.5.0</MicrosoftNETTestSdkPackageVersion>
+    <MicrosoftNETTestSdkPackageVersion>15.7.2</MicrosoftNETTestSdkPackageVersion>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -15,7 +15,7 @@
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>
     <SqlClientVersion>4.4.2</SqlClientVersion>
-    <FluentAssertionsVersion>5.0.0</FluentAssertionsVersion>
+    <FluentAssertionsVersion>5.3.2</FluentAssertionsVersion>
     <ASPNetCoreTestHostVersion>2.0.1</ASPNetCoreTestHostVersion>
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
