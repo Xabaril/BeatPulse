@@ -12,7 +12,6 @@ namespace BeatPulse.Kafka
 {
     public class KafkaLiveness : IBeatPulseLiveness
     {
-
         private readonly Dictionary<string, object> _config;
 
         public KafkaLiveness(Dictionary<string, object> config)
@@ -20,10 +19,8 @@ namespace BeatPulse.Kafka
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
-            var isDevelopment = livenessContext.IsDevelopment;
-            var name = livenessContext.Name;
             try
             {
                 using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
@@ -32,16 +29,18 @@ namespace BeatPulse.Kafka
 
                     if (result.Error.Code != ErrorCode.NoError)
                     {
-                        var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                             : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
+
                         return (message, false);
                     }
+
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

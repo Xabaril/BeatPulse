@@ -11,7 +11,9 @@ namespace BeatPulse.Core
         public async Task execute_definded_action_for_health_check()
         {
             var taskResult = Task.FromResult((string.Empty, false));
-            var livenessContext = new LivenessContext() { IsDevelopment = false };
+
+            var livenessContext = new LivenessExecutionContext();
+
             var liveness = new ActionLiveness((context, cancellationToken) => taskResult);
 
             (await liveness.IsHealthy(new DefaultHttpContext(), livenessContext))

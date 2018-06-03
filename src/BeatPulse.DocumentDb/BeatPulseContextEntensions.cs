@@ -9,10 +9,11 @@ namespace BeatPulse.DocumentDb
         {
             var documentDbOptions = new DocumentDbOptions();
             options(documentDbOptions);
-            context.AddLiveness(nameof(DocumentDbLiveness), opt =>
+
+            context.AddLiveness(nameof(DocumentDbLiveness), setup =>
             {
-                opt.UsePath(defaultPath);
-                opt.UseLiveness(new DocumentDbLiveness(documentDbOptions));
+                setup.UsePath(defaultPath);
+                setup.UseLiveness(new DocumentDbLiveness(documentDbOptions));
             });
             return context;
         }

@@ -8,13 +8,11 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddIdentityServer(this BeatPulseContext context, Uri idSvrUri, string defaultPath = "idsvr")
         {
-
-            return context.AddLiveness(nameof(IdSvrLiveness), opt =>
+            return context.AddLiveness(nameof(IdSvrLiveness), setup =>
             {
-                opt.UsePath(defaultPath);
-                opt.UseLiveness(new IdSvrLiveness(idSvrUri));
+                setup.UsePath(defaultPath);
+                setup.UseLiveness(new IdSvrLiveness(idSvrUri));
             });
-
         }
     }
 }

@@ -9,12 +9,10 @@ namespace BeatPulse.Core
         private readonly Dictionary<string, IBeatPulseLivenessRegistration> _registeredLiveness
             = new Dictionary<string, IBeatPulseLivenessRegistration>();
 
-        private readonly Dictionary<string, IBeatPulseTrackerRegistration> _activeTrackers
-            = new Dictionary<string, IBeatPulseTrackerRegistration>();
+        private readonly List<IBeatPulseTrackerRegistration> _activeTrackers
+            = new List<IBeatPulseTrackerRegistration>();
 
         private IServiceProvider _serviceProvider;
-
-        internal void UseServiceProvider(IServiceProvider sp) => _serviceProvider = sp;
 
         public BeatPulseContext AddLiveness(IBeatPulseLivenessRegistration registration)
         {
@@ -41,7 +39,6 @@ namespace BeatPulse.Core
             else
             {
                 throw new InvalidOperationException("The global path is automatically used for beat pulse.");
-
             }
         }
 
@@ -52,52 +49,37 @@ namespace BeatPulse.Core
                 throw new ArgumentNullException(nameof(registration));
             }
 
-            var name = registration.Name;
-
-            if (!_activeTrackers.ContainsKey(name))
-            {
-                _activeTrackers.Add(name, registration);
-            }
-            else
-            {
-                throw new InvalidOperationException($"The tracker {registration.Name} is already registered.");
-            }
+            _activeTrackers.Add(registration);
 
             return this;
         }
 
-        internal IBeatPulseLiveness FindLiveness(string path)
+        internal void UseServiceProvider(IServiceProvider sp)
         {
-            _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check);
-
-            return check?.GetOrCreateLiveness(_serviceProvider);
+            _serviceProvider = sp;
         }
 
-        internal IBeatPulseLivenessRegistration FindLivenessRegistration(string path)
+        internal IBeatPulseLiveness CreateLivenessFromRegistration(IBeatPulseLivenessRegistration registration)
         {
-            return _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check) ? check : null;
+            return registration.GetOrCreateLiveness(_serviceProvider);
         }
-
-
-
-        internal IEnumerable<IBeatPulseLiveness> AllLiveness
-        {
-            get
-            {
-                return _registeredLiveness.Values.Select(registration => registration.GetOrCreateLiveness(_serviceProvider));
-            }
-        }
-
-        internal IBeatPulseLiveness GetLivenessFromRegistration(IBeatPulseLivenessRegistration registration) => registration.GetOrCreateLiveness(_serviceProvider);
-
-        internal IEnumerable<IBeatPulseLivenessRegistration> AllLivenessRegistrations => _registeredLiveness.Values;
 
         internal IEnumerable<IBeatPulseTracker> AllTrackers
         {
             get
             {
-                return _activeTrackers.Values.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
+                return _activeTrackers.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
             }
+        }
+
+        internal IEnumerable<IBeatPulseLivenessRegistration> GetAllLivenessRegistrations()
+        {
+            return _registeredLiveness.Values;
+        }
+
+        internal IBeatPulseLivenessRegistration FindLivenessRegistration(string path)
+        {
+            return _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check) ? check : null;
         }
     }
 }

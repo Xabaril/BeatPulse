@@ -6,6 +6,6 @@ namespace BeatPulse.Core
 {
     public interface IBeatPulseLiveness
     {
-        Task<(string, bool)> IsHealthy(HttpContext context,LivenessContext livenessContext,CancellationToken cancellationToken = default);
+        Task<(string, bool)> IsHealthy(HttpContext context,LivenessExecutionContext livenessContext,CancellationToken cancellationToken = default);
     }
 }

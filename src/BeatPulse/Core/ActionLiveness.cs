@@ -15,7 +15,7 @@ namespace BeatPulse.Core
             _check = check ?? throw new ArgumentNullException(nameof(check));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext,CancellationToken cancellationToken = default)
+        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,CancellationToken cancellationToken = default)
         {
             return _check(context,cancellationToken);
         }

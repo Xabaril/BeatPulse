@@ -10,6 +10,8 @@ namespace BeatPulse.IdSvr
     public class IdSvrLiveness
         : IBeatPulseLiveness
     {
+        const string IDSVR_DISCOVER_CONFIGURATION_SEGMENT = ".well-known/openid-configuration";
+
         private readonly Uri _idSvrUri;
 
         public IdSvrLiveness(Uri idSvrUri)
@@ -17,11 +19,8 @@ namespace BeatPulse.IdSvr
             _idSvrUri = idSvrUri ?? throw new ArgumentNullException(nameof(idSvrUri));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
-            const string IDSVR_DISCOVER_CONFIGURATION_SEGMENT = ".well-known/openid-configuration";
-            var isDevelopment = livenessContext.IsDevelopment;
-            var name = livenessContext.Name;
             try
             {
                 using (var httpClient = new HttpClient() { BaseAddress = _idSvrUri })
@@ -30,7 +29,7 @@ namespace BeatPulse.IdSvr
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                             : $"Discover endpoint is not responding with 200 OK, the current status is {response.StatusCode} and the content { (await response.Content.ReadAsStringAsync())}";
 
                         return (message, false);
@@ -41,7 +40,7 @@ namespace BeatPulse.IdSvr
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

@@ -51,7 +51,7 @@ namespace BeatPulse
             var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
 
             string path2;
-            beatPulseContext.FindLiveness(nameof(path2))
+            beatPulseContext.FindLivenessRegistration(nameof(path2))
                  .Should()
                  .NotBeNull();
         }
@@ -65,17 +65,15 @@ namespace BeatPulse
             var beatPulseService = _serviceProvider.GetService<IBeatPulseService>();
             var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
 
-            var testTrackerName = nameof(TestTracker);
-            var testTrackerWithDependenciesName = nameof(TestTrackerWithDependencies);
-
+          
             beatPulseContext.AllTrackers
-                .Where(tracker => tracker.Name.Equals(testTrackerName))
+                .Where(tracker => tracker.GetType().IsInstanceOfType(typeof(TestTracker)))
                 .SingleOrDefault()
                 .Should()
                 .NotBeNull();
 
             beatPulseContext.AllTrackers
-               .Where(tracker => tracker.Name.Equals(testTrackerWithDependenciesName))
+               .Where(tracker => tracker.GetType().IsInstanceOfType(typeof(TestTrackerWithDependencies)))
                .SingleOrDefault()
                .Should()
                .NotBeNull();
@@ -88,7 +86,7 @@ namespace BeatPulse
 
             string path;
 
-            beatPulseContext.FindLiveness(nameof(path))
+            beatPulseContext.FindLivenessRegistration(nameof(path))
                 .Should()
                 .NotBeNull();
 
@@ -129,7 +127,7 @@ namespace BeatPulse
                     //trackers
 
                     context.AddTracker(new TestTracker());
-                    context.AddTracker(nameof(TestTrackerWithDependencies), sp =>
+                    context.AddTracker(sp =>
                     {
                         var fooService = sp.GetRequiredService<FooService>();
 

@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using BeatPulse.SqlServer;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -31,7 +30,7 @@ namespace BeatPulse.MongoDb
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllLiveness
+            beatPulseContex.GetAllLivenessRegistrations()
                 .Where(hc => hc.GetType() == typeof(MongoDbLiveness))
                 .Should().HaveCount(1);
 

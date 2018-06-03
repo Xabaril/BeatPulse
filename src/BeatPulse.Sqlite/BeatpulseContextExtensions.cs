@@ -11,10 +11,10 @@ namespace BeatPulse.Sqlite
 
         public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string healthQuery, string defaultPath = "sqlite")
         {
-            return context.AddLiveness(nameof(SqliteLiveness), opt =>
+            return context.AddLiveness(nameof(SqliteLiveness), setup =>
             {
-                opt.UseLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery));
+                setup.UsePath(defaultPath);
             });
 
        }

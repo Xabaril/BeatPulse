@@ -8,11 +8,10 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddKafka(this BeatPulseContext context, Dictionary<string, object> config, string defaultPath = "kafka")
         {
-
-            return context.AddLiveness(nameof(KafkaLiveness), opt =>
+            return context.AddLiveness(nameof(KafkaLiveness), setup =>
             {
-                opt.UseLiveness(new KafkaLiveness(config));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new KafkaLiveness(config));
+                setup.UsePath(defaultPath);
             });
         }
     }

@@ -18,11 +18,13 @@ namespace BeatPulse.DocumentDb
             _documentDbOptions.PrimaryKey = documentDbOptions.PrimaryKey ?? throw new ArgumentNullException(nameof(documentDbOptions.PrimaryKey));
 
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
-                using (var documentDbClient = new DocumentClient(new Uri(_documentDbOptions.UriEndpoint), _documentDbOptions.PrimaryKey))
+                using (var documentDbClient = new DocumentClient(
+                    new Uri(_documentDbOptions.UriEndpoint), 
+                    _documentDbOptions.PrimaryKey))
                 {
                     await documentDbClient.OpenAsync();
 
@@ -31,9 +33,7 @@ namespace BeatPulse.DocumentDb
             }
             catch (Exception ex)
             {
-                var isDevelopment = livenessContext.IsDevelopment;
-                var name = livenessContext.Name;
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

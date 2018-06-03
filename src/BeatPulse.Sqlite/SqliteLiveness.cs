@@ -17,7 +17,7 @@ namespace BeatPulse.Sqlite
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             SqliteConnection connection = null;
 
@@ -38,9 +38,7 @@ namespace BeatPulse.Sqlite
             }
             catch (Exception ex)
             {
-                var isDevelopment = livenessContext.IsDevelopment;
-                var name = livenessContext.Name;
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

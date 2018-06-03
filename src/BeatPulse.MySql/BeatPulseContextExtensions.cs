@@ -7,10 +7,10 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddMySql(this BeatPulseContext context, string connectionString, string defaultPath = "mysql")
         {
-            return context.AddLiveness(nameof(MySqlLiveness), opt =>
+            return context.AddLiveness(nameof(MySqlLiveness), setup =>
             {
-                opt.UseLiveness(new MySqlLiveness(connectionString));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new MySqlLiveness(connectionString));
+                setup.UsePath(defaultPath);
             });
         }
     }

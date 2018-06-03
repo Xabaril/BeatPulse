@@ -1,8 +1,5 @@
 ﻿using BeatPulse.AzureServiceBus;
 using BeatPulse.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatPulse
 {
@@ -10,29 +7,28 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddAzureEventHub(this BeatPulseContext context, string connectionString, string eventHubName, string defaultPath = "azureeventhub")
         {
-            return context.AddLiveness(nameof(AzureEventHubLiveness), opt =>
+            return context.AddLiveness(nameof(AzureEventHubLiveness), setup =>
             {
-                opt.UseLiveness(new AzureEventHubLiveness(connectionString, eventHubName));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new AzureEventHubLiveness(connectionString, eventHubName));
+                setup.UsePath(defaultPath);
             });
-
         }
 
         public static BeatPulseContext AddAzureServiceBusQueue(this BeatPulseContext context, string connectionString, string queueName, string defaultPath = "azureservicebusqueue")
         {
-            return context.AddLiveness(nameof(AzureServiceBusQueueLiveness), opt =>
+            return context.AddLiveness(nameof(AzureServiceBusQueueLiveness), setup =>
             {
-                opt.UseLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName));
+                setup.UsePath(defaultPath);
             });
         }
 
         public static BeatPulseContext AddAzureServiceBusTopic(this BeatPulseContext context, string connectionString, string topicName, string defaultPath = "azureservicebustopic")
         {
-            return context.AddLiveness(nameof(AzureServiceBusTopicLiveness), opt =>
+            return context.AddLiveness(nameof(AzureServiceBusTopicLiveness), setup =>
             {
-                opt.UseLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName));
-                opt.UsePath(defaultPath);
+                setup.UseLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName));
+                setup.UsePath(defaultPath);
             });
         }
     }
