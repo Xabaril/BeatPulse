@@ -9,7 +9,7 @@
   <PropertyGroup Label="Package Versions">
     <HostingAbstractionsVersion>2.0.2</HostingAbstractionsVersion>
     <ASPNetCoreRoutingVersion>2.0.2</ASPNetCoreRoutingVersion>
-    <ASPNetCoreAllPackageVersion>2.0.5</ASPNetCoreAllPackageVersion>
+    <ASPNetCoreAllPackageVersion>2.0.8</ASPNetCoreAllPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>

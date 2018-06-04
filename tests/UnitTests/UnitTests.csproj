@@ -15,8 +15,6 @@
     <PackageReference Include="xunit" Version="$(XUnitPackageVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitRunnerVisualstudio)" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="$(DotnetXUnitPackageVersion)" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="$(DotnetWatcherToolPackageVersion)" />
-   
   </ItemGroup>
 
   <ItemGroup>
