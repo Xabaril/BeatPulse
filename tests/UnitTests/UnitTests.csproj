@@ -9,24 +9,21 @@
     <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="$(ASPNetCoreAllPackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(ASPNetCoreTestHostVersion)" />
-    <PackageReference Include="Microsoft.DotNet.Watcher.Tools" Version="$(DotnetWatcherToolPackageVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonSoftJsonVersion)" />
     <PackageReference Include="xunit" Version="$(XUnitPackageVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitRunnerVisualstudio)" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="$(DotnetXUnitPackageVersion)" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="$(DotnetWatcherToolPackageVersion)" />
-   
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Redis\BeatPulse.Redis.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.UI\BeatPulse.UI.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
-
 </Project>

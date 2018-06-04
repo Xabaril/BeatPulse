@@ -12,7 +12,7 @@ Health checking is the process where load balancers or application delivery cont
 
 The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included  in ASP.NET Core 2.1.
 
-## Getting Started
+## Getting Started 
 
 1. Install the Nuget Package into your ASP.NET Core application.
 
@@ -74,6 +74,14 @@ OK
 
 For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
+## Tracking pulses
+
+Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use.
+
+ [Application Insights Tracker](./doc/ai-tracker.md)
+
+ [Prometheus Tracker](./doc/prometheus_tracker.md)
+
 ## UI
 
 The project BeatPulse.UI is a minimal UI interface that store and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.
@@ -97,7 +105,7 @@ This automatically registers a new interface on **/beatpulse-ui**.
 
 > Optionally, *UseBeatPulseUI* can be configured with different UI response path.
 
-![BeatPulseUI](./doc/BeatPulseUI-1.PNG)
+![BeatPulseUI](./doc/images/ui-home.png)
 
 **BeatPulseUI** exist also as *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
@@ -142,44 +150,6 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically post a new
     2.- [[FAILURE]] A detail message with the failure.
 
 The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
-
-## Tracking pulses
-
-Additionally you can save liveness information in external services. Currently we have developed a tracker for Application Insights you can use. To install this package:
-
-``` Powershell
-Install-Package BeatPulse.ApplicationInsightsTracker
-```
-
-### Application Insights tracker configuration
-
-In the configuration section where you configured your *BetPulseService* add the tracker,
-
-```csharp
-    public class Startup
-    {       
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddBeatPulse(setup =>
-            {
-                setup.AddApplicationInsightsTracker();
-            });
-        }
-    }
-```
-
-
-It will use your current Application Insights resource by default.
-
-> Remember set UseApplicationInsights in your program.cs.
-
-The information will be saved to Application Insights as *custom events* using event name *BeatPulse*, and will store this information:
-
-- *Name*: Configured liveness name.
-- *Message*: Message from liveness.
-- *IsHealthy*: Boolean with healthy info from liveness.
-- *Run*: Boolean indicator if liveness has run.
-- *BeatPulse:ResponseTime*: Milliseconds with the liveness call duration.
 
 ## Contributing
 

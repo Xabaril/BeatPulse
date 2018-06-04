@@ -1,6 +1,7 @@
-﻿using System;
+﻿using BeatPulse.Core;
+using System;
 
-namespace BeatPulse.Core
+namespace BeatPulse
 {
     public static class BulsePulseContextExtensions
     {

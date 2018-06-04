@@ -1,22 +1,22 @@
 <Project>
   <PropertyGroup Label="SDK Versions">
     <NetStandardTargetVersion>netstandard2.0</NetStandardTargetVersion>
-    <NetCoreTargetVersion>netcoreapp2.0</NetCoreTargetVersion>
-    <MicrosoftNETTestSdkPackageVersion>15.5.0</MicrosoftNETTestSdkPackageVersion>
+    <NetCoreTargetVersion>netcoreapp2.1</NetCoreTargetVersion>
+    <MicrosoftNETTestSdkPackageVersion>15.7.2</MicrosoftNETTestSdkPackageVersion>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package Versions">
     <HostingAbstractionsVersion>2.0.2</HostingAbstractionsVersion>
     <ASPNetCoreRoutingVersion>2.0.2</ASPNetCoreRoutingVersion>
-    <ASPNetCoreAllPackageVersion>2.0.5</ASPNetCoreAllPackageVersion>
+    <ASPNetCoreAllPackageVersion>2.1.0</ASPNetCoreAllPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>
     <SqlClientVersion>4.4.2</SqlClientVersion>
-    <FluentAssertionsVersion>5.0.0</FluentAssertionsVersion>
-    <ASPNetCoreTestHostVersion>2.0.1</ASPNetCoreTestHostVersion>
+    <FluentAssertionsVersion>5.3.2</FluentAssertionsVersion>
+    <ASPNetCoreTestHostVersion>2.1.0</ASPNetCoreTestHostVersion>
     <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
     <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
     <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
@@ -56,8 +56,9 @@
     <BeatPulseKafkaVersion>2.0.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>2.0.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>2.0.0</BeatPulseIdSvrVersion>
-	  <BeatPulseAzureServiceBusVersion>2.0.0</BeatPulseAzureServiceBusVersion>
+    <BeatPulseAzureServiceBusVersion>2.0.0</BeatPulseAzureServiceBusVersion>
     <BeatPulseAITrackerVersion>2.0.0</BeatPulseAITrackerVersion>
+    <BeatPulsePrometheusTrackerVersion>2.0.0</BeatPulsePrometheusTrackerVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
