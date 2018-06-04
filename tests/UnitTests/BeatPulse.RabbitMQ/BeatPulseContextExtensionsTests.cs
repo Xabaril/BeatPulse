@@ -30,7 +30,7 @@ namespace BeatPulse.RabbitMQ
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLivenessRegistrations()
+            beatPulseContex.GetAllLiveness("rabbitmq")
                 .Where(hc => hc.Name == nameof(RabbitMQLiveness))
                 .Should().HaveCount(1);
 

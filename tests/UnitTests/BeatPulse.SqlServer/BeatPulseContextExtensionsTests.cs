@@ -30,7 +30,7 @@ namespace BeatPulse.SqlServer
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLivenessRegistrations()
+            beatPulseContex.GetAllLiveness("sqlserver")
                 .Where(hc => hc.Name == nameof(SqlServerLiveness))
                 .Should().HaveCount(1);
 

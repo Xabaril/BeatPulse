@@ -30,7 +30,7 @@ namespace BeatPulse.ApplicationInsightsTracker
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContext.AllTrackers
+            beatPulseContext.GetAllTrackers()
                 .Where(hc => hc.GetType() == typeof(AITracker))
                 .Should().HaveCount(1);
         }

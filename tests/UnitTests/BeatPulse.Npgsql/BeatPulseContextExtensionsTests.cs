@@ -31,7 +31,7 @@ namespace BeatPulse.Npgsql
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLivenessRegistrations()
+            beatPulseContex.GetAllLiveness("npgsql")
                 .Where(hc => hc.Name == nameof(NpgSqlLiveness))
                 .Should().HaveCount(1);
 

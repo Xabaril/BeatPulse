@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,62 +28,37 @@ namespace BeatPulse.Core
         {
             _logger.LogInformation($"BeatPulse is checking health on [BeatPulsePath]/{path}");
 
-            if (String.IsNullOrEmpty(path))
+            var livenessResults = new List<LivenessResult>();
+
+            foreach (var registration in _beatPulseContext.GetAllLiveness(path))
             {
-                var livenessResults = new List<LivenessResult>();
-
-                foreach (var registration in _beatPulseContext.GetAllLivenessRegistrations())
-                {
-                    var liveness = _beatPulseContext
-                        .CreateLivenessFromRegistration(registration);
-
-                    var livenessContext = LivenessExecutionContext
-                        .FromRegistration(registration, _environment.IsDevelopment());
-
-                    var livenessResult = await RunLiveness(
-                        liveness,
-                        livenessContext,
-                        httpContext,
-                        beatPulseOptions);
-
-                    await RunTrackers(livenessResult);
-
-                    livenessResults.Add(livenessResult);
-
-                    if (!livenessResult.IsHealthy && !beatPulseOptions.DetailedOutput)
-                    {
-                        //if is unhealthy and not detailed options is true return inmediatly
-
-                        _logger.LogWarning($"Liveness {livenessContext.Name} is not healthy");
-
-                        return livenessResults;
-                    }
-                }
-
-                return livenessResults;
-            }
-            else
-            {
-                var registration = _beatPulseContext
-                    .FindLivenessRegistration(path);
-
                 var liveness = _beatPulseContext
                     .CreateLivenessFromRegistration(registration);
 
-                var livenessContext = LivenessExecutionContext.FromRegistration(registration, _environment.IsDevelopment());
+                var livenessContext = LivenessExecutionContext
+                    .FromRegistration(registration, _environment.IsDevelopment());
 
-                if (liveness != null)
+                var livenessResult = await RunLiveness(
+                    liveness,
+                    livenessContext,
+                    httpContext,
+                    beatPulseOptions);
+
+                await RunTrackers(livenessResult);
+
+                livenessResults.Add(livenessResult);
+
+                if (!livenessResult.IsHealthy && !beatPulseOptions.DetailedOutput)
                 {
-                    var livenessResult = await RunLiveness(liveness, 
-                        livenessContext,
-                        httpContext,
-                        beatPulseOptions);
+                    //if is unhealthy and not detailed options is true return inmediatly
 
-                    return new[] { livenessResult };
+                    _logger.LogWarning($"Liveness {livenessContext.Name} is not healthy");
+
+                    return livenessResults;
                 }
             }
 
-            return Enumerable.Empty<LivenessResult>();
+            return livenessResults;
         }
 
         Task RunTrackers(LivenessResult responses)
@@ -93,9 +67,9 @@ namespace BeatPulse.Core
 
             var trackerTasks = new List<Task>();
 
-            if (_beatPulseContext.AllTrackers != null)
+            if (_beatPulseContext.GetAllTrackers() != null)
             {
-                foreach (var tracker in _beatPulseContext.AllTrackers)
+                foreach (var tracker in _beatPulseContext.GetAllTrackers())
                 {
                     _logger.LogInformation($"Sending liveness result to tracker {tracker.GetType().FullName}.");
 

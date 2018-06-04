@@ -43,21 +43,21 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>1.7.1</BeatPulsePackageVersion>
-    <BeatPulseAzureStoragePackageVersion>1.7.0</BeatPulseAzureStoragePackageVersion>
-    <BeatPulseDocumentDbPackageVersion>1.7.0</BeatPulseDocumentDbPackageVersion>
-    <BeatPulseMongoDbPackageVersion>1.7.0</BeatPulseMongoDbPackageVersion>
-    <BeatPulseMySqlPackageVersion>1.7.1</BeatPulseMySqlPackageVersion>
-    <BeatpulseNpgSqlPackageVersion>1.7.1</BeatpulseNpgSqlPackageVersion>
-    <BeatpulseRedisPackageVersion>1.7.0</BeatpulseRedisPackageVersion>
-    <BeatPulseSqlitePackageVersion>1.7.0</BeatPulseSqlitePackageVersion>
-    <BeatPulseSqlServerPackageVersion>1.7.1</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>1.7.0</BeatPulseUIPackageVersion>
-    <BeatPulseKafkaVersion>1.7.0</BeatPulseKafkaVersion>
-    <BeatPulseRabbitMQPackageVersion>1.7.0</BeatPulseRabbitMQPackageVersion>
-    <BeatPulseIdSvrVersion>1.7.0</BeatPulseIdSvrVersion>
-	  <BeatPulseAzureServiceBusVersion>1.7.0</BeatPulseAzureServiceBusVersion>
-    <BeatPulseAITrackerVersion>1.7.0</BeatPulseAITrackerVersion>
+    <BeatPulsePackageVersion>2.0.0</BeatPulsePackageVersion>
+    <BeatPulseAzureStoragePackageVersion>2.0.0</BeatPulseAzureStoragePackageVersion>
+    <BeatPulseDocumentDbPackageVersion>2.0.0</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>2.0.0</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMySqlPackageVersion>2.0.0</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>2.0.0</BeatpulseNpgSqlPackageVersion>
+    <BeatpulseRedisPackageVersion>2.0.0</BeatpulseRedisPackageVersion>
+    <BeatPulseSqlitePackageVersion>2.0.0</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlServerPackageVersion>2.0.0</BeatPulseSqlServerPackageVersion>
+    <BeatPulseUIPackageVersion>2.0.0</BeatPulseUIPackageVersion>
+    <BeatPulseKafkaVersion>2.0.0</BeatPulseKafkaVersion>
+    <BeatPulseRabbitMQPackageVersion>2.0.0</BeatPulseRabbitMQPackageVersion>
+    <BeatPulseIdSvrVersion>2.0.0</BeatPulseIdSvrVersion>
+	  <BeatPulseAzureServiceBusVersion>2.0.0</BeatPulseAzureServiceBusVersion>
+    <BeatPulseAITrackerVersion>2.0.0</BeatPulseAITrackerVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
