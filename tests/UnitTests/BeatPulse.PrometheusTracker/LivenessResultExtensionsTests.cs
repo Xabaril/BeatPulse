@@ -21,11 +21,11 @@ namespace UnitTests.BeatPulse.PrometheusTracker
 
             livenessResult.GetPrometheusMetrics()
                 .Should()
-                .Contain($"beatpulse_pulse_execution_time_seconds{{ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_execution_time_seconds{{ApplicationName=\"testhost\",Path=\"{path}\",Name=\"{name}\"}}");
 
             livenessResult.GetPrometheusMetrics()
                 .Should()
-                .Contain($"beatpulse_pulse_ishealthy{{ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_ishealthy{{ApplicationName=\"testhost\",Path=\"{path}\",Name=\"{name}\"}}");
         }
 
         [Fact]
@@ -48,11 +48,11 @@ namespace UnitTests.BeatPulse.PrometheusTracker
 
             prometheusMetrics
                 .Should()
-                .Contain($"beatpulse_pulse_execution_time_seconds{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_execution_time_seconds{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"testhost\",Path=\"{path}\",Name=\"{name}\"}}");
 
             prometheusMetrics
                 .Should()
-                .Contain($"beatpulse_pulse_ishealthy{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"xunit.console\",Path=\"{path}\",Name=\"{name}\"}}");
+                .Contain($"beatpulse_pulse_ishealthy{{labelA=\"valueA\",labelB=\"valueB\",ApplicationName=\"testhost\",Path=\"{path}\",Name=\"{name}\"}}");
         }
     }
 }
