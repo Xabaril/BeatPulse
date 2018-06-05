@@ -4,7 +4,7 @@
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
-    <Description>BeatPulse is a health check library for ASP.NET Core Applications.For more information see http://github.com/Xabaril/CheckPulse </Description>
+    <Description>BeatPulse is a health check library for ASP.NET Core Applications.For more information see http://github.com/Xabaril/BeatPulse </Description>
     <PackageTags>BeatPulse;HealthCheck;Beat;Health</PackageTags>
     <Version>$(BeatPulsePackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
