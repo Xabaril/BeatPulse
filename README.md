@@ -71,6 +71,30 @@ Accept: */*
 HTTP/1.1 200 OK
 OK
 ```
+## Enabling CORS on BeatPulse middleware
+
+Cors in BeatPulse uses CorsPolicyBuilder from the Microsoft CORS implementation (Microsoft.AspNetCore.Cors)
+To enable Cors in BeatPulse middleware just configure desired headers, origins and methods using the CorsPolicyBuilder fluent api.
+
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+                .UseBeatPulse(options=>
+                {
+                    options.SetAlternatePath("health") 
+                        .EnableOutputCache(10)    
+                        .SetTimeout(milliseconds: 1500)
+                        .EnableDetailedOutput()
+                        .EnableCors(setup =>
+                        {                            
+                            setup.AllowAnyHeader().
+                                  AllowAnyMethod().
+                                  AllowAnyOrigin().
+                                  AllowCredentials();
+                        });
+                }).UseStartup<Startup>().Build();
+```
 
 For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
