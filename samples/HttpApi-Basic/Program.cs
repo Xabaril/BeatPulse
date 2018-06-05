@@ -17,7 +17,14 @@ namespace HttpApi_Basic
                     options.SetAlternatePath("health") //default hc
                         .EnableOutputCache(10)      // Can use CacheMode as second parameter
                         .SetTimeout(milliseconds: 1500) // default -1 infinitely
-                        .EnableDetailedOutput(); //default false
+                        .EnableDetailedOutput() //default false
+                        .EnableCors(setup =>
+                        {                            
+                            setup.AllowAnyHeader().
+                                  AllowAnyMethod().
+                                  AllowAnyOrigin().
+                                  AllowCredentials();
+                        });
                 }).UseStartup<Startup>().Build();
     }
 }

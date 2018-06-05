@@ -33,11 +33,7 @@ namespace BeatPulse
         {
             var request = context.Request;
 
-            if (!IsBeatPulseRequest(request, out string beatPulsePath))
-            {
-                await _next.Invoke(context);
-                return;
-            }
+            var beatPulsePath = context.GetBeatPulseRequestPath(_options);
 
             if (!await IsAuthenticatedRequest(context))
             {

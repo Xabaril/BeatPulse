@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using System;
 
 namespace BeatPulse
 {
@@ -15,6 +16,9 @@ namespace BeatPulse
         internal bool CacheOutput { get; private set; }
 
         internal CacheMode CacheMode { get; private set; }
+
+        internal Action<CorsPolicyBuilder> CorsPolicyBuilder { get; private set; }
+        internal bool CorsEnabled { get; private set; }
 
         public BeatPulseOptions()
         {
@@ -58,6 +62,13 @@ namespace BeatPulse
         {
             Timeout = milliseconds;
 
+            return this;
+        }
+
+        public BeatPulseOptions EnableCors(Action<CorsPolicyBuilder> builder)
+        {
+            CorsPolicyBuilder = builder;
+            CorsEnabled = true;
             return this;
         }
     }

@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             setup?.Invoke(context);
 
+            services.AddCors();
             services.TryAddSingleton(context);
             services.TryAddSingleton<IBeatPulseService, BeatPulseService>();
             services.TryAddSingleton<IBeatPulseAuthenticationFilter, NoAuthenticationFilter>();
