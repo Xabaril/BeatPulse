@@ -18,7 +18,16 @@ namespace BeatPulse
         {
             return builder =>
             {
-                builder.UseMiddleware<BeatPulseMiddleware>(_options);
+                builder.MapWhen(context => context.IsBeatPulseRequest(_options), appBuilder =>
+                {
+                    if (_options.CorsEnabled)
+                    {
+                        appBuilder.UseCors(_options.CorsPolicyBuilder);
+                    }
+
+                    appBuilder.UseMiddleware<BeatPulseMiddleware>(_options);
+                });
+
                 next(builder);
             };
         }

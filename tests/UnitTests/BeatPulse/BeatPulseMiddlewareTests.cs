@@ -1,21 +1,20 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
+﻿using BeatPulse.Core;
+using BeatPulse.Core.Authentication;
+using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnitTests.Base;
 using Xunit;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using BeatPulse.Core;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BeatPulse.Core.Authentication;
 
 namespace BeatPulse
 {
@@ -604,6 +603,62 @@ namespace BeatPulse
 
             response.StatusCode.Should()
                 .Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task response_should_add_access_control_headers_when_cors_is_configured()
+        {
+            const string origin = "test-api.com";
+
+            var webHostBuilder = new WebHostBuilder()
+               .UseBeatPulse(options => {
+                   options.EnableCors(builder =>
+                   {
+                       builder
+                       .WithOrigins(origin)
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+                   });
+               })
+               .UseStartup<DefaultStartup>()
+               .ConfigureServices(svc =>
+               {
+                   svc.AddCors();
+                   svc.AddBeatPulse();
+               });
+
+            var server = new TestServer(webHostBuilder);
+
+            var client = server.CreateClient();
+            client.DefaultRequestHeaders.Add("Origin", origin);
+            var response = await client.GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}");
+
+            response.Headers.FirstOrDefault(s => s.Key == "Access-Control-Allow-Origin")
+                .Value.Should().BeEquivalentTo(origin);
+        }
+
+        [Fact]
+        public async Task response_should_not_add_access_control_headers_for_a_different_origin_if_cors_not_configured()
+        {
+            const string origin = "test-api.com";
+
+            var webHostBuilder = new WebHostBuilder()
+               .UseBeatPulse()
+               .UseStartup<DefaultStartup>()
+               .ConfigureServices(svc =>
+               {
+                   svc.AddCors();
+                   svc.AddBeatPulse();
+               });
+
+            var server = new TestServer(webHostBuilder);
+
+            var client = server.CreateClient();
+            client.DefaultRequestHeaders.Add("Origin", origin);
+            var response = await client.GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}");
+
+            response.Headers.FirstOrDefault(s => s.Key == "Access-Control-Allow-Origin")
+                .Value.Should().BeEquivalentTo(null);
         }
 
         class OutputMessage
