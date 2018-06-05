@@ -2,76 +2,91 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BeatPulse UI</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/ui/resources/beatpulse.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BeatPulse UI</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/ui/resources/beatpulse.css" />
 </head>
 
 <body>
 
-    <div id="app" class="top-buffer-20">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h2 class="title">BeatPulse Liveness status</h2>
-                </div>
-                <div class="col text-right">
-                    <label>Refresh every</label>
-                    <input v-model.number="pollingIntervalSetting" type="number" oninput="validity.valid && value > 0 ||(value=10)" class="polling-input" />
-                    <label>seconds</label>
-                    <button v-on:click="initPolling()" type="button" class="btn btn-info btn-sm">Change</button>
-                </div>
-            </div>
-
+  <div id="app" class="mt-4">
+    <div class="container">
+      <div class="row justify-content-start mb-3">
+        <div class="col">
+          <h3 class="title">BeatPulse Liveness status</h3>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Name</th>
-                                <th>IsHealthy</th>
-                                <th>Status</th>
-                                <th>Last Execution</th>
-                            </tr>
-                        </thead>
-                        <tbody v-cloak>
-                            <tr v-bind:class="renderBackground(item.status)" v-for="item in livenessData">
-                                <td>
-                                    {{ item.livenessName }}
-                                </td>
-                                <td class="centered">
-                                    <img class="status-icon" :src="getStatusPic(item.status)">
-                                </td>
-                                <td>
-                                    {{ item.onStateFrom }}
-                                </td>
-                                <td>
-                                    {{ item.lastExecuted | formatDate }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div v-cloak v-if="error" class="w-100 alert alert-danger" role="alert">
-                    <strong>Error: </strong> {{error}}
-                </div>
-                <div v-if="livenessData.length == 0 && !error" class="loader">Loading liveness results...</div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card-table row">
+            <div class="col-12">
+              <div class="refresh-group pt-3 pb-3">
+                <label>Refresh every</label>
+                <input v-model.number="pollingIntervalSetting" type="number" oninput="validity.valid && value > 0 ||(value=10)" class="polling-input" />
+                <label>seconds</label>
+                <button v-on:click="initPolling()" type="button" class="btn btn-light btn-sm">Change</button>
+              </div>
             </div>
+            <div class="col-12">
+              <div class="table-responsive mb-2">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="w-name">Name</th>
+                      <th class="w-is-healthy">IsHealthy</th>
+                      <th class="w-status">Status</th>
+                      <th class="w-last-exec">Last Execution</th>
+                    </tr>
+                  </thead>
+                  <tbody v-cloak>
+                    <tr v-bind:class="renderBackground(item.status)" v-for="item in livenessData">
+                      <td colspan="4">
+                        <div class="row-table">
+                          <div class="column-table w-name">{{ item.livenessName }}</div>
+                          <div class="column-table w-is-healthy">
+                            <img class="status-icon " :src="getStatusPic(item.status)">
+                          </div>
+                          <div class="column-table w-status">{{ item.onStateFrom }}</div>
+                          <div class="column-table w-last-exec">{{ item.lastExecuted | formatDate }}</div>
+                        </div>
+                        <div class="child-group is-visible" v-bind:class="[item.history.length > 0 ? 'is-visible':'']">
+                          <div class="row-table" v-for="elem in item.history">
+                            <div class="column-table w-history-status">{{ elem.status }}</div>
+                            <div class="column-table w-on">{{ elem.on | formatDate  }}</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="row justify-content-center">
+        <div v-cloak v-if="error" class="col-12 alert alert-danger mt-4" role="alert">
+          <strong>Error: </strong> {{error}}
+        </div>
+        <div v-if="livenessData.length == 0 && !error" class="spinner-overlay">
+          <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script type="text/javascript">
-        var uiEndpoint = "#apiPath#";
-    </script>
-    <script type="text/javascript" src="/ui/resources/beatpulse.js"></script>
-    <script type="text/javascript" src="/ui/resources/resources.js"></script>
-    <script type="text/javascript" src="/ui/resources/moment.js"></script>
-    <script type="text/javascript" src="/ui/resources/index.js"></script>
+
+  <script type="text/javascript">
+    var uiEndpoint = "#apiPath#";
+  </script>
+  <script type="text/javascript" src="/ui/resources/beatpulse.js"></script>
+  <script type="text/javascript" src="/ui/resources/resources.js"></script>
+  <script type="text/javascript" src="/ui/resources/moment.js"></script>
+  <script type="text/javascript" src="/ui/resources/index.js"></script>
 </body>
 
 </html>
