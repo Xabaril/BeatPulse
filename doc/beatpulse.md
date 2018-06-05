@@ -171,3 +171,30 @@ You can create your custom **IBeatPulseAuthenticationFilter** filters by creatin
     services.AddSingleton<IBeatPulseAuthenticationFilter>(
         new HeaderValueAuthenticationFilter("header1", "value1"));
 ```
+
+## Enabling CORS on BeatPulse middleware
+
+Cors in BeatPulse uses CorsPolicyBuilder from the Microsoft CORS implementation (Microsoft.AspNetCore.Cors)
+To enable Cors in BeatPulse middleware just configure desired headers, origins and methods using the CorsPolicyBuilder fluent api.
+
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+                .UseBeatPulse(options=>
+                {
+                    options.SetAlternatePath("health") 
+                        .EnableOutputCache(10)    
+                        .SetTimeout(milliseconds: 1500)
+                        .EnableDetailedOutput()
+                        .EnableCors(setup =>
+                        {                            
+                            setup.AllowAnyHeader().
+                                  AllowAnyMethod().
+                                  AllowAnyOrigin().
+                                  AllowCredentials();
+                        });
+                }).UseStartup<Startup>().Build();
+```
+
+> Also remember set AddCors on your **ConfigureServices**

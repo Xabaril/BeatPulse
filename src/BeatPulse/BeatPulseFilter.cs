@@ -26,7 +26,6 @@ namespace BeatPulse
                     }
 
                     appBuilder.UseMiddleware<BeatPulseMiddleware>(_options);
-                    
                 });
 
                 next(builder);

@@ -1,8 +1,6 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Core.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Template;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +12,6 @@ namespace BeatPulse
     public class BeatPulseMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly TemplateMatcher _templateMatcher;
         private readonly BeatPulseOptions _options;
         private readonly IEnumerable<IBeatPulseAuthenticationFilter> _authenticationFilters;
         private readonly ConcurrentDictionary<string, OutputLivenessMessage> _cache;
@@ -25,8 +22,6 @@ namespace BeatPulse
             _options = options;
             _authenticationFilters = authenticationFilters;
             _cache = new ConcurrentDictionary<string, OutputLivenessMessage>();
-            _templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
-                new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });//match template for uri like /hc/{segment} 
         }
 
         public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
@@ -102,24 +97,6 @@ namespace BeatPulse
             }
 
             return false;
-        }
-
-        bool IsBeatPulseRequest(HttpRequest request, out string beatPulsePath)
-        {
-            beatPulsePath = string.Empty;
-
-            var routeValues = new RouteValueDictionary();
-
-            var isValidRequest = request.Method == HttpMethods.Get
-                && _templateMatcher.TryMatch(request.Path, routeValues);
-
-            if (isValidRequest)
-            {
-                beatPulsePath = routeValues[BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME]
-                    .ToString();
-            }
-
-            return isValidRequest;
         }
 
         async Task<bool> IsAuthenticatedRequest(HttpContext httpContext)

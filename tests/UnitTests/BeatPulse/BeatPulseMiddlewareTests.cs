@@ -1,21 +1,20 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
+﻿using BeatPulse.Core;
+using BeatPulse.Core.Authentication;
+using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnitTests.Base;
 using Xunit;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using BeatPulse.Core;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BeatPulse.Core.Authentication;
 
 namespace BeatPulse
 {
@@ -610,7 +609,8 @@ namespace BeatPulse
                })
                .UseStartup<DefaultStartup>()
                .ConfigureServices(svc =>
-               {                   
+               {
+                   svc.AddCors();
                    svc.AddBeatPulse();
                });
 
@@ -634,6 +634,7 @@ namespace BeatPulse
                .UseStartup<DefaultStartup>()
                .ConfigureServices(svc =>
                {
+                   svc.AddCors();
                    svc.AddBeatPulse();
                });
 
