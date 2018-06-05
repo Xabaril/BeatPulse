@@ -41,9 +41,9 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions EnableDetailedOutput()
+        public BeatPulseOptions EnableDetailedOutput(bool detailedOutput = true)
         {
-            DetailedOutput = true;
+            DetailedOutput = detailedOutput;
 
             return this;
         }

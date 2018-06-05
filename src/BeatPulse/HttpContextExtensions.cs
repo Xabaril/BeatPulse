@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BeatPulse;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 
-namespace BeatPulse
+namespace Microsoft.AspNetCore.Http
 {
-    public static class BeatpulseHttpContextExtensions
+    public static class HttpContextExtensions
     {
         public static bool IsBeatPulseRequest(this HttpContext context, BeatPulseOptions options)
         {
