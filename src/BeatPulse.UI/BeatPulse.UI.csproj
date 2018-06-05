@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
@@ -12,24 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\beatpulse.css" />
-    <None Remove="Assets\beatpulse.js" />
-    <None Remove="Assets\index.html" />
-    <None Remove="Assets\index.js" />
-    <None Remove="Assets\moment.js" />
-    <None Remove="Assets\resources.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\beatpulse.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\beatpulse.css" />
     <EmbeddedResource Include="Assets\index.html" />
-    <EmbeddedResource Include="Assets\index.js" />
-    <EmbeddedResource Include="Assets\moment.js" />
-    <EmbeddedResource Include="Assets\resources.js" />
+    <EmbeddedResource Include="Assets\beatpulse.css" />
+    <EmbeddedResource Include="Assets\bootstrap-min.css" />
+    <EmbeddedResource Include="Assets\vendors-dll.js" />
+    <EmbeddedResource Include="Assets\beatpulse-bundle.js" />    
   </ItemGroup>
 
   <ItemGroup>

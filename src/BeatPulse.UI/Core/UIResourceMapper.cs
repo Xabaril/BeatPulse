@@ -17,7 +17,7 @@ namespace BeatPulse.UI.Core
 
         public void Map(IApplicationBuilder app, string uiPath, string apiPath)
         {
-            var resources = _reader.GetUIResources;
+            var resources = _reader.UIResources;
             var UIMain = resources.GetMainUI(apiPath);
 
             foreach (var resource in resources)

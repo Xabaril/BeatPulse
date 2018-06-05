@@ -4,6 +4,6 @@ namespace BeatPulse.UI.Core
 {
     interface IUIResourcesReader
     {
-        IEnumerable<UIResource> GetUIResources { get; }
+        IEnumerable<UIResource> UIResources { get; }
     }
 }
