@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace BeatPulseLivenessAuthentication
+namespace BeatPulseLivenessPipeline
 {
     public class Program
     {
@@ -19,12 +19,6 @@ namespace BeatPulseLivenessAuthentication
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .UseBeatPulse(options =>
-            {
-                options.ConfigurePath("health") //default hc
-                    .ConfigureOutputCache(10)      // Can use CacheMode as second parameter
-                    .ConfigureTimeout(milliseconds: 1500) // default -1 infinitely
-                    .ConfigureDetailedOutput(); //default false
-            }).UseStartup<Startup>();
+                .UseStartup<Startup>();
     }
 }

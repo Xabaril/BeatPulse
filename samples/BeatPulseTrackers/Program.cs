@@ -14,8 +14,8 @@ namespace BeatPulseTrackers
            WebHost.CreateDefaultBuilder(args)
                .UseBeatPulse(setup =>
                {
-                   setup.EnableDetailedOutput()
-                       .SetTimeout(1500);
+                   setup.ConfigureDetailedOutput()
+                       .ConfigureTimeout(1500);
                }).UseStartup<Startup>();
     }
 }

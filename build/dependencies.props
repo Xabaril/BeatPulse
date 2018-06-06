@@ -10,7 +10,6 @@
     <HostingAbstractionsVersion>2.0.2</HostingAbstractionsVersion>
     <ASPNetCoreRoutingVersion>2.0.2</ASPNetCoreRoutingVersion>
     <ASPNetCoreAllPackageVersion>2.1.0</ASPNetCoreAllPackageVersion>
-    <ASPNetCoreCorsPackageVersion>2.1.0</ASPNetCoreCorsPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>

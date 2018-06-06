@@ -20,7 +20,7 @@ namespace UnitTests.BeatPulse
             httpContext.IsBeatPulseRequest(options)
                 .Should().BeTrue();
 
-            options.SetAlternatePath("health");
+            options.ConfigurePath("health");
             
             httpContext.Request.Method = "GET";
             httpContext.Request.Path = "/health";
@@ -47,7 +47,7 @@ namespace UnitTests.BeatPulse
             httpContext.GetBeatPulseRequestPath(options)
                 .Should().BeEquivalentTo("sqlserver");
 
-            options.SetAlternatePath("health");
+            options.ConfigurePath("health");
 
             httpContext.Request.Path = "/health";
 

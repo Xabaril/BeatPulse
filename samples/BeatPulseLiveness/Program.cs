@@ -14,10 +14,10 @@ namespace BeatPulseLiveness
             WebHost.CreateDefaultBuilder(args)
             .UseBeatPulse(options =>
             {
-                options.SetAlternatePath("health") //default hc
-                    .EnableOutputCache(10)      // Can use CacheMode as second parameter
-                    .SetTimeout(milliseconds: 1500) // default -1 infinitely
-                    .EnableDetailedOutput(); //default false
+                options.ConfigurePath("health") //default hc
+                    .ConfigureOutputCache(10)      // Can use CacheMode as second parameter
+                    .ConfigureTimeout(milliseconds: 1500) // default -1 infinitely
+                    .ConfigureDetailedOutput(); //default false
             }).UseStartup<Startup>();
     }
 }

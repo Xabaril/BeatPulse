@@ -71,7 +71,6 @@ namespace BeatPulse
             await request.HttpContext
                .Response
                .WriteLivenessMessage(_options, output);
-
         }
 
         bool TryFromCache(string path, out OutputLivenessMessage message)

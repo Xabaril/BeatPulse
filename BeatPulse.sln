@@ -60,13 +60,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.ApplicationInsigh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.PrometheusTracker", "src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj", "{CB566366-D73F-4E57-A5D4-A34203A4B4B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseTrackers", "samples\BeatPulseTrackers\BeatPulseTrackers.csproj", "{7C88C255-E115-4ED7-9AF8-80C1BE5F1044}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseTrackers", "samples\BeatPulseTrackers\BeatPulseTrackers.csproj", "{7C88C255-E115-4ED7-9AF8-80C1BE5F1044}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseLiveness", "samples\BeatPulseLiveness\BeatPulseLiveness.csproj", "{5669D596-44B2-4432-8DD8-063CF8F17A7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseLiveness", "samples\BeatPulseLiveness\BeatPulseLiveness.csproj", "{5669D596-44B2-4432-8DD8-063CF8F17A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseLivenessAuthentication", "samples\BeatPulseLivenessAuthentication\BeatPulseLivenessAuthentication.csproj", "{98AF723F-198C-4130-90A0-8CA6C3285AE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseLivenessAuthentication", "samples\BeatPulseLivenessAuthentication\BeatPulseLivenessAuthentication.csproj", "{98AF723F-198C-4130-90A0-8CA6C3285AE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseIntegratedUI", "samples\BeatPulseIntegratedUI\BeatPulseIntegratedUI.csproj", "{AF940A45-3DAD-4297-A558-AAF0B226675D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseIntegratedUI", "samples\BeatPulseIntegratedUI\BeatPulseIntegratedUI.csproj", "{AF940A45-3DAD-4297-A558-AAF0B226675D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseLivenessPipeline", "samples\BeatPulseLivenessPipeline\BeatPulseLivenessPipeline.csproj", "{00A74F39-E0B5-444A-A55A-B721986E1939}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,6 +168,10 @@ Global
 		{AF940A45-3DAD-4297-A558-AAF0B226675D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF940A45-3DAD-4297-A558-AAF0B226675D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF940A45-3DAD-4297-A558-AAF0B226675D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A74F39-E0B5-444A-A55A-B721986E1939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A74F39-E0B5-444A-A55A-B721986E1939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A74F39-E0B5-444A-A55A-B721986E1939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A74F39-E0B5-444A-A55A-B721986E1939}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +200,7 @@ Global
 		{5669D596-44B2-4432-8DD8-063CF8F17A7B} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{98AF723F-198C-4130-90A0-8CA6C3285AE9} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{AF940A45-3DAD-4297-A558-AAF0B226675D} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{00A74F39-E0B5-444A-A55A-B721986E1939} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

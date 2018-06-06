@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
-using System;
+﻿using System;
 
 namespace BeatPulse
 {
@@ -17,10 +16,6 @@ namespace BeatPulse
 
         internal CacheMode CacheMode { get; private set; }
 
-        internal Action<CorsPolicyBuilder> CorsPolicyBuilder { get; private set; }
-
-        internal bool CorsEnabled { get; private set; }
-
         public BeatPulseOptions()
         {
             DetailedOutput = false;
@@ -29,10 +24,9 @@ namespace BeatPulse
             CacheOutput = false;
             CacheDuration = 0;
             CacheMode = CacheMode.Header;
-            CorsEnabled = false;
         }
 
-        public BeatPulseOptions EnableOutputCache(int seconds, CacheMode mode = CacheMode.Header)
+        public BeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
         {
             CacheDuration = seconds;
             CacheOutput = true;
@@ -41,14 +35,14 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions EnableDetailedOutput(bool detailedOutput = true)
+        public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true)
         {
             DetailedOutput = detailedOutput;
 
             return this;
         }
 
-        public BeatPulseOptions SetAlternatePath(string path)
+        public BeatPulseOptions ConfigurePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -60,17 +54,9 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions SetTimeout(int milliseconds)
+        public BeatPulseOptions ConfigureTimeout(int milliseconds)
         {
             Timeout = milliseconds;
-
-            return this;
-        }
-
-        public BeatPulseOptions EnableCors(Action<CorsPolicyBuilder> builder)
-        {
-            CorsPolicyBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
-            CorsEnabled = true;
 
             return this;
         }

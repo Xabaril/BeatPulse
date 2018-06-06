@@ -55,7 +55,7 @@ namespace BeatPulse
                 (httpcontext, cancellationToken) => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -132,7 +132,7 @@ namespace BeatPulse
                 (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -176,7 +176,7 @@ namespace BeatPulse
                 });
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.SetTimeout(50))
+                .UseBeatPulse(options => options.ConfigureTimeout(50))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -283,7 +283,7 @@ namespace BeatPulse
         public async Task response_http_status_ok_when_beat_pulse_service_is_healthy_on_custom_path()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(o => o.SetAlternatePath("customhealthpath"))
+                .UseBeatPulse(o => o.ConfigurePath("customhealthpath"))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -374,7 +374,7 @@ namespace BeatPulse
         public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -422,7 +422,7 @@ namespace BeatPulse
             const int cacheDurationOnSeconds = 10;
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableOutputCache(cacheDurationOnSeconds))
+                .UseBeatPulse(options => options.ConfigureOutputCache(cacheDurationOnSeconds))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -453,8 +453,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -486,8 +486,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -517,8 +517,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -611,20 +611,23 @@ namespace BeatPulse
             const string origin = "test-api.com";
 
             var webHostBuilder = new WebHostBuilder()
-               .UseBeatPulse(options => {
-                   options.EnableCors(builder =>
-                   {
-                       builder
-                       .WithOrigins(origin)
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-                   });
-               })
                .UseStartup<DefaultStartup>()
                .ConfigureServices(svc =>
                {
                    svc.AddCors();
                    svc.AddBeatPulse();
+                   svc.AddMvc();
+               }).Configure(app=>
+               {
+                   app.UseCors(setup =>
+                   {
+                       setup.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                   });
+                   app.UseBeatPulse(setup=> { });
+                   app.UseMvc();
                });
 
             var server = new TestServer(webHostBuilder);
@@ -649,6 +652,18 @@ namespace BeatPulse
                {
                    svc.AddCors();
                    svc.AddBeatPulse();
+                   svc.AddMvc();
+               })
+               .Configure(app =>
+               {
+                   app.UseCors(setup =>
+                   {
+                       setup.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                   });
+                   app.UseMvc();
                });
 
             var server = new TestServer(webHostBuilder);

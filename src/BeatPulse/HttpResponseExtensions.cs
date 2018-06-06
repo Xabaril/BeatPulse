@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,7 +9,12 @@ namespace BeatPulse
 {
     static class HttpResponseExtensions
     {
-        public static Task WriteLivenessMessage(this HttpResponse response,BeatPulseOptions options, OutputLivenessMessage message)
+        private static JsonSerializerSettings _defaultSerializationSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+        public static Task WriteLivenessMessage(this HttpResponse response, BeatPulseOptions options, OutputLivenessMessage message)
         {
             var defaultContentType = options.DetailedOutput ? "application/json" : "text/plain";
 
@@ -34,7 +40,7 @@ namespace BeatPulse
 
             response.StatusCode = message.Code;
 
-            var content = options.DetailedOutput ? JsonConvert.SerializeObject(message)
+            var content = options.DetailedOutput ? JsonConvert.SerializeObject(message, _defaultSerializationSettings)
                 : Enum.GetName(typeof(HttpStatusCode), message.Code);
 
             return response.WriteAsync(content);
