@@ -43,22 +43,22 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>2.0.0</BeatPulsePackageVersion>
-    <BeatPulseAzureStoragePackageVersion>2.0.0</BeatPulseAzureStoragePackageVersion>
-    <BeatPulseDocumentDbPackageVersion>2.0.0</BeatPulseDocumentDbPackageVersion>
-    <BeatPulseMongoDbPackageVersion>2.0.0</BeatPulseMongoDbPackageVersion>
-    <BeatPulseMySqlPackageVersion>2.0.0</BeatPulseMySqlPackageVersion>
-    <BeatpulseNpgSqlPackageVersion>2.0.0</BeatpulseNpgSqlPackageVersion>
-    <BeatpulseRedisPackageVersion>2.0.0</BeatpulseRedisPackageVersion>
-    <BeatPulseSqlitePackageVersion>2.0.0</BeatPulseSqlitePackageVersion>
-    <BeatPulseSqlServerPackageVersion>2.0.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>2.0.0</BeatPulseUIPackageVersion>
-    <BeatPulseKafkaVersion>2.0.0</BeatPulseKafkaVersion>
-    <BeatPulseRabbitMQPackageVersion>2.0.0</BeatPulseRabbitMQPackageVersion>
-    <BeatPulseIdSvrVersion>2.0.0</BeatPulseIdSvrVersion>
-    <BeatPulseAzureServiceBusVersion>2.0.0</BeatPulseAzureServiceBusVersion>
-    <BeatPulseAITrackerVersion>2.0.0</BeatPulseAITrackerVersion>
-    <BeatPulsePrometheusTrackerVersion>2.0.0</BeatPulsePrometheusTrackerVersion>
+    <BeatPulsePackageVersion>2.1.0</BeatPulsePackageVersion>
+    <BeatPulseAzureStoragePackageVersion>2.1.0</BeatPulseAzureStoragePackageVersion>
+    <BeatPulseDocumentDbPackageVersion>2.1.0</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>2.1.0</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMySqlPackageVersion>2.1.0</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>2.1.0</BeatpulseNpgSqlPackageVersion>
+    <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
+    <BeatPulseSqlitePackageVersion>2.1.0</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
+    <BeatPulseUIPackageVersion>2.1.0</BeatPulseUIPackageVersion>
+    <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
+    <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
+    <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>
+    <BeatPulseAzureServiceBusVersion>2.1.0</BeatPulseAzureServiceBusVersion>
+    <BeatPulseAITrackerVersion>2.1.0</BeatPulseAITrackerVersion>
+    <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

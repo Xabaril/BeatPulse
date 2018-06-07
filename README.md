@@ -74,13 +74,7 @@ OK
 
 For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
 
-## Tracking pulses
-
-Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use.
-
- [Application Insights Tracker](./doc/ai-tracker.md)
-
- [Prometheus Tracker](./doc/prometheus_tracker.md)
+> You can check version changes and compatibility on [ChangeLog](/doc/changelog.md).
 
 ## UI
 
@@ -146,10 +140,19 @@ All liveness results are stored into a SqLite database persisted to disk with *l
 
 If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two bookmarks:
 
-    1.- [[LIVENESS]] The name of the liveness that returns *Down*.
-    2.- [[FAILURE]] A detail message with the failure.
+[[LIVENESS]] The name of the liveness that returns *Down*.
+
+ [[FAILURE]] A detail message with the failure.
 
 The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
+
+## Tracking pulses
+
+Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use:
+
+ > [Application Insights Tracker](./doc/ai-tracker.md)
+
+ > [Prometheus Tracker](./doc/prometheus_tracker.md)
 
 ## Contributing
 
