@@ -39,7 +39,6 @@
   <PropertyGroup Label="CLI Tools Versions">
     <DotnetXUnitPackageVersion>2.3.1</DotnetXUnitPackageVersion>
     <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
-    <EntityFrameworkCoreToolsVersion>2.0.2</EntityFrameworkCoreToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
