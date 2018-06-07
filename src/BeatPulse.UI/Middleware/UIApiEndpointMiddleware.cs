@@ -1,4 +1,5 @@
-﻿using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Core;
+using BeatPulse.UI.Core.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BeatPulse.UI.Core
+namespace BeatPulse.UI.Middleware
 {
     class UIApiEndpointMiddleware
     {

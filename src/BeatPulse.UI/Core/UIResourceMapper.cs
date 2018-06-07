@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BeatPulse.UI.Middleware;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -15,10 +16,10 @@ namespace BeatPulse.UI.Core
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
-        public void Map(IApplicationBuilder app, string uiPath, string apiPath)
+        public void Map(IApplicationBuilder app, ApiOptions apiOptions)
         {
             var resources = _reader.UIResources;
-            var UIMain = resources.GetMainUI(apiPath);
+            var UIMain = resources.GetMainUI(apiOptions);
 
             foreach (var resource in resources)
             {
@@ -32,7 +33,7 @@ namespace BeatPulse.UI.Core
                 });
             }
 
-            app.Map($"{uiPath}", appBuilder =>
+            app.Map($"{apiOptions.BeatPulseUIPath}", appBuilder =>
             {
                 appBuilder.Run(context =>
                 {

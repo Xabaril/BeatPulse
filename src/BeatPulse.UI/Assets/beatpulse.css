@@ -299,3 +299,26 @@ body {
 .table td, .table th {
     padding: .45rem;
 }
+
+.webhooks {
+    margin: 10px;
+}
+.webhook{
+    margin-top:20px;
+    padding: 10px;
+    border-color: #bdc3c7;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 30px;
+}
+.webhook-container {
+    margin-left:15%;
+    margin-top:5px;
+}
+.webhooks .block {
+    display: block;
+    margin: 5px;
+}
+.react-json-view {
+    margin-top: 8px;
+}

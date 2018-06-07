@@ -1,23 +1,27 @@
 import { HttpClient } from "./http/httpClient";
 
 export class BeatPulseClient {
-    private _http : HttpClient;
-    private _pollingInterval : Nullable<number>;
+    private _http: HttpClient;
+    private _pollingInterval: Nullable<number>;
 
     constructor(private endpoint: string) {
         this.endpoint = endpoint;
         this._http = new HttpClient();
         this._pollingInterval = null;
     }
-    healthCheck() : Promise<any> {
+    getData(): Promise<any> {
         return this._http.sendRequest({
             url: this.endpoint,
             method: "get"
         });
     }
 
-    startPolling(interval : string | number, onTimeElapsedCallback: () => void) {
-        this._pollingInterval && clearInterval(this._pollingInterval);
+    startPolling(interval: string | number, onTimeElapsedCallback: () => void) {
+        this.stopPolling();
         this._pollingInterval = setInterval(onTimeElapsedCallback, interval);
+    }
+
+    stopPolling() {
+        this._pollingInterval && clearInterval(this._pollingInterval);
     }
 }
