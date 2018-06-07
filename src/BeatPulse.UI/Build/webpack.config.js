@@ -16,11 +16,11 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: "awesome-typescript-loader",
-                exclude: [/(node_modules)/],
+                exclude: [/(node_modules)/]
             },
             {
                 loader: 'url-loader',
-                test: /\.(png|jpg|gif)$/                
+                test: /\.(png|jpg|gif|svg)$/                
             }
         ]
     },

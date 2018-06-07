@@ -1,4 +1,4 @@
-import { HttpClient } from "./Http/httpClient";
+import { HttpClient } from "./http/httpClient";
 
 export class BeatPulseClient {
     private _http : HttpClient;
