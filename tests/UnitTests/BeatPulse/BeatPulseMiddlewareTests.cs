@@ -606,7 +606,44 @@ namespace BeatPulse
         }
 
         [Fact]
-        public async Task response_should_add_access_control_headers_when_cors_is_configured()
+        public async Task response_should_add_access_control_headers_when_cors_is_configured_in_pulse_pipeline()
+        {
+            const string origin = "test-api.com";
+
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .ConfigureServices(svc =>
+               {
+                   svc.AddCors();
+                   svc.AddBeatPulse();
+                   svc.AddMvc();
+               }).Configure(app =>
+               {
+                   app.UseBeatPulse(setup => { },builder=>
+                   {
+                       builder.UseCors(setup =>
+                       {
+                           setup.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+                       });
+                   });
+                   app.UseMvc();
+               });
+
+            var server = new TestServer(webHostBuilder);
+
+            var client = server.CreateClient();
+            client.DefaultRequestHeaders.Add("Origin", origin);
+            var response = await client.GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}");
+
+            response.Headers.FirstOrDefault(s => s.Key == "Access-Control-Allow-Origin")
+                .Value.Should().BeEquivalentTo(origin);
+        }
+
+        [Fact]
+        public async Task response_should_add_access_control_headers_when_cors_is_configured_in_global_pipeline()
         {
             const string origin = "test-api.com";
 

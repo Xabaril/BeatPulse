@@ -44,9 +44,9 @@ Install-Package BeatPulse.IdSvr
         WebHost.CreateDefaultBuilder(args)
                .UseBeatPulse(options=>
                 {
-                   options.SetAlternatePath("health") //default hc
-                        .SetTimeout(milliseconds:1500) // default -1 infinitely
-                        .EnableDetailedOutput(); //default false
+                   options.ConfigurePath(path:"health") //default hc
+                        .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
+                        .ConfigureDetailedOutput(detailedOutput:true); //default false
                 }).UseStartup<Startup>().Build();
 ```
 

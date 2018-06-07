@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeatPulse;
+using BeatPulse.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BeatPulse;
-using BeatPulse.Core;
+using System.Threading.Tasks;
 
 namespace BeatPulseLivenessPipeline
 {
@@ -62,18 +59,15 @@ namespace BeatPulseLivenessPipeline
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseCors(setup =>
+            app.UseBeatPulse(setup => { }, builder =>
             {
-                setup.AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin()
-                    .AllowCredentials();
-            });
-
-            app.UseBeatPulse(setup =>
-            {
-                setup.ConfigureDetailedOutput(true)
-                    .ConfigurePath("hc");
+                builder.UseCors(setup =>
+                {
+                    setup.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                });
             });
 
             app.UseMvc(routes =>
