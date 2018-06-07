@@ -34,7 +34,7 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(EntityFrameworkCoreToolsVersion)" />
   </ItemGroup>
 
-  <!--<Target Name="InstallPackages" BeforeTargets="BeforeBuild">
+  <Target Name="InstallPackages" BeforeTargets="BeforeBuild">
     <Message Importance="high" Text="*** Installing npm packages ***" />
     <Exec Command="npm install" ContinueOnError="false" />  
   </Target>
@@ -42,5 +42,5 @@
   <Target Name="BuildClient" BeforeTargets="BeforeBuild" DependsOnTargets="InstallPackages">
     <Message Importance="high" Text="*** Bundling client files" />
     <Exec Command="npm run build" ContinueOnError="false" />
-  </Target>-->
+  </Target>
 </Project>
