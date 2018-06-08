@@ -89,7 +89,7 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
 
     render() {
         return <div id="wrapper" style={{ height: '100%', overflow: 'auto' }}>
-                <div className="container">
+                <div className="container liveness-container">
                     <div className="row">
                         <div className="header-logo">
                             <img src={HeartO} className="logo-icon"/><h2 className="title">BeatPulse Liveness status</h2>
@@ -102,7 +102,7 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
                         </div>
                     </div>
                 </div>
-                <div className="container">
+                <div className="container liveness-container">
                     <div className="row">
                         <LivenessTable livenessData={this.state.livenessData}/>
                         {this.state.error ?

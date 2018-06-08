@@ -311,6 +311,10 @@ body {
     border-style: solid;
     border-radius: 30px;
 }
+.liveness-container {
+    margin-left: 7%;
+}
+
 .webhook-container {
     margin-left:7%;
     margin-top:5px;
