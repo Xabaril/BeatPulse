@@ -33,11 +33,18 @@ namespace BeatPulse.UI.Core
 
                 using (var httpClient = new HttpClient())
                 {
-                    webHook.Payload = webHook.Payload
+                    var targetWebHook = new WebHookNotification()
+                    {
+                        Name = webHook.Name,
+                        Uri = webHook.Uri,
+                        Payload = webHook.Payload
+                    };
+
+                    targetWebHook.Payload = targetWebHook.Payload
                         .Replace(BeatPulseUIKeys.LIVENESS_BOOKMARK, livenessName)
                         .Replace(BeatPulseUIKeys.FAILURE_BOOKMARK, content);
 
-                    var payload = new StringContent(webHook.Payload, Encoding.UTF8, BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE);
+                    var payload = new StringContent(targetWebHook.Payload, Encoding.UTF8, BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE);
 
                     try
                     {

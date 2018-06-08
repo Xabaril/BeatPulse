@@ -1,9 +1,16 @@
-﻿body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+﻿html {
+    height: 100%;
 }
-
-[v-cloak] {
-    display: none;
+body {
+    margin: 0;
+    height:100%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    font-size: 100%;
+    background-color: #f6f6f7; 
+}
+#app {
+    height: 100%;
 }
 
 .table td  {
@@ -102,15 +109,248 @@
 
 
 
-.title {
-    color: green;
+.title {    
+    color: #16212d;
+    font-weight: 500;
 }
 
 .top-buffer-20 {
     margin-top: 20px;
 }
 
+.top-buffer-40 {
+    margin-top: 40px;
+}
 /*overrides*/
 .table .thead-dark th {
-    background-color: green;
+    background-color: rgb(12, 163, 78);
+}
+
+.table .thead-black th {
+    background-color: #686867;
+    color: white;
+}
+
+/* Position and sizing of burger button */
+.bm-burger-button {
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    left: 36px;
+    top: 36px;
+}
+
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+    background: #373a47;
+}
+
+/* Position and sizing of clickable cross button */
+.bm-cross-button {
+    height: 24px;
+    width: 24px;
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+    background: #bdc3c7;
+}
+
+/* General sidebar styles */
+.bm-menu {
+    background: #373a47;
+    padding: 2.5em 1.5em 0;
+    font-size: 1.15em;
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+    fill: #373a47;
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+    color: #b8b7ad;
+    padding: 0.8em;
+}
+
+/* Individual item */
+.bm-item {
+    display: inline-block;
+    margin-bottom: 30px !important;
+}
+
+/* Styling of overlay */
+.bm-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+
+.checks-table {    
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+.hidden {
+    display: none;
+    -webkit-animation: fadeOut 1s;
+    animation: fadeOut 1s;
+}
+
+.bm-item-list {
+    text-align: center;
+    font-size: 30px;
+
+}
+
+.bm-item-list a {
+    color: white;
+    margin:10px;
+}
+
+.bm-item-list a:hover {
+    color: white;
+    text-decoration:underline;
+}
+
+.polling-input {
+    width: 50px;
+    text-align: center;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.status-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.centered {
+    vertical-align: middle;
+    text-align: center;
+}
+
+ .centered img {
+        display: block;
+        margin: 0 auto;
+ }
+
+.table {
+    background-color: white;
+}
+
+.header-logo img {
+    width: 40px;
+    height: 40px;
+    float: left;
+    margin-right: 10px;
+}
+
+.header-logo h2 {
+    float:left;
+}
+
+.table td, .table th {
+    padding: .45rem;
+}
+
+.webhooks {
+    margin: 10px;
+}
+.webhook{
+    margin-top:20px;
+    padding: 20px;
+    border-color: #bdc3c7;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 25px;
+}
+.liveness-container {
+    margin-left: 7%;
+}
+
+.webhook-container {
+    margin-left:7%;
+    margin-top:5px;
+}
+.webhooks .block {
+    display: block;
+    margin: 5px;
+}
+.react-json-view {
+    margin-top: 8px;
+}
+
+.gear-icon {
+    height: 40px;
+    width: 40px;
+    display: inline-block;
+    margin-top: -5px;
+    margin-right: 10px;
+}
+
+.menu-icon {
+    width: 60px;
+    height: 60px;
+}
+
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #373a47;
+    color: white;
+    text-align: center;
+    height: 60px;
+    display: table;
+}
+
+#footer span {
+    vertical-align: middle;
+    display: table-cell;
+    vertical-align: middle;
 }
