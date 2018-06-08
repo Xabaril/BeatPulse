@@ -13,6 +13,10 @@ export interface Liveness {
     checks : Array<Check>;
 }
 
+export interface LivenessResult {
+    checks : Array<Check> | string;    
+}
+
 export interface Check {
     name: string;
     message: string;

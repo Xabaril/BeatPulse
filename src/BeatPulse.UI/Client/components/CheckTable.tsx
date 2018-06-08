@@ -5,8 +5,40 @@ interface CheckTableProps {
     checks: Array<Check>;
 }
 
-const CheckTable : React.SFC<CheckTableProps> = (props) => {
-    return <table className="table-responsive" style={{display: 'inline-table'}}>
+const renderTable = (props: CheckTableProps) => {
+
+    if (!Array.isArray(props.checks)) {
+        return <tr>
+            <td className="td-message" colSpan={6}>{props.checks}</td></tr>;
+    }
+
+    return props.checks.map((item, index) => {
+        return <tr key={index} style={{ backgroundColor: '#f6f2f2' }}>
+            <td>
+                {item.name}
+            </td>
+            <td>
+                {item.message}
+            </td>
+            <td>
+                {item.elapsed}
+            </td>
+            <td>
+                {item.run.toString()}
+            </td>
+            <td>
+                {item.path}
+            </td>
+            <td>
+                {item.isHealthy.toString()}
+            </td>
+        </tr>
+    });
+}
+
+
+const CheckTable: React.SFC<CheckTableProps> = (props) => {
+    return <table className="table-responsive" style={{ display: 'inline-table' }}>
         <thead className="thead-black">
             <tr>
                 <th>Name</th>
@@ -18,30 +50,9 @@ const CheckTable : React.SFC<CheckTableProps> = (props) => {
             </tr>
         </thead>
         <tbody>
-            {props.checks.map((item, index) => {
-                return <tr key={index} style={{backgroundColor: '#f6f2f2'}}>
-                    <td>
-                        {item.name}
-                    </td>
-                    <td>
-                        {item.message}
-                    </td>
-                    <td>
-                        {item.elapsed}
-                    </td>
-                    <td>
-                        {item.run.toString()}
-                    </td>
-                    <td>
-                        {item.path}
-                    </td>
-                    <td>
-                        {item.isHealthy.toString()}
-                    </td>
-                </tr>
-            })}
+            {renderTable(props)}
         </tbody>
     </table>
 }
 
-export {CheckTable};
+export { CheckTable };

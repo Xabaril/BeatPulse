@@ -366,3 +366,9 @@ body {
     width: 20px;
     margin-right: 20px;
 }
+
+.td-message {
+    height: 45px;
+    float:'left';
+    background-color: #d0e2e8;
+}

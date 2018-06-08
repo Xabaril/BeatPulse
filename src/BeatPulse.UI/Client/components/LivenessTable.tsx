@@ -24,9 +24,14 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
 
         return livenessData.map(liveness => {
             if (liveness.livenessResult) {
-                Object.assign(
-                    liveness,
-                    { checks: JSON.parse(liveness.livenessResult).checks as Array<Check> })
+                let checks;
+                try {
+                    //Check whether liveness result is an string formatted Array or a simple string
+                    checks = JSON.parse(liveness.livenessResult).checks;
+                    Object.assign(liveness, { checks })
+                } catch (err) {
+                    Object.assign(liveness, { checks: liveness.livenessResult });
+                }
             }
             return liveness;
         });
@@ -63,11 +68,11 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                 <tbody>
                     {this.mapTable(this.props.livenessData).map((item, index) => {
                         return <React.Fragment>
-                            <tr key={index}  onClick={this.toggleVisibility} style={{cursor: 'pointer'}}>
+                            <tr key={index} onClick={this.toggleVisibility} style={{ cursor: 'pointer' }}>
                                 <td>
-                                 <img className="plus-icon" src={PlusIcon}/>
-                                </td>  
-                                <td>                                    
+                                    <img className="plus-icon" src={PlusIcon} />
+                                </td>
+                                <td>
                                     {item.livenessName}
                                 </td>
                                 <td className="centered">
@@ -81,8 +86,8 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                                 </td>
                             </tr>
                             <tr className="checks-table hidden">
-                                <td style={{padding: 0}} colSpan={5}>
-                                    <CheckTable checks={item.checks}/>
+                                <td style={{ padding: 0 }} colSpan={5}>
+                                    <CheckTable checks={item.checks} />
                                 </td>
                             </tr>
                         </React.Fragment>
