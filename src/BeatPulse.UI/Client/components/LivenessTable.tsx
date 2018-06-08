@@ -7,6 +7,8 @@ interface LivenessTableProps {
     livenessData: Array<Liveness>
 }
 
+const PlusIcon = require("../../Assets/svg/plus.svg");
+
 export class LivenessTable extends React.Component<LivenessTableProps> {
 
     constructor(props: LivenessTableProps) {
@@ -51,6 +53,7 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
             <table className="table">
                 <thead className="thead-dark">
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>IsHealthy</th>
                         <th>Status</th>
@@ -62,6 +65,9 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                         return <React.Fragment>
                             <tr key={index}  onClick={this.toggleVisibility} style={{cursor: 'pointer'}}>
                                 <td>
+                                 <img className="plus-icon" src={PlusIcon}/>
+                                </td>  
+                                <td>                                    
                                     {item.livenessName}
                                 </td>
                                 <td className="centered">
@@ -75,7 +81,7 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                                 </td>
                             </tr>
                             <tr className="checks-table hidden">
-                                <td style={{padding: 0}} colSpan={4}>
+                                <td style={{padding: 0}} colSpan={5}>
                                     <CheckTable checks={item.checks}/>
                                 </td>
                             </tr>

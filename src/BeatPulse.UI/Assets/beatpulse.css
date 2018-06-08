@@ -247,15 +247,16 @@ body {
 .bm-item-list a {
     color: white;
     margin: 10px;
-    transition: all 0.3s ease-in;
+    transition: all 0.1s ease-in;
     text-decoration: none;
 }
 
-.bm-item-list a:hover {
-    color: white;
+.bm-item-list a:hover {    
     margin: 10px;
-    transition: all 0.3s ease-in;
-    text-decoration: none;
+    -webkit-stroke-width: 5.3px;
+    -webkit-stroke-color: #FFFFFF;
+    -webkit-fill-color: #FFFFFF;
+    text-shadow: 1px 0px 20px white;
 }
 
 .polling-input {
@@ -313,6 +314,7 @@ body {
     border-radius: 25px;
 }
 .liveness-container {
+    margin-top: 20px;
     margin-left: 7%;
 }
 
@@ -357,4 +359,10 @@ body {
     vertical-align: middle;
     display: table-cell;
     vertical-align: middle;
+}
+
+.plus-icon{
+    height: 20px;
+    width: 20px;
+    margin-right: 20px;
 }

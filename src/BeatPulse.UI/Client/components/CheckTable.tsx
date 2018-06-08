@@ -11,7 +11,7 @@ const CheckTable : React.SFC<CheckTableProps> = (props) => {
             <tr>
                 <th>Name</th>
                 <th>Message</th>
-                <th>Milliseconds</th>
+                <th>Elapsed time</th>
                 <th>Run</th>
                 <th>Path</th>
                 <th>Is Healthy</th>
