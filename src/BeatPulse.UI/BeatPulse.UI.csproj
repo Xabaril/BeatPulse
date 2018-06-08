@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
@@ -40,9 +40,5 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="$(MicrosoftEntityFrameworkCoreSqlLiteDesignVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(MicrosoftExtensionConfigurationBinderVersion)" />
     <PackageReference Include="Newtonsoft.Json" Version="$(NewtonSoftJsonVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(EntityFrameworkCoreToolsVersion)" />
   </ItemGroup>
 </Project>

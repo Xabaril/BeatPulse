@@ -6,11 +6,11 @@ namespace BeatPulse.Core
     {
         internal string Path { get; private set; }
 
+        internal string Name { get; private set; }
+
         internal IBeatPulseLiveness Liveness { get; private set; }
 
         internal Func<IServiceProvider, IBeatPulseLiveness> Factory { get; private set; }
-
-        internal string Name { get; private set; }
 
         public BeatPulseLivenessRegistrationOptions(string name)
         {

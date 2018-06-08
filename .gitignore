@@ -43,8 +43,8 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
-# samples
-samples/Prometheus-Stack-Environment/prometheus/data
+# Prometheus samples volume
+samples/Prometheus-Stack-Environment/prometheus/data/wall
 
 # .NET Core
 project.lock.json
