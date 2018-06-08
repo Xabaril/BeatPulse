@@ -4,6 +4,11 @@ import moment from "moment";
 import { Liveness } from "../typings/models";
 import { LivenessTable } from "./LivenessTable";
 const DarkHeartIcon = require("../../Assets/svg/dark-heart.svg");
+const ExpandIcon = require('../../Assets/svg/expand.svg');
+const CollapseIcon = require('../../Assets/svg/collapse.svg');
+const PlusIcon = require("../../Assets/svg/plus.svg");
+const MinusIcon = require('../../Assets/svg/minus.svg');
+
 
 const beatPulseIntervalStorageKey = "beatpulse-ui-polling";
 
@@ -19,12 +24,14 @@ interface LivenessProps {
 
 export class LivenessPage extends React.Component<LivenessProps, LivenessState> {
     private _beatpulseClient: BeatPulseClient;
-
+    private _lifenessTable: any;
     constructor(props: LivenessProps) {
         super(props);
         this._beatpulseClient = new BeatPulseClient(this.props.endpoint);
         this.initPolling = this.initPolling.bind(this);
         this.onPollinIntervalChange = this.onPollinIntervalChange.bind(this);
+        this.expandAll = this.expandAll.bind(this);
+        this.collapseAll = this.collapseAll.bind(this);
 
         const pollingIntervalSetting = localStorage.getItem(beatPulseIntervalStorageKey) || 10;
 
@@ -45,7 +52,7 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
 
             let livenessCollection = (await this._beatpulseClient.getData()).data as Array<Liveness>;
             livenessCollection = livenessCollection.filter(l => l != null);
-            
+
             for (let item of livenessCollection) {
                 item.onStateFrom = `${item.status} ${moment.utc(item.onStateFrom).fromNow()}`;
             }
@@ -89,6 +96,26 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
         this._beatpulseClient.stopPolling();
     }
 
+    expandAll(event: any) {
+        var tableElement = this._lifenessTable;
+        Array.from(tableElement.getElementsByClassName("tr-liveness"))
+            .map((el: any) => el.nextSibling)
+            .forEach((el: any) => el.classList.remove("hidden"));
+
+            Array.from(tableElement.getElementsByClassName("plus-icon"))            
+            .forEach((el: any) => el.src = MinusIcon);
+    }
+
+    collapseAll(event: any) {
+        var tableElement = this._lifenessTable;
+        Array.from(tableElement.getElementsByClassName("tr-liveness"))
+            .map((el: any) => el.nextSibling)
+            .forEach((el: any) => el.classList.add("hidden"));
+        
+            Array.from(tableElement.getElementsByClassName("plus-icon"))            
+            .forEach((el: any) => el.src = PlusIcon);
+    }
+
     render() {
         return <div id="wrapper" style={{ height: '100%', overflow: 'auto' }}>
             <div className="container liveness-container">
@@ -105,7 +132,13 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
                 </div>
             </div>
             <div className="container liveness-container">
-                <div className="row">
+                <div className="row text-right bottom-buffer-10">
+                    <div className="col-md-12">
+                        <img className="expand-button" src={ExpandIcon} title="Expand all" onClick={this.expandAll} />
+                        <img className="collapse-button" src={CollapseIcon} title="Collapse all" onClick={this.collapseAll} />
+                    </div>
+                </div>
+                <div className="row" ref={(lt) => this._lifenessTable = lt}>
                     <LivenessTable livenessData={this.state.livenessData} />
                     {this.state.error ?
                         <div className="w-100 alert alert-danger" role="alert">{this.state.error}</div>

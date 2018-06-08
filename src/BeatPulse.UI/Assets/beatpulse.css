@@ -118,6 +118,10 @@ body {
     margin-top: 20px;
 }
 
+.bottom-buffer-10 {
+    margin-bottom: 10px;
+}
+
 .top-buffer-40 {
     margin-top: 40px;
 }
@@ -371,4 +375,17 @@ body {
     height: 45px;
     float:'left';
     background-color: #d0e2e8;
+}
+
+.expand-button {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    cursor:pointer;
+}
+
+.collapse-button {
+    width: 30px;
+    height: 30px;    
+    cursor:pointer;
 }

@@ -35,17 +35,18 @@ namespace BeatPulse.UI.Core
                 var beatPulseSettings = scope.ServiceProvider.GetService<IOptions<BeatPulseSettings>>();                
                 context.Response.ContentType = BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE;
 
-                var sanitizedWebhooks = beatPulseSettings.Value.Webhooks.Select(w =>
+                var sanitizedWebhooksResponse = beatPulseSettings.Value.Webhooks.Select(w =>
                 {
+                    dynamic payload = string.IsNullOrEmpty(w.Payload) ? new JObject() : JObject.Parse(Regex.Unescape(w.Payload));
                     dynamic webhook = new {
                                         w.Name,
                                         w.Uri,
-                                        Payload = JObject.Parse(Regex.Unescape(w.Payload))
+                                        Payload = payload
                                      };
                     return webhook;
                 });
                 
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(sanitizedWebhooks, _jsonSerializationSettings));
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(sanitizedWebhooksResponse, _jsonSerializationSettings));
             }            
         } 
     }

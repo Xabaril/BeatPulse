@@ -8,6 +8,7 @@ interface LivenessTableProps {
 }
 
 const PlusIcon = require("../../Assets/svg/plus.svg");
+const MinusIcon = require("../../Assets/svg/minus.svg");
 
 export class LivenessTable extends React.Component<LivenessTableProps> {
 
@@ -48,9 +49,13 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
     toggleVisibility(event: any) {
         let { currentTarget } = event;
         let checksTable = currentTarget.nextSibling;
-        checksTable.classList.contains("hidden") ?
+        let isHidden = checksTable.classList.contains("hidden");
+        isHidden ?
             checksTable.classList.remove("hidden") :
             checksTable.classList.add("hidden");
+
+        let iconImage = currentTarget.getElementsByClassName("plus-icon")[0];
+        iconImage.src = isHidden ? MinusIcon : PlusIcon;
     }
 
     render() {
@@ -68,7 +73,7 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                 <tbody>
                     {this.mapTable(this.props.livenessData).map((item, index) => {
                         return <React.Fragment>
-                            <tr key={index} onClick={this.toggleVisibility} style={{ cursor: 'pointer' }}>
+                            <tr className="tr-liveness" key={index} onClick={this.toggleVisibility} style={{ cursor: 'pointer' }}>
                                 <td>
                                     <img className="plus-icon" src={PlusIcon} />
                                 </td>
