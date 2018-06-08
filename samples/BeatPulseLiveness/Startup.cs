@@ -39,16 +39,16 @@ namespace BeatPulseLiveness
                     //add existing liveness packages
                     //
 
-                setup.AddSqlServer("the-sql-server-connection-string");
+                setup.AddSqlServer("Server=.;Integrated Security=true;Initial Catalog=master");
                 // or setup.AddXXXX() for all liveness packages on Nuget
 
                     //
                     //create simple ad-hoc liveness
                     //
 
-                setup.AddLiveness("catapi", opt =>
+                setup.AddLiveness("custom-liveness", opt =>
                 {
-                    opt.UsePath("catapi");
+                    opt.UsePath("custom-liveness");
                     opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
                     {
                         return Task.FromResult(("OK", true));
@@ -59,9 +59,9 @@ namespace BeatPulseLiveness
                     //ceate ad-hoc liveness with dependency resolution
                     //
 
-                setup.AddLiveness("catapi", opt =>
+                setup.AddLiveness("custom-liveness-with-dependency", opt =>
                 {
-                    opt.UsePath("catapi");
+                    opt.UsePath("custom-liveness-with-dependency");
                     opt.UseFactory(sp => new ActionLiveness((http, token) =>
                     {
                         var logger = sp.GetRequiredService<ILogger<Startup>>();
