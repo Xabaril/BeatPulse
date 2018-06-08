@@ -30,10 +30,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="$(NewtonSoftJsonVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(EntityFrameworkCoreToolsVersion)" />
-  </ItemGroup>
-
   <Target Name="InstallPackages" BeforeTargets="BeforeBuild">
     <Message Importance="high" Text="*** Installing npm packages ***" />
     <Exec Command="npm install" ContinueOnError="false" />  
