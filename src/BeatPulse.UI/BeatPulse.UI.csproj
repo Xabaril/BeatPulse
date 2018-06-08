@@ -36,7 +36,13 @@
   </Target>
 
   <Target Name="BuildClient" BeforeTargets="BeforeBuild" DependsOnTargets="InstallPackages">
-    <Message Importance="high" Text="*** Bundling client files" />
+    <Message Importance="high" Text="*** Bundling client files ***" />
     <Exec Command="npm run build" ContinueOnError="false" />
   </Target>
+
+  <Target Name="UglifyCss" BeforeTargets="BeforeBuild" DependsOnTargets="BuildClient">
+    <Message Importance="high" Text="*** Uglifying css files *** " />
+    <Exec Command="npm run buildcss:prod" ContinueOnError="false" />
+  </Target>
+  
 </Project>

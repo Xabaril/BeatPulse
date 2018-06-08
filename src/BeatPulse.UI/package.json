@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build:dll": "webpack-cli --mode production --config ./build/webpack.dll.js",
-    "build:prod": "webpack-cli --mode development --config ./build/webpack.config.js",
+    "buildcss:prod": "uglifycss ./Assets/beatpulse.css --output ./Assets/beatpulse.css",
+    "build:prod": "webpack-cli --mode production --config ./build/webpack.config.js",
     "build": "npm run build:dll && npm run build:prod"
   },
   "author": "Xabaril Team",
@@ -25,6 +26,7 @@
     "@types/react-router-dom": "4.2.7",
     "awesome-typescript-loader": "5.0.0",
     "typescript": "2.9.1",
+    "uglifycss": "0.0.29",
     "url-loader": "1.0.1",
     "webpack": "4.10.2",
     "webpack-cli": "3.0.2"
