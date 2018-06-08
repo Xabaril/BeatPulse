@@ -246,12 +246,16 @@ body {
 
 .bm-item-list a {
     color: white;
-    margin:10px;
+    margin: 10px;
+    transition: all 0.3s ease-in;
+    text-decoration: none;
 }
 
 .bm-item-list a:hover {
     color: white;
-    text-decoration:underline;
+    margin: 10px;
+    transition: all 0.3s ease-in;
+    text-decoration: none;
 }
 
 .polling-input {

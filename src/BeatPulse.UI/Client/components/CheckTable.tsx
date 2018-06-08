@@ -19,7 +19,7 @@ const CheckTable : React.SFC<CheckTableProps> = (props) => {
         </thead>
         <tbody>
             {props.checks.map((item, index) => {
-                return <tr key={index}>
+                return <tr key={index} style={{backgroundColor: '#f6f2f2'}}>
                     <td>
                         {item.name}
                     </td>
@@ -27,7 +27,7 @@ const CheckTable : React.SFC<CheckTableProps> = (props) => {
                         {item.message}
                     </td>
                     <td>
-                        {item.milliSeconds.toString()}
+                        {item.elapsed}
                     </td>
                     <td>
                         {item.run.toString()}

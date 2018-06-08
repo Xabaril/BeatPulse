@@ -16,7 +16,7 @@ export interface Liveness {
 export interface Check {
     name: string;
     message: string;
-    milliSeconds: number;
+    elapsed: string;
     run: boolean;
     path: string,
     isHealthy: boolean
