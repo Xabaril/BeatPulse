@@ -30,7 +30,7 @@ namespace BeatPulse.AWS.DynamoDB
             {
                 var credentials = new BasicAWSCredentials(_options.AccessKey, _options.SecretKey);
                 var client = new AmazonDynamoDBClient(credentials, _options.RegionEndpoint);
-                var tables = await client.ListTablesAsync();
+                await client.ListTablesAsync();
 
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
