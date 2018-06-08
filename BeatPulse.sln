@@ -68,7 +68,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseLivenessAuthentica
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseIntegratedUI", "samples\BeatPulseIntegratedUI\BeatPulseIntegratedUI.csproj", "{AF940A45-3DAD-4297-A558-AAF0B226675D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseLivenessPipeline", "samples\BeatPulseLivenessPipeline\BeatPulseLivenessPipeline.csproj", "{00A74F39-E0B5-444A-A55A-B721986E1939}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulseLivenessPipeline", "samples\BeatPulseLivenessPipeline\BeatPulseLivenessPipeline.csproj", "{00A74F39-E0B5-444A-A55A-B721986E1939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulseConsoleApp", "samples\BeatPulseConsoleApp\BeatPulseConsoleApp.csproj", "{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,6 +174,10 @@ Global
 		{00A74F39-E0B5-444A-A55A-B721986E1939}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A74F39-E0B5-444A-A55A-B721986E1939}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00A74F39-E0B5-444A-A55A-B721986E1939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +207,7 @@ Global
 		{98AF723F-198C-4130-90A0-8CA6C3285AE9} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{AF940A45-3DAD-4297-A558-AAF0B226675D} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{00A74F39-E0B5-444A-A55A-B721986E1939} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
+		{935C7D07-5D88-4B53-A9DE-57C51DCE2E2F} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ namespace BeatPulse.Core
     {
         private readonly BeatPulseContext _beatPulseContext;
         private readonly ILogger<BeatPulseService> _logger;
-        private readonly IHostingEnvironment _environment;
+        private readonly Microsoft.Extensions.Hosting.IHostingEnvironment _environment;
 
-        public BeatPulseService(BeatPulseContext beatPulseContext, IHostingEnvironment environment, IServiceProvider serviceProvider, ILogger<BeatPulseService> logger)
+        public BeatPulseService(BeatPulseContext beatPulseContext, Microsoft.Extensions.Hosting.IHostingEnvironment environment, IServiceProvider serviceProvider, ILogger<BeatPulseService> logger)
         {
             _beatPulseContext = beatPulseContext ?? throw new ArgumentNullException(nameof(beatPulseContext));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
