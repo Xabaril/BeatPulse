@@ -92,6 +92,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prometheus", "prometheus", 
 		samples\Prometheus-Stack-Environment\prometheus\prometheus.yml = samples\Prometheus-Stack-Environment\prometheus\prometheus.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{2C74B1B5-7C5D-413D-8E86-00E741C359E1}"
+	ProjectSection(SolutionItems) = preProject
+		build\dependencies.props = build\dependencies.props
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.AWSDynamoDB", "src\BeatPulse.AWSDynamoDB\BeatPulse.AWSDynamoDB.csproj", "{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +197,10 @@ Global
 		{3C9674D1-45BC-476A-9ACE-7E831304F1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C9674D1-45BC-476A-9ACE-7E831304F1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C9674D1-45BC-476A-9ACE-7E831304F1F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +234,7 @@ Global
 		{3C9674D1-45BC-476A-9ACE-7E831304F1F7} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{78269A10-9152-4C82-9980-5DF98E36516B} = {7E4ADA32-6E78-4547-9E7A-8A8F7524D738}
 		{B880D96B-24A5-439B-AB35-608BBC1D76E1} = {78269A10-9152-4C82-9980-5DF98E36516B}
+		{4FA22C9D-0572-4289-9AFD-D5BCB0C77F14} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
