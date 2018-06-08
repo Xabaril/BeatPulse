@@ -14,7 +14,7 @@ namespace BeatPulse.PrometheusTracker
 
             var labels = GetLabels(response, prometheusLabels);
 
-            builder.Append($"beatpulse_pulse_execution_time_seconds{labels} { ((double)response.MilliSeconds / 1000)}\n");
+            builder.Append($"beatpulse_pulse_execution_time_seconds{labels} {response.Elapsed.TotalSeconds}\n");
             builder.Append($"beatpulse_pulse_ishealthy{labels} {Convert.ToInt32(response.IsHealthy)}\n");
 
             return builder.ToString();
