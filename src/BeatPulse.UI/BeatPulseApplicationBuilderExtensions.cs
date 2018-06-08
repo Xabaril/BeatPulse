@@ -21,6 +21,8 @@ namespace BeatPulse.UI
 
         private static IApplicationBuilder ConfigurePipeline(IApplicationBuilder app, ApiOptions apiOptions)
         {
+            EnsureValidApiOptions(apiOptions);
+
             var embeddedResourcesAssembly = typeof(UIResource).Assembly;
 
             app.Map(apiOptions.BeatPulseApiPath, appBuilder => appBuilder.UseMiddleware<UIApiEndpointMiddleware>());
@@ -30,6 +32,21 @@ namespace BeatPulse.UI
                 new UIEmbeddedResourcesReader(embeddedResourcesAssembly)).Map(app, apiOptions);
 
             return app;
+        }
+
+        private static void EnsureValidApiOptions(ApiOptions apiOptions)
+        {
+            Action<string, string> ensureValidPath = (string path, string argument) =>
+             {
+                 if (string.IsNullOrEmpty(path) || !path.StartsWith("/"))
+                 {
+                     throw new ArgumentNullException(argument);
+                 }
+             };
+
+            ensureValidPath(apiOptions.BeatPulseApiPath, nameof(ApiOptions.BeatPulseApiPath));
+            ensureValidPath(apiOptions.BeatPulseUIPath, nameof(ApiOptions.BeatPulseUIPath));
+            ensureValidPath(apiOptions.BeatPulseWebHooksPath, nameof(ApiOptions.BeatPulseWebHooksPath));
         }
     }
 }
