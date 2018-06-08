@@ -36,7 +36,7 @@ echo "build: Tag is $tag"
 echo "build: Package version suffix is $suffix"
 echo "build: Build version suffix is $buildSuffix" 
 
-exec { & dotnet build BeatPulse.sln -c Release --version-suffix=$buildSuffix -v q /nologo }
+exec { & dotnet build BeatPulse.sln /v:n -c Release --version-suffix=$buildSuffix -v q /nologo }
 
 if (-Not (Test-Path 'env:APPVEYOR')) {
 	exec { & docker-compose up -d }
