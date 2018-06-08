@@ -41,7 +41,7 @@ export class WebhooksPage extends React.Component<WebhooksPageProps, WebHooksPag
                             <span className="block"><b>Name</b> : {webhook.name}</span>
                             <span className="block"><b>Uri</b> : {webhook.uri}</span>
                             <span className="block"><b>Payload</b> :</span>
-                            <ReactJson theme="solarized" src={webhook.payload as Object} />
+                            <ReactJson src={webhook.payload as Object} />
                         </div>
                     </div>
                 })}
