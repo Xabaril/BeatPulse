@@ -9,6 +9,7 @@ interface WebhooksPageProps {
 interface WebHooksPageState {
     webhooks: Array<WebHook>;
 }
+const GearIcon = require('../../Assets/svg/gear.svg');
 
 export class WebhooksPage extends React.Component<WebhooksPageProps, WebHooksPageState> {
     private _beatpulseClient: BeatPulseClient;
@@ -52,8 +53,11 @@ export class WebhooksPage extends React.Component<WebhooksPageProps, WebHooksPag
     render() {
         return <div id="wrapper" style={{ height: '100%', overflow: 'auto' }}>
             <div className="container webhook-container">
-                <div className="webhooks">
-                    <h2 className="title" style={{ marginLeft: '1.35%', marginTop: '5%' }}>{this.state.webhooks.length} Configured Webhooks</h2>
+                <div className="webhooks">                    
+                    <h2 className="title" style={{ marginLeft: '1.35%', marginTop: '5%' }}>
+                    <img className="gear-icon" src={GearIcon}/>
+                    {this.state.webhooks.length} Configured Webhooks
+                    </h2>
                     {this.renderWebhooks(this.state.webhooks)}                    
                 </div>
             </div>

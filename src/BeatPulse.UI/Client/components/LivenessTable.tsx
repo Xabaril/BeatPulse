@@ -34,10 +34,6 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
         return new Date(date).toLocaleString();
     }
 
-    renderBackground(status: string) {
-        return status === statusUp ? "" : status === statusDown ? "table-danger" : "table-warning";
-    }
-
     getStatusPic(status: string) {
         return getStatusImage(status);
     }
@@ -64,7 +60,7 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                 <tbody>
                     {this.mapTable(this.props.livenessData).map((item, index) => {
                         return <React.Fragment>
-                            <tr key={index} className={this.renderBackground(item.status)} onClick={this.toggleVisibility} style={{cursor: 'pointer'}}>
+                            <tr key={index}  onClick={this.toggleVisibility} style={{cursor: 'pointer'}}>
                                 <td>
                                     {item.livenessName}
                                 </td>

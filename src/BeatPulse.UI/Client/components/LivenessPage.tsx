@@ -3,7 +3,7 @@ import { BeatPulseClient } from "../beatpulseClient";
 import moment from "moment";
 import { Liveness } from "../typings/models";
 import { LivenessTable } from "./LivenessTable";
-const HeartO = require("../../Assets/svg/heart-o.svg");
+const DarkHeartIcon = require("../../Assets/svg/dark-heart.svg");
 
 const beatPulseIntervalStorageKey = "beatpulse-ui-polling";
 
@@ -90,9 +90,9 @@ export class LivenessPage extends React.Component<LivenessProps, LivenessState> 
     render() {
         return <div id="wrapper" style={{ height: '100%', overflow: 'auto' }}>
                 <div className="container liveness-container">
-                    <div className="row">
+                    <div className="row top-buffer-40">
                         <div className="header-logo">
-                            <img src={HeartO} className="logo-icon"/><h2 className="title">BeatPulse Liveness status</h2>
+                            <img src={DarkHeartIcon} className="logo-icon"/><h2 className="title">BeatPulse Liveness status</h2>
                         </div>
                         <div className="col text-right">
                             <label>Refresh every</label>
