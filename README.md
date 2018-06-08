@@ -14,6 +14,8 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 
 ## Getting Started 
 
+> This documentation is for BeatPulse latest version, you can check  changes and compatibility on [ChangeLog](/doc/changelog.md).
+
 1. Install the Nuget Package into your ASP.NET Core application.
 
 ``` PowerShell
@@ -73,8 +75,6 @@ OK
 ```
 
 For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
-
-> You can check version changes and compatibility on [ChangeLog](/doc/changelog.md).
 
 ## UI
 
