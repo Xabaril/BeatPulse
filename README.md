@@ -14,7 +14,7 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 
 ## Getting Started 
 
-> This documentation is for BeatPulse latest version, you can check  changes and compatibility on [ChangeLog](/doc/changelog.md).
+> This documentation is for BeatPulse latest version, you can check  changes and package compatibility on [ChangeLog](/doc/changelog.md).
 
 1. Install the Nuget Package into your ASP.NET Core application.
 
