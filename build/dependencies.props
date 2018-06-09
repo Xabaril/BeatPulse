@@ -35,6 +35,7 @@
     <MicrosoftAzureServiceBusVersion>2.0.0</MicrosoftAzureServiceBusVersion>
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
+    <AWSSDKDynamoDBv2Version>3.3.8.1</AWSSDKDynamoDBv2Version>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
@@ -60,6 +61,7 @@
 	  <BeatPulseAzureServiceBusVersion>1.7.0</BeatPulseAzureServiceBusVersion>
     <BeatPulseAITrackerVersion>1.7.0</BeatPulseAITrackerVersion>
     <BeatPulsePrometheusTrackerVersion>1.7.0</BeatPulsePrometheusTrackerVersion>
+    <BeatPulseAWSDynamoDBPackageVersion>1.7.0</BeatPulseAWSDynamoDBPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

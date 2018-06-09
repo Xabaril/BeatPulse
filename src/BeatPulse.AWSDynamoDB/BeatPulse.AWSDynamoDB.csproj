@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Amazon;AWS;DynamoDb</PackageTags>
+    <Description>BeatPulse.AWSDynamoDB is the health check package for AWS DynamoDB</Description>
+    <Version>$(BeatPulseAWSDynamoDBPackageVersion)</Version>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <Company>$(Company)</Company>
+    <Authors>$(Authors)</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="$(AWSSDKDynamoDBv2Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeatPulse\BeatPulse.csproj" />
+  </ItemGroup>
+
+</Project>
