@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj" />
