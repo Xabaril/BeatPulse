@@ -4,13 +4,13 @@
 
 # Beat Pulse
 
-Health checking is the process where load balancers or application delivery controller does periodic check on our applications to make sure that they are up and responding without any problems. If our applications are down for every reason or any of the system that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s... should detect this and stop sending traffic its way and try to restore the services manually or automatically in case of k8s.
+Health checking is the process where load balancers or application delivery controller does periodic checks on our applications to make sure that they are up and responding without any problems. If our applications are down for whatever reason or any of the systems that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s, should detect this and stop sending traffic its way trying to restore services manually or automatically.
 
 *BeatPulse* is a simple liveness, readiness library for .NET Core Applications. 
 
 ## What is the motivation behind it
 
-The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included  in ASP.NET Core 2.1.
+The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included in ASP.NET Core 2.1.
 
 ## Getting Started 
 
@@ -84,7 +84,7 @@ Additionally, you can save liveness information in external services. Currently 
 
 ## UI
 
-The project BeatPulse.UI is a minimal UI interface that store and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.
+The project BeatPulse.UI is a minimal UI interface that stores and shows the liveness results from the configured liveness uri's. To integrate BeatPulse.UI in your project you just need to add the BeatPulse.UI services and middlewares.
 
 ```csharp
     public class Startup
@@ -107,7 +107,7 @@ This automatically registers a new interface on **/beatpulse-ui**.
 
 ![BeatPulseUI](./doc/images/ui-home.png)
 
-**BeatPulseUI** exist also as *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
+**BeatPulseUI** is also available as a *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
 ### Configuration
 
@@ -144,12 +144,12 @@ All liveness results are stored into a SqLite database persisted to disk with *l
 
 ### Failure Notifications
 
-If the **WebHooks** section is configured, BeatPulse-UI automatically post a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two bookmarks:
+If the **WebHooks** section is configured, BeatPulse-UI automatically posts a new notification into the webhook collection. BeatPulseUI uses a simple replace method for values in the webhook's **Payload** property. At this moment we support two bookmarks:
 
     1.- [[LIVENESS]] The name of the liveness that returns *Down*.
     2.- [[FAILURE]] A detail message with the failure.
 
-The [web hooks section](./doc/webhooks.md) contain more information and webhook samples for Microsoft Teams, Azure Functions, Slack and more.
+The [web hooks section](./doc/webhooks.md) contains more information and webhooks samples for Microsoft Teams, Azure Functions, Slack and more.
 
 ## Contributing
 
@@ -162,4 +162,4 @@ If you want to contribute to a project and make it better, your help is very wel
 1. Read and follow the [Don't push your pull requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/)
 2. Build.ps1 is working on local and AppVeyor.
 3. Follow the code guidelines and conventions.
-4. New features is not only code, tests and documentation is also mandatory.
+4. New features are not only code, tests and documentation are also mandatory.

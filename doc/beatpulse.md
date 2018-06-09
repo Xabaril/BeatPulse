@@ -2,7 +2,7 @@
 
 By default, the global path returns the aggregated state of all liveness checkers, including the out of box *self* check added. 
 
-If all liveness are up and running, *BeatPulse* return HTTP 200 OK.
+If all liveness are up and running, *BeatPulse* returns HTTP 200 OK.
 
 ``` bash
 curl http://your-domain/hc 
@@ -14,7 +14,7 @@ HTTP/1.1 200 OK
 OK
 ```
 
-If some liveness is not working, *BeatPulse* return HTTP 503 ServiceUnavailable.
+If some liveness is not working, *BeatPulse* returns HTTP 503 ServiceUnavailable.
 
 ``` bash
 curl http://your-domain/hc 
@@ -96,7 +96,7 @@ HTTP/1.1 200 OK
 }
 ```
  
-Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_sef**.
+Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_self**.
 
 # Cache responses
 
@@ -141,6 +141,8 @@ Out-of-box you can authenticate requests using an **api-key** query string param
 With this filter, only requests with the **api-key** query string parameter can get results, http://your-server/health?api-key=api-key-secret.
 
 You can create your custom **IBeatPulseAuthenticationFilter** filters by creating a new implementation and registering it in the service collection.
+
+Below you have a custom authentication filter that verifies a header to authenticate the request:
 
 ```csharp
     public class HeaderValueAuthenticationFilter : IBeatPulseAuthenticationFilter
