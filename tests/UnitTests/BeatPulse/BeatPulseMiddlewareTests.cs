@@ -52,18 +52,20 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (httpcontext,cancellationToken) => Task.FromResult(("custom check is working", true)));
+                (httpcontext, cancellationToken) => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -89,9 +91,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                (httpcontext,cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
+                (httpcontext, cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -100,7 +100,11 @@ namespace BeatPulse
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -125,18 +129,20 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
                 (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -162,9 +168,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                nameof(defaultName),
-                nameof(defaultPath),
-                async (httpcontext,cancellationToken) =>
+                async (httpcontext, cancellationToken) =>
                 {
                     await Task.Delay(100);
 
@@ -172,13 +176,17 @@ namespace BeatPulse
                 });
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.SetTimeout(50))
+                .UseBeatPulse(options => options.ConfigureTimeout(50))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddLiveness(healthCheck);
+                        context.AddLiveness(nameof(defaultName), opt =>
+                        {
+                            opt.UsePath(nameof(defaultPath));
+                            opt.UseLiveness(healthCheck);
+                        });
                     });
                 });
 
@@ -275,7 +283,7 @@ namespace BeatPulse
         public async Task response_http_status_ok_when_beat_pulse_service_is_healthy_on_custom_path()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(o => o.SetAlternatePath("customhealthpath"))
+                .UseBeatPulse(o => o.ConfigurePath("customhealthpath"))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -318,8 +326,6 @@ namespace BeatPulse
             var check2IsExecuted = false;
 
             var healthCheck1 = new ActionLiveness(
-               "check1",
-               "check1",
                (httpcontext, cancellationToken) =>
                {
                    check1IsExecuted = true;
@@ -327,8 +333,6 @@ namespace BeatPulse
                });
 
             var healthCheck2 = new ActionLiveness(
-              "check2",
-              "check2",
               (httpcontext, cancellationToken) =>
               {
                   check2IsExecuted = false;
@@ -340,11 +344,20 @@ namespace BeatPulse
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddBeatPulse(setup=>
+                    svc.AddBeatPulse(context =>
                     {
-                        setup.AddLiveness(healthCheck1);
-                        setup.AddLiveness(healthCheck2);
+                        context.AddLiveness("check1", opt =>
+                        {
+                            opt.UsePath("check1");
+                            opt.UseLiveness(healthCheck1);
+                        });
+                        context.AddLiveness("check2", opt =>
+                        {
+                            opt.UsePath("check2");
+                            opt.UseLiveness(healthCheck2);
+                        });
                     });
+
                 });
 
             var server = new TestServer(webHostBuilder);
@@ -361,7 +374,7 @@ namespace BeatPulse
         public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableDetailedOutput())
+                .UseBeatPulse(options => options.ConfigureDetailedOutput())
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -409,7 +422,7 @@ namespace BeatPulse
             const int cacheDurationOnSeconds = 10;
 
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.EnableOutputCache(cacheDurationOnSeconds))
+                .UseBeatPulse(options => options.ConfigureOutputCache(cacheDurationOnSeconds))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -440,8 +453,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -473,8 +486,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -504,8 +517,8 @@ namespace BeatPulse
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options =>
                 {
-                    options.EnableOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
-                    options.EnableDetailedOutput();
+                    options.ConfigureOutputCache(cacheDurationOnSeconds, CacheMode.ServerMemory);
+                    options.ConfigureDetailedOutput();
                 })
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
@@ -564,9 +577,9 @@ namespace BeatPulse
 
             var response = await server.CreateClient()
                 .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?api-key=test");
-            
+
             response.StatusCode.Should()
-                .Be(HttpStatusCode.Unauthorized);           
+                .Be(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -593,25 +606,65 @@ namespace BeatPulse
         }
 
         [Fact]
-        public async Task response_should_add_access_control_headers_when_cors_is_configured()
+        public async Task response_should_add_access_control_headers_when_cors_is_configured_in_pulse_pipeline()
         {
             const string origin = "test-api.com";
 
             var webHostBuilder = new WebHostBuilder()
-               .UseBeatPulse(options => {
-                   options.EnableCors(builder =>
-                   {
-                       builder
-                       .WithOrigins(origin)
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-                   });
-               })
                .UseStartup<DefaultStartup>()
                .ConfigureServices(svc =>
                {
                    svc.AddCors();
                    svc.AddBeatPulse();
+                   svc.AddMvc();
+               }).Configure(app =>
+               {
+                   app.UseBeatPulse(setup => { },builder=>
+                   {
+                       builder.UseCors(setup =>
+                       {
+                           setup.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+                       });
+                   });
+                   app.UseMvc();
+               });
+
+            var server = new TestServer(webHostBuilder);
+
+            var client = server.CreateClient();
+            client.DefaultRequestHeaders.Add("Origin", origin);
+            var response = await client.GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}");
+
+            response.Headers.FirstOrDefault(s => s.Key == "Access-Control-Allow-Origin")
+                .Value.Should().BeEquivalentTo(origin);
+        }
+
+        [Fact]
+        public async Task response_should_add_access_control_headers_when_cors_is_configured_in_global_pipeline()
+        {
+            const string origin = "test-api.com";
+
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .ConfigureServices(svc =>
+               {
+                   svc.AddCors();
+                   svc.AddBeatPulse();
+                   svc.AddMvc();
+               }).Configure(app=>
+               {
+                   app.UseCors(setup =>
+                   {
+                       setup.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                   });
+                   app.UseBeatPulse(setup=> { });
+                   app.UseMvc();
                });
 
             var server = new TestServer(webHostBuilder);
@@ -636,6 +689,18 @@ namespace BeatPulse
                {
                    svc.AddCors();
                    svc.AddBeatPulse();
+                   svc.AddMvc();
+               })
+               .Configure(app =>
+               {
+                   app.UseCors(setup =>
+                   {
+                       setup.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                   });
+                   app.UseMvc();
                });
 
             var server = new TestServer(webHostBuilder);
@@ -655,6 +720,6 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
-        }       
+        }
     }
 }

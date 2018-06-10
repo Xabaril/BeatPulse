@@ -8,8 +8,6 @@ namespace BeatPulse.Core
     {
         private readonly IBeatPulseTracker _instance;
 
-        public string Name => _instance.Name;
-
         public BeatPulseTrackerInstanceRegistration(IBeatPulseTracker tracker)
         {
             _instance = tracker ?? throw new ArgumentNullException(nameof(tracker));

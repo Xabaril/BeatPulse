@@ -37,35 +37,35 @@ User-Agent: curl/7.49.0
 Accept: */*
 HTTP/1.1 200 OK
 {
-    "Checks": [
+    "checks": [
     {
-        "Name": "self",
-        "Path":"_self",
-        "Message": "OK",
-        "MilliSeconds": 0,
-        "Run": true,
-        "IsHealthy": true
+        "name": "self",
+        "path":"_self",
+        "message": "OK",
+        "milliSeconds": 0,
+        "run": true,
+        "isHealthy": true
     },
     {
-        "Name": "cat",
-        "Path":"catapi",
-        "Message": "OK",
-        "MilliSeconds": 376,
-        "Run": true,
-        "IsHealthy": true
+        "name": "cat",
+        "path":"catapi",
+        "message": "OK",
+        "milliSeconds": 376,
+        "run": true,
+        "isHealthy": true
     },
     {
-        "Name": "SqlServerLiveness",
-        "Path":"sqlserver",
-        "Message": "OK",
-        "MilliSeconds": 309,
-        "Run": true,
-        "IsHealthy": true
+        "name": "SqlServerLiveness",
+        "path":"sqlserver",
+        "message": "OK",
+        "milliSeconds": 309,
+        "run": true,
+        "isHealthy": true
     }],
-    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
-    "Code": "200",
-    "Reason":""
+    "startedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "endAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "code": "200",
+    "reason":""
 }
 ```
 
@@ -80,19 +80,19 @@ User-Agent: curl/7.49.0
 Accept: */*
 HTTP/1.1 200 OK
 {
-    "Checks": [
+    "checks": [
     {
-        "Name": "SqlServerLiveness",
-        "Path":"sqlserver",
-        "Message": "OK",
-        "MilliSeconds": 309,
-        "Run": true,
-        "IsHealthy": true
+        "name": "SqlServerLiveness",
+        "path":"sqlserver",
+        "message": "OK",
+        "milliSeconds": 309,
+        "run": true,
+        "isHealthy": true
     }],
-    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
-    "Code": "200",
-    "Reason":""
+    "startedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "endAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "code": "200",
+    "reason":""
 }
 ```
  
@@ -110,10 +110,10 @@ To enable cache use the method `EnableOutputCache`:
 ``` csharp
     .UseBeatPulse(options=>
     {
-        options.SetAlternatePath("health") //default hc
-            .EnableOutputCache(10)      // Can use CacheMode as second parameter
-            .SetTimeout(milliseconds:1500) // default -1 infinitely
-            .EnableDetailedOutput(); //default false
+        options.ConfigurePath(path:"health") //default hc
+            .ConfigureOutputCache(seconds:10)      // Can use CacheMode as second parameter
+            .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
+            .ConfigureDetailedOutput(detailedOutput:true); //default false
     })
 ```
 
@@ -174,29 +174,87 @@ Below you have a custom authentication filter that verifies a header to authenti
         new HeaderValueAuthenticationFilter("header1", "value1"));
 ```
 
-## Enabling CORS on BeatPulse middleware
+## Enabling CORS (and other existing middlewares) on BeatPulse pipeline.
 
-Cors in BeatPulse uses CorsPolicyBuilder from the Microsoft CORS implementation (Microsoft.AspNetCore.Cors)
-To enable Cors in BeatPulse middleware just configure desired headers, origins and methods using the CorsPolicyBuilder fluent api.
+If you need to include other existing pipelines, like CORS, on **BeatPulse** you can configure the *BeatPulseMiddleware* using a *IApplicationBuilder* extension method instead a *StartupFilter*.
 
+Next sample show a *Startup.cs* with **CORS** support.
 
-``` csharp
- public static IWebHost BuildWebHost(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-                .UseBeatPulse(options=>
-                {
-                    options.SetAlternatePath("health") 
-                        .EnableOutputCache(10)    
-                        .SetTimeout(milliseconds: 1500)
-                        .EnableDetailedOutput()
-                        .EnableCors(setup =>
-                        {                            
-                            setup.AllowAnyHeader().
-                                  AllowAnyMethod().
-                                  AllowAnyOrigin().
-                                  AllowCredentials();
-                        });
-                }).UseStartup<Startup>().Build();
+```csharp
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddCors();
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddLiveness("sample", opt =>
+                 {
+                     opt.UsePath("path");
+                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
+                 });
+            });
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseCors(setup =>
+            {
+                setup.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            });
+
+            app.UseBeatPulse(setup =>
+            {
+                setup.ConfigureDetailedOutput(true)
+                    .ConfigurePath("hc");
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
 ```
 
-> Also remember set AddCors on your **ConfigureServices**
+You can also add specific middlewares only for *BeatPulse*. Next sample show howto add *CORS* support only for our *BeatPulse* requests.
+
+```csharp
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddCors();
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddLiveness("sample", opt =>
+                 {
+                     opt.UsePath("path");
+                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
+                 });
+            });
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseBeatPulse(setup => { }, builder =>
+            {
+                builder.UseCors(setup =>
+                {
+                    setup.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                });
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+```

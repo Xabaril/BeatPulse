@@ -34,7 +34,7 @@ namespace BeatPulse.ApplicationInsightsTracker
 
             var metrics = new Dictionary<string, double>()
             {
-                {METRIC_NAME,livenessResult.MilliSeconds }
+                {METRIC_NAME,livenessResult.Elapsed.TotalMilliseconds }
             };
 
 

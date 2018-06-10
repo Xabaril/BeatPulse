@@ -10,19 +10,14 @@ namespace BeatPulse.RabbitMQ
 {
     public class RabbitMQLiveness : IBeatPulseLiveness
     {
-        public string Name => nameof(RabbitMQLiveness);
-
-        public string Path { get; }
-
         private readonly string _rabbitMqConnectionString;
 
-        public RabbitMQLiveness(string rabbitMqConnectionString, string defaultPath)
+        public RabbitMQLiveness(string rabbitMqConnectionString)
         {
             _rabbitMqConnectionString = rabbitMqConnectionString ?? throw new ArgumentNullException(nameof(rabbitMqConnectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = new CancellationToken())
+        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = new CancellationToken())
         {
             try
             {
@@ -45,8 +40,7 @@ namespace BeatPulse.RabbitMQ
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment
-                    ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return Task.FromResult((message, false));

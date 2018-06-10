@@ -14,7 +14,7 @@ namespace BeatPulse.UI.Core
             _assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
         }
 
-        public IEnumerable<UIResource> GetUIResources
+        public IEnumerable<UIResource> UIResources
         {
             get
             {

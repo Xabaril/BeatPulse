@@ -6,15 +6,13 @@ namespace BeatPulse.Core
 {
     public sealed class BeatPulseContext
     {
-        private readonly Dictionary<string, IBeatPulseLivenessRegistration> _registeredLiveness
-            = new Dictionary<string, IBeatPulseLivenessRegistration>();
+        private readonly Dictionary<string, List<IBeatPulseLivenessRegistration>> _registeredLiveness
+            = new Dictionary<string, List<IBeatPulseLivenessRegistration>>();
 
-        private readonly Dictionary<string, IBeatPulseTrackerRegistration> _activeTrackers
-            = new Dictionary<string, IBeatPulseTrackerRegistration>();
+        private readonly List<IBeatPulseTrackerRegistration> _activeTrackers
+            = new List<IBeatPulseTrackerRegistration>();
 
         private IServiceProvider _serviceProvider;
-
-        internal void UseServiceProvider(IServiceProvider sp) => _serviceProvider = sp;
 
         public BeatPulseContext AddLiveness(IBeatPulseLivenessRegistration registration)
         {
@@ -29,11 +27,11 @@ namespace BeatPulse.Core
             {
                 if (!_registeredLiveness.ContainsKey(path))
                 {
-                    _registeredLiveness.Add(path, registration);
+                    _registeredLiveness.Add(path, new List<IBeatPulseLivenessRegistration>() { registration });
                 }
                 else
                 {
-                    throw new InvalidOperationException($"The path {path} is already configured.");
+                    _registeredLiveness[path].Add(registration);
                 }
 
                 return this;
@@ -41,7 +39,6 @@ namespace BeatPulse.Core
             else
             {
                 throw new InvalidOperationException("The global path is automatically used for beat pulse.");
-
             }
         }
 
@@ -52,40 +49,35 @@ namespace BeatPulse.Core
                 throw new ArgumentNullException(nameof(registration));
             }
 
-            var name = registration.Name;
-
-            if (!_activeTrackers.ContainsKey(name))
-            {
-                _activeTrackers.Add(name, registration);
-            }
-            else
-            {
-                throw new InvalidOperationException($"The tracker {registration.Name} is already registered.");
-            }
+            _activeTrackers.Add(registration);
 
             return this;
         }
 
-        internal IBeatPulseLiveness FindLiveness(string path)
+        internal void UseServiceProvider(IServiceProvider sp)
         {
-            _registeredLiveness.TryGetValue(path, out IBeatPulseLivenessRegistration check);
-
-            return check?.GetOrCreateLiveness(_serviceProvider);
+            _serviceProvider = sp;
         }
 
-        internal IEnumerable<IBeatPulseLiveness> AllLiveness
+        internal IBeatPulseLiveness CreateLivenessFromRegistration(IBeatPulseLivenessRegistration registration)
         {
-            get
+            return registration.GetOrCreateLiveness(_serviceProvider);
+        }
+
+        internal IEnumerable<IBeatPulseTracker> GetAllTrackers()
+        {
+            return _activeTrackers.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
+        }
+
+        internal IEnumerable<IBeatPulseLivenessRegistration> GetAllLiveness(string pathFilter = null)
+        {
+            if (String.IsNullOrEmpty(pathFilter))
             {
-                return _registeredLiveness.Values.Select(registration => registration.GetOrCreateLiveness(_serviceProvider));
+                return _registeredLiveness.Values.SelectMany(registration => registration);
             }
-        }
-
-        internal IEnumerable<IBeatPulseTracker> AllTrackers
-        {
-            get
+            else
             {
-                return _activeTrackers.Values.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
+                return _registeredLiveness.TryGetValue(pathFilter, out List<IBeatPulseLivenessRegistration> check) ? check : Enumerable.Empty<IBeatPulseLivenessRegistration>();
             }
         }
     }

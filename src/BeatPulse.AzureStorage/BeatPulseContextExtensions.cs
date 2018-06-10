@@ -5,22 +5,31 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddAzureBlobStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azureblobstorage")
+        public static BeatPulseContext AddAzureBlobStorage(this BeatPulseContext context, string connectionString, string name = nameof(AzureBlobStorageLiveness), string defaultPath = "azureblobstorage")
         {
-            context.AddLiveness(new AzureBlobStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureBlobStorageLiveness(connectionString));
+                setup.UsePath(defaultPath);
+            });
         }
 
-        public static BeatPulseContext AddAzureTableStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azuretablestorage")
+        public static BeatPulseContext AddAzureTableStorage(this BeatPulseContext context, string connectionString, string name = nameof(AzureTableStorageLiveness), string defaultPath = "azuretablestorage")
         {
-            context.AddLiveness(new AzureTableStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureTableStorageLiveness(connectionString));
+                setup.UsePath(defaultPath);
+            });
         }
 
-        public static BeatPulseContext AddAzureQueueStorage(this BeatPulseContext context, string connectionString, string defaultPath = "azurequeuestorage")
+        public static BeatPulseContext AddAzureQueueStorage(this BeatPulseContext context, string connectionString,string name = nameof(AzureQueueStorageLiveness), string defaultPath = "azurequeuestorage")
         {
-            context.AddLiveness(new AzureQueueStorageLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureQueueStorageLiveness(connectionString));
+                setup.UsePath(defaultPath);
+            });
         }
     }
 }

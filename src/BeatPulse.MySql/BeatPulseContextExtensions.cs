@@ -5,10 +5,13 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddMySql(this BeatPulseContext context, string connectionString, string defaultPath = "mysql")
+        public static BeatPulseContext AddMySql(this BeatPulseContext context, string connectionString, string name = nameof(MySqlLiveness), string defaultPath = "mysql")
         {
-            context.AddLiveness(new MySqlLiveness(connectionString, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new MySqlLiveness(connectionString));
+                setup.UsePath(defaultPath);
+            });
         }
     }
 }

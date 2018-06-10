@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.ServiceBus;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.ServiceBus;
 
 namespace BeatPulse.AzureServiceBus
 {
@@ -14,25 +14,23 @@ namespace BeatPulse.AzureServiceBus
         private readonly string _queueName;
         private const string TEST_MESSAGE = "BeatpulseTest";
 
-        public string Name => nameof(AzureServiceBusQueueLiveness);
-        public string Path { get; }
-
-        public AzureServiceBusQueueLiveness(string connectionString, string queueName, string defaultPath)
+        public AzureServiceBusQueueLiveness(string connectionString, string queueName)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _queueName = queueName ?? throw new ArgumentNullException(nameof(queueName));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
-                var queueClient = new QueueClient(_connectionString, _queueName, ReceiveMode.PeekLock);
+                var queueClient = new QueueClient(_connectionString, 
+                    _queueName, 
+                    ReceiveMode.PeekLock);
+
                 var scheduledMessageId = await queueClient.ScheduleMessageAsync(
-                                            new Message(Encoding.UTF8.GetBytes(TEST_MESSAGE)),
-                                            new DateTimeOffset(DateTime.UtcNow).AddHours(2)
-                                        );
+                    new Message(Encoding.UTF8.GetBytes(TEST_MESSAGE)),
+                    new DateTimeOffset(DateTime.UtcNow).AddHours(2));
 
                 await queueClient.CancelScheduledMessageAsync(scheduledMessageId);
 
@@ -40,7 +38,7 @@ namespace BeatPulse.AzureServiceBus
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

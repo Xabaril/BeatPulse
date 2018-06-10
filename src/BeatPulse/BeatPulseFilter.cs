@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System;
 
@@ -20,11 +21,6 @@ namespace BeatPulse
             {
                 builder.MapWhen(context => context.IsBeatPulseRequest(_options), appBuilder =>
                 {
-                    if (_options.CorsEnabled)
-                    {
-                        appBuilder.UseCors(_options.CorsPolicyBuilder);
-                    }
-
                     appBuilder.UseMiddleware<BeatPulseMiddleware>(_options);
                 });
 

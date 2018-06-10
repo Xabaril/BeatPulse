@@ -34,7 +34,7 @@ namespace UnitTests.BeatPulse.PrometheusTracker
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContext.AllTrackers
+            beatPulseContext.GetAllTrackers()
                 .Where(hc => hc.GetType() == typeof(PrometheusGatewayTracker))
                 .Should().HaveCount(1);
         }
@@ -58,7 +58,7 @@ namespace UnitTests.BeatPulse.PrometheusTracker
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContext.AllTrackers
+            beatPulseContext.GetAllTrackers()
                 .Where(hc => hc.GetType() == typeof(PrometheusGatewayTracker))
                 .Should().HaveCount(1);
         }

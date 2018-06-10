@@ -30,8 +30,8 @@ namespace BeatPulse.Redis
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllLiveness
-                .Where(hc => hc.GetType() == typeof(RedisLiveness))
+            beatPulseContex.GetAllLiveness("redis")
+                .Where(hc => hc.Name == nameof(RedisLiveness))
                 .Should().HaveCount(1);
 
         }
