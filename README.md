@@ -143,7 +143,7 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically posts a ne
 
 [[LIVENESS]] The name of the liveness that returns *Down*.
 
- [[FAILURE]] A detail message with the failure.
+[[FAILURE]] A detail message with the failure.
 
 The [web hooks section](./doc/webhooks.md) contains more information and webhooks samples for Microsoft Teams, Azure Functions, Slack and more.
 
@@ -152,6 +152,7 @@ The [web hooks section](./doc/webhooks.md) contains more information and webhook
 Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use:
 
  > [Application Insights Tracker](./doc/ai-tracker.md)
+ 
  > [Prometheus Tracker](./doc/prometheus_tracker.md)
 
 ## Contributing
