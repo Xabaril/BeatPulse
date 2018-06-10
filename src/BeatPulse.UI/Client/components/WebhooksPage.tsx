@@ -9,7 +9,7 @@ interface WebhooksPageProps {
 interface WebHooksPageState {
     webhooks: Array<WebHook>;
 }
-const GearIcon = require('../../Assets/svg/gear.svg');
+const GearIcon = require('../../assets/svg/gear.svg');
 
 export class WebhooksPage extends React.Component<WebhooksPageProps, WebHooksPageState> {
     private _beatpulseClient: BeatPulseClient;

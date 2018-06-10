@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:dll": "webpack-cli --mode production --config ./build/webpack.dll.js",
-    "buildcss:prod": "uglifycss ./Assets/beatpulse.css --output ./Assets/beatpulse.css",
+    "buildcss:prod": "uglifycss ./assets/beatpulse.css --output ./assets/beatpulse.css",
     "build:prod": "webpack-cli --mode production --config ./build/webpack.config.js",
     "build": "npm run build:dll && npm run build:prod"
   },

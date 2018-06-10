@@ -3,9 +3,9 @@ export const
      statusDown: string = "Down",
      statusDegraded: string = "Degraded";
 
-const okImage = require("../Assets/images/ok.png");
-const downImage = require("../Assets/images/down.png");
-const degradedImage = require("../Assets/images/degraded.png");
+const okImage = require("../assets/images/ok.png");
+const downImage = require("../assets/images/down.png");
+const degradedImage = require("../assets/images/degraded.png");
 
 const imageResources = [
     { state: statusUp, image: okImage },
