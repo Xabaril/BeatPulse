@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BeatPulse.AspNetCore\BeatPulse.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
-    <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
 
 </Project>

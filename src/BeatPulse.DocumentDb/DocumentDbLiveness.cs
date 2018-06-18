@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Documents.Client;
 using System;
 using System.Threading;

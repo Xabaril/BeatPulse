@@ -39,7 +39,7 @@ namespace BeatPulseLivenessPipeline
                 setup.AddLiveness("sample", opt =>
                  {
                      opt.UsePath("path");
-                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
+                     opt.UseLiveness(new ActionLiveness(_ => Task.FromResult(("Ok", true))));
                  });
             });
         }

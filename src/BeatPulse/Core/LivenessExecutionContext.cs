@@ -9,7 +9,7 @@
         public string Path { get; private set; }
 
       
-        internal static LivenessExecutionContext FromRegistration(IBeatPulseLivenessRegistration registration,bool isDevelopment)
+        public static LivenessExecutionContext FromRegistration(IBeatPulseLivenessRegistration registration,bool isDevelopment)
         {
             return new LivenessExecutionContext()
             {

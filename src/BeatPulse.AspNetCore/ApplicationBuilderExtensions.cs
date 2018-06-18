@@ -6,7 +6,7 @@ namespace Microsoft.AspNetCore.Builder
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseBeatPulse(this IApplicationBuilder app, Action<BeatPulseOptions> setup)
+        public static IApplicationBuilder UseBeatPulse(this IApplicationBuilder app, Action<IBeatPulseOptions> setup)
         {
             var options = new BeatPulseOptions();
             setup?.Invoke(options);
@@ -19,7 +19,7 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
-        public static IApplicationBuilder UseBeatPulse(this IApplicationBuilder app, Action<BeatPulseOptions> setup, Action<IApplicationBuilder> usePipeline)
+        public static IApplicationBuilder UseBeatPulse(this IApplicationBuilder app, Action<IBeatPulseOptions> setup, Action<IApplicationBuilder> usePipeline)
         {
             var options = new BeatPulseOptions();
             setup?.Invoke(options);

@@ -110,7 +110,7 @@ namespace BeatPulse.Core
                     context.AddLiveness(nameof(name), opt =>
                     {
                         opt.UsePath(nameof(path));
-                        opt.UseLiveness(new ActionLiveness((httpcontext, cancellationToken) => taskResult));
+                        opt.UseLiveness(new ActionLiveness(cancellationToken => taskResult));
                     });
 
                     context.AddLiveness(nameof(path2), opt =>
@@ -118,7 +118,7 @@ namespace BeatPulse.Core
                         opt.UseFactory(sp =>
                         {
                             var service = sp.GetRequiredService<FooService>();
-                            return new ActionLiveness((httpcontext, cancellationToken) => taskResult);
+                            return new ActionLiveness(cancellationToken => taskResult);
                         });
                         opt.UsePath(nameof(path2));
                     });

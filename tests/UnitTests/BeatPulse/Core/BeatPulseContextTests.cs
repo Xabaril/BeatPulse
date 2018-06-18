@@ -15,13 +15,13 @@ namespace UnitTests.BeatPulse.Core
 
             var options = new BeatPulseLivenessRegistrationOptions("name1");
             options.UsePath("path");
-            options.UseLiveness(new ActionLiveness((http, token) => Task.FromResult(("ok", true))));
+            options.UseLiveness(new ActionLiveness( token => Task.FromResult(("ok", true))));
 
             context.AddLiveness(options.CreateRegistration());
 
             options = new BeatPulseLivenessRegistrationOptions("name2");
             options.UsePath("path");
-            options.UseLiveness(new ActionLiveness((http, token) => Task.FromResult(("ok", true))));
+            options.UseLiveness(new ActionLiveness(token => Task.FromResult(("ok", true))));
 
             context.AddLiveness(options.CreateRegistration());
 
@@ -37,13 +37,13 @@ namespace UnitTests.BeatPulse.Core
 
             var options = new BeatPulseLivenessRegistrationOptions("name");
             options.UsePath("path");
-            options.UseLiveness(new ActionLiveness((http, token) => Task.FromResult(("ok", true))));
+            options.UseLiveness(new ActionLiveness( token => Task.FromResult(("ok", true))));
 
             context.AddLiveness(options.CreateRegistration());
 
             options = new BeatPulseLivenessRegistrationOptions("name");
             options.UsePath("path");
-            options.UseLiveness(new ActionLiveness((http, token) => Task.FromResult(("ok", true))));
+            options.UseLiveness(new ActionLiveness( token => Task.FromResult(("ok", true))));
 
             context.AddLiveness(options.CreateRegistration());
 
@@ -59,7 +59,7 @@ namespace UnitTests.BeatPulse.Core
 
             var options = new BeatPulseLivenessRegistrationOptions("name1");
             options.UsePath(string.Empty);
-            options.UseLiveness(new ActionLiveness((http, token) => Task.FromResult(("ok", true))));
+            options.UseLiveness(new ActionLiveness( token => Task.FromResult(("ok", true))));
 
             Assert.Throws<InvalidOperationException>(() =>
            {

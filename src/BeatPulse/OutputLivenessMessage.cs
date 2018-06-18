@@ -1,12 +1,12 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace BeatPulse
 {
-    class OutputLivenessMessage
+    public class OutputLivenessMessage
     {
         private readonly List<LivenessResult> _messages = new List<LivenessResult>();
 
@@ -30,7 +30,7 @@ namespace BeatPulse
         public void SetNotFound()
         {
             EndAtUtc = DateTime.UtcNow;
-            Code = StatusCodes.Status503ServiceUnavailable;
+            Code = (int)HttpStatusCode.ServiceUnavailable;
             Reason = BeatPulseKeys.BEATPULSE_INVALIDPATH_REASON;
         }
 
@@ -39,7 +39,7 @@ namespace BeatPulse
             var isHealthy = Checks.All(x => x.IsHealthy);
 
             EndAtUtc = DateTime.UtcNow;
-            Code = isHealthy ? StatusCodes.Status200OK : StatusCodes.Status503ServiceUnavailable;
+            Code = isHealthy ?  (int)HttpStatusCode.OK : (int)HttpStatusCode.ServiceUnavailable;
             Reason = isHealthy ? string.Empty : BeatPulseKeys.BEATPULSE_SERVICEUNAVAILABLE_REASON;
         }
     }

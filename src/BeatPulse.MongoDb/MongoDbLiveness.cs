@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
 using System;
 using System.Threading;

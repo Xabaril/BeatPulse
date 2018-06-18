@@ -2,19 +2,22 @@
 
 namespace BeatPulse
 {
-    public class BeatPulseOptions
+    public interface IBeatPulseOptions
     {
-        internal bool DetailedOutput { get; private set; }
+        IBeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header);
+        IBeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true);
+        IBeatPulseOptions ConfigurePath(string path);
+        IBeatPulseOptions ConfigureTimeout(int milliseconds);
+    }
 
-        internal string BeatPulsePath { get; private set; }
-
-        internal int Timeout { get; private set; }
-
-        internal int CacheDuration { get; private set; }
-
-        internal bool CacheOutput { get; private set; }
-
-        internal CacheMode CacheMode { get; private set; }
+    public class BeatPulseOptions : IBeatPulseOptions
+    {
+        public bool DetailedOutput { get; private set; }
+        public string BeatPulsePath { get; private set; }
+        public int Timeout { get; private set; }
+        public int CacheDuration { get; private set; }
+        public bool CacheOutput { get; private set; }
+        public CacheMode CacheMode { get; private set; }
 
         public BeatPulseOptions()
         {
@@ -26,7 +29,7 @@ namespace BeatPulse
             CacheMode = CacheMode.Header;
         }
 
-        public BeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
+        public IBeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
         {
             CacheDuration = seconds;
             CacheOutput = true;
@@ -35,14 +38,14 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true)
+        public IBeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true)
         {
             DetailedOutput = detailedOutput;
 
             return this;
         }
 
-        public BeatPulseOptions ConfigurePath(string path)
+        public IBeatPulseOptions ConfigurePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -54,7 +57,7 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions ConfigureTimeout(int milliseconds)
+        public IBeatPulseOptions ConfigureTimeout(int milliseconds)
         {
             Timeout = milliseconds;
 

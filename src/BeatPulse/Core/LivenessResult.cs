@@ -27,12 +27,12 @@ namespace BeatPulse.Core
             IsHealthy = false;
         }
 
-        internal void StartCounter()
+        public void StartCounter()
         {
             _watcher.Restart();
         }
 
-        internal void StopCounter(string message, bool healthy)
+        public void StopCounter(string message, bool healthy)
         {
             _watcher.Stop();
 

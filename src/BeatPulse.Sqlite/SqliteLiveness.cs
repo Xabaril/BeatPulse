@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Threading;

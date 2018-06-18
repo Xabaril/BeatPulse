@@ -1,7 +1,6 @@
 ﻿using BeatPulse.Core;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;

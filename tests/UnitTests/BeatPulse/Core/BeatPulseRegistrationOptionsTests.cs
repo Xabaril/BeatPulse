@@ -83,7 +83,7 @@ namespace UnitTests.BeatPulse.Core
 
         class FakeLiveness : IBeatPulseLiveness
         {
-            public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+            public Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(("OK", true));
             }

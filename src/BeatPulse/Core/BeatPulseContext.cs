@@ -54,22 +54,22 @@ namespace BeatPulse.Core
             return this;
         }
 
-        internal void UseServiceProvider(IServiceProvider sp)
+        public void UseServiceProvider(IServiceProvider sp)
         {
             _serviceProvider = sp;
         }
 
-        internal IBeatPulseLiveness CreateLivenessFromRegistration(IBeatPulseLivenessRegistration registration)
+        public IBeatPulseLiveness CreateLivenessFromRegistration(IBeatPulseLivenessRegistration registration)
         {
             return registration.GetOrCreateLiveness(_serviceProvider);
         }
 
-        internal IEnumerable<IBeatPulseTracker> GetAllTrackers()
+        public IEnumerable<IBeatPulseTracker> GetAllTrackers()
         {
             return _activeTrackers.Select(registration => registration.GetOrCreateTracker(_serviceProvider));
         }
 
-        internal IEnumerable<IBeatPulseLivenessRegistration> GetAllLiveness(string pathFilter = null)
+        public IEnumerable<IBeatPulseLivenessRegistration> GetAllLiveness(string pathFilter = null)
         {
             if (String.IsNullOrEmpty(pathFilter))
             {

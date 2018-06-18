@@ -8,7 +8,7 @@
         HeaderAndServerMemory
     }
 
-    static class CacheModeExtensions
+    public static class CacheModeExtensions
     {
         public static bool UseHeader(this CacheMode mode) => mode == CacheMode.Header || mode == CacheMode.HeaderAndServerMemory;
 
