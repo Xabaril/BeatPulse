@@ -49,7 +49,7 @@ namespace BeatPulseLiveness
                 setup.AddLiveness("catapi", opt =>
                 {
                     opt.UsePath("catapi");
-                    opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
+                    opt.UseLiveness(new ActionLiveness(cancellationToken =>
                     {
                         return Task.FromResult(("OK", true));
                     }));
@@ -62,7 +62,7 @@ namespace BeatPulseLiveness
                 setup.AddLiveness("catapi", opt =>
                 {
                     opt.UsePath("catapi");
-                    opt.UseFactory(sp => new ActionLiveness((http, token) =>
+                    opt.UseFactory(sp => new ActionLiveness(token =>
                     {
                         var logger = sp.GetRequiredService<ILogger<Startup>>();
                         logger.LogInformation("Logger is a dependency for this liveness");

@@ -17,7 +17,7 @@ namespace BeatPulse.Sqlite
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             SqliteConnection connection = null;
 

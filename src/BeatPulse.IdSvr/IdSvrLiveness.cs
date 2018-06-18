@@ -19,7 +19,7 @@ namespace BeatPulse.IdSvr
             _idSvrUri = idSvrUri ?? throw new ArgumentNullException(nameof(idSvrUri));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {

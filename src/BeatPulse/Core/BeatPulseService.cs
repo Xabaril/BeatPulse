@@ -21,11 +21,10 @@ namespace BeatPulse.Core
             _beatPulseContext = beatPulseContext ?? throw new ArgumentNullException(nameof(beatPulseContext));
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
             _beatPulseContext.UseServiceProvider(serviceProvider);
         }
 
-        public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions beatPulseOptions, HttpContext httpContext)
+        public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions beatPulseOptions)
         {
             _logger.LogInformation($"BeatPulse is checking health on [BeatPulsePath]/{path}");
 
@@ -42,7 +41,6 @@ namespace BeatPulse.Core
                 var livenessResult = await RunLiveness(
                     liveness,
                     livenessContext,
-                    httpContext,
                     beatPulseOptions);
 
                 await RunTrackers(livenessResult);
@@ -81,7 +79,7 @@ namespace BeatPulse.Core
             return Task.WhenAll(trackerTasks);
         }
 
-        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, LivenessExecutionContext livenessContext, HttpContext httpContext, BeatPulseOptions beatPulseOptions)
+        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, LivenessExecutionContext livenessContext, BeatPulseOptions beatPulseOptions)
         {
             _logger.LogInformation($"Executing liveness {livenessContext.Name}.");
 
@@ -93,7 +91,7 @@ namespace BeatPulse.Core
             {
                 using (var cancellationTokenSource = new CancellationTokenSource())
                 {
-                    var livenessTask = liveness.IsHealthy(httpContext, livenessContext, cancellationTokenSource.Token);
+                    var livenessTask = liveness.IsHealthy(livenessContext, cancellationTokenSource.Token);
 
                     if (await Task.WhenAny(livenessTask, Task.Delay(beatPulseOptions.Timeout, cancellationTokenSource.Token)) == livenessTask)
                     {

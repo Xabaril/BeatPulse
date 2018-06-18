@@ -26,7 +26,7 @@ namespace BeatPulse.Hosted
 
         private async Task<bool> ProcessRequest()
         {
-            var results = await _beatpulseSvc.IsHealthy("", new BeatPulseOptions(), null);
+            var results = await _beatpulseSvc.IsHealthy("", new BeatPulseOptions());
             return results.All(x => x.IsHealthy);
         }
 

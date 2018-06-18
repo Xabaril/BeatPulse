@@ -47,7 +47,7 @@ namespace BeatPulse
 
             output = new OutputLivenessMessage();
 
-            var responses = await pulseService.IsHealthy(beatPulsePath, _options, context);
+            var responses = await pulseService.IsHealthy(beatPulsePath, _options);
 
             if (!responses.Any())
             {

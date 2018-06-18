@@ -14,9 +14,9 @@ namespace BeatPulse.Core
 
             var livenessContext = new LivenessExecutionContext();
 
-            var liveness = new ActionLiveness((context, cancellationToken) => taskResult);
+            var liveness = new ActionLiveness(cancellationToken => taskResult);
 
-            (await liveness.IsHealthy(new DefaultHttpContext(), livenessContext))
+            (await liveness.IsHealthy(livenessContext))
                     .Should().Be(taskResult.Result);
         }
 

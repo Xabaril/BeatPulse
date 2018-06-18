@@ -19,7 +19,7 @@ namespace BeatPulse.Kafka
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
