@@ -24,7 +24,7 @@ namespace BeatPulse.Core
 
         public async Task<IEnumerable<LivenessResult>> IsHealthy(string path, BeatPulseOptions beatPulseOptions)
         {
-            _logger.LogInformation($"BeatPulse is checking health on [BeatPulsePath]/{path}");
+            _logger.LogInformation($"BeatPulse is checking health on all registered liveness on [BeatPulsePath]/{path}.");
 
             var livenessResults = new List<LivenessResult>();
 
@@ -49,7 +49,7 @@ namespace BeatPulse.Core
                 {
                     //if is unhealthy and not detailed options is true return inmediatly
 
-                    _logger.LogWarning($"Liveness {livenessContext.Name} is not healthy");
+                    _logger.LogWarning($"Liveness {livenessContext.Name} is not healthy. Breaking liveness execution because detailed output is false.");
 
                     return livenessResults;
                 }
@@ -103,9 +103,10 @@ namespace BeatPulse.Core
                     else
                     {
                         // The liveness is timeout ( from configured options)
-                        _logger.LogWarning($"The liveness {livenessContext.Name} is timeout");
+                        _logger.LogWarning($"The liveness {livenessContext.Name} is timeout, execution is cancelled.");
 
                         cancellationTokenSource.Cancel();
+
                         livenessResult.StopCounter(BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE, false);
                     }
                 }

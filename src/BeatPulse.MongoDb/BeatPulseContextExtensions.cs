@@ -5,9 +5,9 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddMongoDb(this BeatPulseContext context, string mongodbConnectionString, string defaultPath = "mongodb")
+        public static BeatPulseContext AddMongoDb(this BeatPulseContext context, string mongodbConnectionString, string name = nameof(MongoDbLiveness),string defaultPath = "mongodb")
         {
-            context.AddLiveness(nameof(MongoDbLiveness), setup =>
+            context.AddLiveness(name, setup =>
             {
                 setup.UseLiveness(new MongoDbLiveness(mongodbConnectionString));
                 setup.UsePath(defaultPath);

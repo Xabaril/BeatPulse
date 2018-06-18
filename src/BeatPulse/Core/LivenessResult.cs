@@ -11,7 +11,7 @@ namespace BeatPulse.Core
 
         public string Message { get; private set; }
 
-        public long MilliSeconds {get; private set;}
+        public TimeSpan Elapsed {get; private set;}
 
         public bool Run { get; private set; }
 
@@ -36,7 +36,7 @@ namespace BeatPulse.Core
         {
             _watcher.Stop();
 
-            MilliSeconds = _watcher.ElapsedMilliseconds;
+            Elapsed = _watcher.Elapsed;
             Run = true;
             Message = message;
             IsHealthy = healthy;

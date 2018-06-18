@@ -6,9 +6,9 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddKafka(this BeatPulseContext context, Dictionary<string, object> config, string defaultPath = "kafka")
+        public static BeatPulseContext AddKafka(this BeatPulseContext context, Dictionary<string, object> config, string name = nameof(KafkaLiveness), string defaultPath = "kafka")
         {
-            return context.AddLiveness(nameof(KafkaLiveness), setup =>
+            return context.AddLiveness(name, setup =>
             {
                 setup.UseLiveness(new KafkaLiveness(config));
                 setup.UsePath(defaultPath);

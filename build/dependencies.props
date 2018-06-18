@@ -24,22 +24,22 @@
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
     <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
     <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
-    <MicrosoftEntityFrameworkCoreVersion>2.0.2</MicrosoftEntityFrameworkCoreVersion>
-    <MicrosoftEntityFrameworkCoreDesignVersion>2.0.2</MicrosoftEntityFrameworkCoreDesignVersion>
-    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.0.2</MicrosoftEntityFrameworkCoreSqlLiteVersion>
+    <MicrosoftEntityFrameworkCoreVersion>2.1.0</MicrosoftEntityFrameworkCoreVersion>
+    <MicrosoftEntityFrameworkCoreDesignVersion>2.1.0</MicrosoftEntityFrameworkCoreDesignVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.0</MicrosoftEntityFrameworkCoreSqlLiteVersion>
     <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
-    <MicrosoftExtensionConfigurationBinderVersion>2.0.1</MicrosoftExtensionConfigurationBinderVersion>
+    <MicrosoftExtensionConfigurationBinderVersion>2.1.0</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
     <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
     <MicrosoftAzureServiceBusVersion>2.0.0</MicrosoftAzureServiceBusVersion>
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
+    <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
     <DotnetXUnitPackageVersion>2.3.1</DotnetXUnitPackageVersion>
     <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
-    <EntityFrameworkCoreToolsVersion>2.0.2</EntityFrameworkCoreToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
@@ -52,13 +52,14 @@
     <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>2.1.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>2.1.0</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>2.1.1</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>
     <BeatPulseAzureServiceBusVersion>2.1.0</BeatPulseAzureServiceBusVersion>
     <BeatPulseAITrackerVersion>2.1.0</BeatPulseAITrackerVersion>
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
+    <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

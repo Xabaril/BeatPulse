@@ -8,5 +8,4 @@
     7. BeatPulse support executing multiple liveness with the same path.
     8. New registration options that give us more control over the liveness configuration.
     9. Remove UseCors on BeatPulseOptions, related with -> 3.
-    10. Improved BeatPulseUI
-
+    10. Improved BeatPulseUI.

@@ -30,7 +30,7 @@ Install-Package BeatPulse.ApplicationInsightsTracker
 
 ### Application Insights tracker configuration
 
-In the configuration section where you configured your *BetPulseService* add the tracker,
+ Add the tracker in the configuration section where you configured your *BetPulseService*,
 
 ```csharp
     public class Startup

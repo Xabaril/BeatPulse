@@ -86,6 +86,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netcore", "netcore", "{733C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.NetCore", "src\BeatPulse.NetCore\BeatPulse.NetCore.csproj", "{A934F403-7706-4696-B52B-8E2270B87215}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.DynamoDb", "src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj", "{6DD76759-7CAD-4648-A419-BAE7D082CC6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -212,6 +214,10 @@ Global
 		{A934F403-7706-4696-B52B-8E2270B87215}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A934F403-7706-4696-B52B-8E2270B87215}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A934F403-7706-4696-B52B-8E2270B87215}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DD76759-7CAD-4648-A419-BAE7D082CC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD76759-7CAD-4648-A419-BAE7D082CC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD76759-7CAD-4648-A419-BAE7D082CC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD76759-7CAD-4648-A419-BAE7D082CC6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,6 +255,7 @@ Global
 		{14A8ADA6-1C15-44ED-A618-219331A16BE0} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{733C162C-59C4-4689-9FEC-F73AFD01AD38} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{A934F403-7706-4696-B52B-8E2270B87215} = {733C162C-59C4-4689-9FEC-F73AFD01AD38}
+		{6DD76759-7CAD-4648-A419-BAE7D082CC6E} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}

@@ -6,9 +6,9 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddIdentityServer(this BeatPulseContext context, Uri idSvrUri, string defaultPath = "idsvr")
+        public static BeatPulseContext AddIdentityServer(this BeatPulseContext context, Uri idSvrUri, string name = nameof(IdSvrLiveness),string defaultPath = "idsvr")
         {
-            return context.AddLiveness(nameof(IdSvrLiveness), setup =>
+            return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
                 setup.UseLiveness(new IdSvrLiveness(idSvrUri));
