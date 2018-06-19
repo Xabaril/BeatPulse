@@ -47,6 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeatPulseOwinMiddleware.cs" />
+    <Compile Include="BeatPulseServiceBuilder.cs" />
+    <Compile Include="Extensions\IOwinContextExtensions.cs" />
+    <Compile Include="IBeatPulseContextBuilder.cs" />
+    <Compile Include="OwinBeatPulseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.Owin.Extensions;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,18 @@ namespace BeatPulse.Owin
 {
     public class BeatPulseOwinMiddleware : OwinMiddleware
     {
-        public BeatPulseOwinMiddleware(OwinMiddleware next, IBeatPulseService service) : base(next)
+        private readonly IBeatPulseService _service;
+        private readonly BeatPulseOptions _options;
+        public BeatPulseOwinMiddleware(OwinMiddleware next, IBeatPulseService service, BeatPulseOptions options) : base(next)
         {
+            _service = service;
+            _options = options;
         }
 
-        public override Task Invoke(IOwinContext context)
+        public async override Task Invoke(IOwinContext context)
         {
-            return Task.CompletedTask;
+            var request = context.Request;
+            var beatPulsePath = context.GetBeatPulseRequestPath();
         }
     }
 }

@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutofacBeatPulseBuilder.cs" />
+    <Compile Include="Extensions\AutofacExtensions.cs" />
     <Compile Include="Extensions\IAppBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -63,6 +65,10 @@
     <ProjectReference Include="..\BeatPulse.Owin\BeatPulse.Owin.csproj">
       <Project>{5aeca578-a7ce-4334-a5ad-eb6dfd7f3496}</Project>
       <Name>BeatPulse.Owin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BeatPulse\BeatPulse.csproj">
+      <Project>{ae4c4a73-69fb-4093-b2b5-7838a1ea870f}</Project>
+      <Name>BeatPulse</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
