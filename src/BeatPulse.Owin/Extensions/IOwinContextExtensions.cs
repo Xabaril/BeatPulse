@@ -9,10 +9,12 @@ namespace BeatPulse.Owin.Extensions
 {
     static class IOwinContextExtensions
     {
-        public static string GetBeatPulseRequestPath(this IOwinContext context)
+        public static string GetBeatPulseRequestPath(this IOwinContext context, BeatPulseOptions options)
         {
             var path = context.Request.Path;
-            return "";
+            var root = new PathString(options.BeatPulsePath);
+            var starts = path.StartsWithSegments(root, out PathString rest);
+            return starts ? rest.ToUriComponent() : null;
         }
     }
 }

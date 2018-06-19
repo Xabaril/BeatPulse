@@ -14,14 +14,14 @@ namespace BeatPulse
         private readonly RequestDelegate _next;
         private readonly BeatPulseOptions _options;
         private readonly IEnumerable<IBeatPulseAuthenticationFilter> _authenticationFilters;
-        private readonly ConcurrentDictionary<string, OutputLivenessMessage> _cache;
+        private readonly BeatPulseResponseCache _cache;
 
         public BeatPulseMiddleware(RequestDelegate next, IEnumerable<IBeatPulseAuthenticationFilter> authenticationFilters, BeatPulseOptions options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _options = options;
             _authenticationFilters = authenticationFilters;
-            _cache = new ConcurrentDictionary<string, OutputLivenessMessage>();
+            _cache = new BeatPulseResponseCache(_options);
         }
 
         public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
@@ -36,7 +36,7 @@ namespace BeatPulse
                 return;
             }
 
-            if (TryFromCache(beatPulsePath, out OutputLivenessMessage output))
+            if (_cache.TryGet(beatPulsePath, out OutputLivenessMessage output))
             {
                 await request.HttpContext
                     .Response
@@ -61,43 +61,13 @@ namespace BeatPulse
                 // messages and add to cache if is configured.
                 output.AddHealthCheckMessages(responses);
                 output.SetExecuted();
-
-                if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
-                {
-                    _cache.TryAdd(beatPulsePath, output);
-                }
+                _cache.TryAddIfNeeded(beatPulsePath, output);
             }
 
             await request.HttpContext
                .Response
                .WriteLivenessMessage(_options, output);
         }
-
-        bool TryFromCache(string path, out OutputLivenessMessage message)
-        {
-            message = null;
-
-            if (_options.CacheOutput
-                && _options.CacheMode.UseServerMemory()
-                && _cache.TryGetValue(path, out message))
-            {
-                var seconds = (DateTime.UtcNow - message.EndAtUtc).TotalSeconds;
-
-                if (_options.CacheDuration > seconds)
-                {
-                    return true;
-                }
-                else
-                {
-                    _cache.TryRemove(path, out OutputLivenessMessage removed);
-
-                    return false;
-                }
-            }
-
-            return false;
-        }
-
         async Task<bool> IsAuthenticatedRequest(HttpContext httpContext)
         {
             foreach (var filter in _authenticationFilters)

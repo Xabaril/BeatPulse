@@ -24,6 +24,7 @@ namespace BeatPulseWebApiOwin
                 cb.RegisterBeatPulse(opt =>
                 {
                     opt.ConfigurePath("/hc");
+                    opt.ConfigureDetailedOutput();
                 })
                 .With(opt => opt.AddSqlServer("d"));
             });

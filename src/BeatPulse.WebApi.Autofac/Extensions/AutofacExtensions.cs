@@ -16,7 +16,7 @@ namespace BeatPulse.Owin
             var options = new BeatPulseOptions();
             optionsSetup?.Invoke(options);
             builder.RegisterInstance(options);
-            builder.RegisterType<BeatPulseOwinMiddleware>();
+            builder.RegisterType<BeatPulseOwinMiddleware>().SingleInstance();
             return new AutofacBeatPulseBuilder(builder);
         }
 
