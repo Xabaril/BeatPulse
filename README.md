@@ -37,7 +37,7 @@ Install-Package BeatPulse.SqLite
 Install-Package BeatPulse.Kafka
 Install-Package BeatPulse.RabbitMQ
 Install-Package BeatPulse.IdSvr
-Install-Package BeatPulse.AWSDynamoDB
+Install-Package BeatPulse.DynamoDB
 ```
 
 3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method to register and configure BeatPulse.
