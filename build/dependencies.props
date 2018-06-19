@@ -52,7 +52,7 @@
     <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>2.1.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>2.1.0</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>2.1.1</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>

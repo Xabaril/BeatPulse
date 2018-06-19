@@ -12,7 +12,7 @@ namespace BeatPulse.UI.Core.Data
 
         public DbSet<LivenessFailureNotification> LivenessFailuresNotifications { get; set; }
 
-        public LivenessDb(DbContextOptions options) : base(options) { }
+        public LivenessDb(DbContextOptions<LivenessDb> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
