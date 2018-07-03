@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
 

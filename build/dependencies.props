@@ -60,6 +60,7 @@
     <BeatPulseAITrackerVersion>2.1.0</BeatPulseAITrackerVersion>
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
+    <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
