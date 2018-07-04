@@ -152,8 +152,10 @@ The [web hooks section](./doc/webhooks.md) contains more information and webhook
 Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use:
 
  > [Application Insights Tracker](./doc/ai-tracker.md)
- 
+
  > [Prometheus Tracker](./doc/prometheus_tracker.md)
+
+ > [StatusPage Tracker](./doc/statuspage_tracker.md)
 
 ## Contributing
 
