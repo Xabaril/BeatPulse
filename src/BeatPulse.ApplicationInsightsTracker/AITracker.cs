@@ -4,6 +4,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BeatPulse.ApplicationInsightsTracker
@@ -32,10 +33,10 @@ namespace BeatPulse.ApplicationInsightsTracker
                 {nameof(livenessResult.Run),livenessResult.Run.ToString(CultureInfo.InvariantCulture)},
                 {nameof(livenessResult.Path),livenessResult.Path},
                 {nameof(livenessResult.Name),livenessResult.Name},
-                {nameof(Environment.MachineName),Environment.MachineName}
+                {nameof(Environment.MachineName),Environment.MachineName},
+                {nameof(Assembly),Assembly.GetEntryAssembly().GetName().Name }
             };
 
-            var result = new Random().Next(0, 1);
             var metrics = new Dictionary<string, double>()
             {
                 {RESPONSE_TIME_METRIC_NAME,livenessResult.Elapsed.TotalMilliseconds },
