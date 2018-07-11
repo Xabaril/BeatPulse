@@ -55,7 +55,7 @@ namespace BeatPulseTrackers
                 //add trackers
                 //
 
-                //setup.AddApplicationInsightsTracker();
+                setup.AddApplicationInsightsTracker();
 
                 //setup.AddPrometheusTracker(new Uri("http://localhost:9091"), new Dictionary<string, string>()
                 //{

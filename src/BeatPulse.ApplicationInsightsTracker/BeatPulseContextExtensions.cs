@@ -11,5 +11,12 @@ namespace BeatPulse
 
             return context;
         }
+
+        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context,string instrumentationKey)
+        {
+            context.AddTracker(new AITracker(instrumentationKey));
+
+            return context;
+        }
     }
 }
