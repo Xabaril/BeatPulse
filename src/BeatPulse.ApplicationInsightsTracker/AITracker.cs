@@ -50,7 +50,5 @@ namespace BeatPulse.ApplicationInsightsTracker
 
             return Task.CompletedTask;
         }
-
-
     }
 }
