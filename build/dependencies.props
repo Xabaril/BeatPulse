@@ -57,7 +57,7 @@
     <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>
     <BeatPulseAzureServiceBusVersion>2.1.0</BeatPulseAzureServiceBusVersion>
-    <BeatPulseAITrackerVersion>2.1.10</BeatPulseAITrackerVersion>
+    <BeatPulseAITrackerVersion>2.1.12</BeatPulseAITrackerVersion>
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
