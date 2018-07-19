@@ -1,6 +1,7 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.Sqlite;
 
-namespace BeatPulse.Sqlite
+namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {

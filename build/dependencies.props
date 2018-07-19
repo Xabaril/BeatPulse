@@ -45,12 +45,12 @@
   <PropertyGroup Label="BeatPulse Package Versions">
     <BeatPulsePackageVersion>2.1.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>2.1.0</BeatPulseAzureStoragePackageVersion>
-    <BeatPulseDocumentDbPackageVersion>2.1.0</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseDocumentDbPackageVersion>2.1.1</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>2.1.0</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>2.1.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>2.1.0</BeatpulseNpgSqlPackageVersion>
     <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
-    <BeatPulseSqlitePackageVersion>2.1.0</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlitePackageVersion>2.1.1</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
     <BeatPulseUIPackageVersion>2.1.1</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
@@ -61,6 +61,7 @@
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
+    <BeatPulseUrisVersion>2.1.0</BeatPulseUrisVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

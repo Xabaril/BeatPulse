@@ -82,6 +82,7 @@ if ($suffix -eq "") {
     exec { & dotnet pack .\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
     exec { & dotnet pack .\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.Uris\BeatPulse.Uris.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 } else {
     exec { & dotnet pack .\src\BeatPulse\BeatPulse.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
@@ -101,5 +102,6 @@ if ($suffix -eq "") {
     exec { & dotnet pack .\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.Uris\BeatPulse.Uris.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 }
 

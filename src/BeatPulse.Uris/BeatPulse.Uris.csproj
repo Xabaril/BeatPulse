@@ -4,9 +4,9 @@
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
-    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Sqlite</PackageTags>
-    <Description>BeatPulse.Sqlite is the health check package for Sqlite BeatPulse</Description>
-    <Version>$(BeatPulseSqlitePackageVersion)</Version>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Uri;Url;Uris;Urls</PackageTags>
+    <Description>BeatPulse.Uris is a simple health check package for Uri groups BeatPulse</Description>
+    <Version>$(BeatPulseUrisVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>
@@ -15,12 +15,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="$(MicrosoftDataSqliteVersion)" />
-  </ItemGroup>
 
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
-
 </Project>

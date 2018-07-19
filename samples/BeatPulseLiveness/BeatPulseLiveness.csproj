@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>1984bb20-ba5e-4a38-a11c-e46bf2c99645</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.Uris\BeatPulse.Uris.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
   </ItemGroup>
 

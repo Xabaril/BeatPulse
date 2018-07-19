@@ -1,4 +1,15 @@
-# Version 1.7.2 to 2.1
+# Change Log
+
+## UrlGroup 2.1.0
+    1. Added library for check url groups liveness
+
+## SqlLite 2.1.1
+    1. Fix issue with AddSqlLite extension method namespace, now is no BeatPulse.
+
+## DocumentDb 2.1.1
+     1. Fix issue with AddDocumentDb extension method namespace, now is no BeatPulse.
+
+## Version 1.7.2 to 2.1
 
     1. ASP.NET Core 2.1 dependency
     2. Refactor *BeatPulseOptions* public surface.
