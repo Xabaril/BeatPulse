@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.DocumentDb;
 using System;
 
 namespace BeatPulse
