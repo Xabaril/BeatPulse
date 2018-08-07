@@ -13,7 +13,10 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new UriLiveness(new System.Uri[] { uri }, HttpMethod.Get));
+
+                var options = new UriLivenessOptions();
+                options.AddUri(uri);
+                setup.UseLiveness(new UriLiveness(options));
             });
         }
 
@@ -22,7 +25,10 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new UriLiveness(new Uri[] { uri }, httpMethod));
+                var options = new UriLivenessOptions();
+                options.AddUri(uri);
+                options.UseHttpMethod(httpMethod);
+                setup.UseLiveness(new UriLiveness(options));
             });
         }
 
@@ -31,7 +37,13 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new UriLiveness(uris, HttpMethod.Get));
+                var options = new UriLivenessOptions();
+                foreach (var uri in uris)
+                {
+                    options.AddUri(uri);
+                }
+
+                setup.UseLiveness(new UriLiveness(options));
             });
         }
 
@@ -40,8 +52,29 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new UriLiveness(uris, httpMethod));
+
+                var options = new UriLivenessOptions();
+                options.UseHttpMethod(httpMethod);
+                foreach (var uri in uris)
+                {
+                    options.AddUri(uri);
+                }
+
+                setup.UseLiveness(new UriLiveness(options));
             });
         }
+
+        public static BeatPulseContext AddUrlGroup(this BeatPulseContext context, Action<UriLivenessOptions> uriOptions, string defaultPath = "uri-group", string name = nameof(UriLiveness))
+        {
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UsePath(defaultPath);
+                var options = new UriLivenessOptions();
+                uriOptions.Invoke(options);
+                setup.UseLiveness(new UriLiveness(options));
+            });
+
+        }
+
     }
 }

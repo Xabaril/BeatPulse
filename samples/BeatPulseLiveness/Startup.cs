@@ -35,6 +35,14 @@ namespace BeatPulseLiveness
             {
                 setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es"), new Uri("http://nonexisting.com") });
 
+                setup.AddUrlGroup(opt =>
+                {
+                    opt.AddUri(new Uri("http://google.com"), uri =>
+                    {
+                        uri.AddCustomHeader("X-Method-Override", "DELETE");
+                    });
+                }, "uri-group2", "UriLiveness2");
+
                 //
                 //add existing liveness packages
                 //
