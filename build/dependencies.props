@@ -35,6 +35,7 @@
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
     <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
+    <OracleManagedDataAccessCoreVersion>2.12.0-beta3</OracleManagedDataAccessCoreVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
@@ -62,6 +63,7 @@
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
     <BeatPulseUrisVersion>2.1.1</BeatPulseUrisVersion>
+    <BeatPulseOraclePackageVersion>2.1.0</BeatPulseOraclePackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
