@@ -20,7 +20,7 @@ namespace FunctionalTests.BeatPulse.Oracle
             _fixture = fixture;
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_healthy_when_oracle_is_available()
         {
             var connectionString = "Data Source=localhost:1521/xe;User Id=system;Password=oracle";
@@ -43,7 +43,7 @@ namespace FunctionalTests.BeatPulse.Oracle
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_unhealthy_when_oracle_is_not_available()
         {
             var connectionString = "Data Source=255.255.255.255:1521/xe;User Id=system;Password=oracle";
