@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MySql\BeatPulse.MySql.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.Oracle\BeatPulse.Oracle.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Redis\BeatPulse.Redis.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Sqlite\BeatPulse.Sqlite.csproj" />

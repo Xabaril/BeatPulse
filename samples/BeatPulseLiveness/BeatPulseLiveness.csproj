@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BeatPulse.Oracle\BeatPulse.Oracle.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Uris\BeatPulse.Uris.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
