@@ -22,7 +22,7 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 Install-Package BeatPulse
 ```
 
-2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Azure Storage (Blobs, Tables and Queues), Azure Service Bus (Event Hub, Service Bus queues and topics), DocumentDb, MySQL, SqLite, Kafka, RabbitMQ, Identity Server, AWS DynamoDB and custom lambda liveness*.
+2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for *Redis, SqlServer, MongoDb, Postgress Sql, Oracle, Azure Storage (Blobs, Tables and Queues), Azure Service Bus (Event Hub, Service Bus queues and topics), DocumentDb, MySQL, SqLite, Kafka, RabbitMQ, Identity Server, AWS DynamoDB and custom lambda liveness*.
 
 ``` PowerShell
 Install-Package BeatPulse.SqlServer
@@ -38,6 +38,7 @@ Install-Package BeatPulse.Kafka
 Install-Package BeatPulse.RabbitMQ
 Install-Package BeatPulse.IdSvr
 Install-Package BeatPulse.DynamoDB
+Install-Package BeatPulse.Oracle
 ```
 
 3. Add *BeatPulse* into your ASP.NET Core project. *UseBeatPulse* is a new IWebHostBuilder extension method to register and configure BeatPulse.
