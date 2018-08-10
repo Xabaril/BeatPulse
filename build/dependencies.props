@@ -62,8 +62,8 @@
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
-    <BeatPulseUrisVersion>2.1.1</BeatPulseUrisVersion>
-    <BeatPulseOraclePackageVersion>2.1.0</BeatPulseOraclePackageVersion>
+    <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
+    <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

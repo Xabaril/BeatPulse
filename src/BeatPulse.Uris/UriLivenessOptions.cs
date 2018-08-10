@@ -18,10 +18,12 @@ namespace BeatPulse.Uris
     public class UriOptions : IUriOptions
     {
         public HttpMethod HttpMethod { get; private set; }
+
         public (int Min, int Max)? ExpectedHttpCodes { get; private set; }
+
         public Uri Uri { get; }
 
-        private readonly List<(string Name, string Value)> _headers;
+        private readonly List<(string Name, string Value)> _headers = new List<(string Name, string Value)>();
 
         internal IEnumerable<(string Name, string Value)> Headers => _headers;
 
@@ -30,7 +32,6 @@ namespace BeatPulse.Uris
             Uri = uri;
             ExpectedHttpCodes = null;
             HttpMethod = null;
-            _headers = new List<(string Name, string Value)>();
         }
 
         public IUriOptions AddCustomHeader(string name, string value)
@@ -39,12 +40,12 @@ namespace BeatPulse.Uris
             return this;
         }
 
-
         IUriOptions IUriOptions.UseGet()
         {
             HttpMethod = HttpMethod.Get;
             return this;
         }
+
         IUriOptions IUriOptions.UsePost()
         {
             HttpMethod = HttpMethod.Post;
@@ -62,6 +63,7 @@ namespace BeatPulse.Uris
             ExpectedHttpCodes = (minCodeToExpect, maxCodeToExpect);
             return this;
         }
+
         IUriOptions IUriOptions.UseHttpMethod(HttpMethod methodToUse)
         {
             HttpMethod = methodToUse;
@@ -71,16 +73,17 @@ namespace BeatPulse.Uris
 
     public class UriLivenessOptions
     {
-        private readonly List<UriOptions> _uris;
+        private readonly List<UriOptions> _urisOptions = new List<UriOptions>();
+
+        internal IEnumerable<UriOptions> UrisOptions => _urisOptions;
+
         internal HttpMethod HttpMethod { get; private set; }
-        internal IEnumerable<UriOptions> Uris => _uris;
 
         internal (int Min, int Max) ExpectedHttpCodes { get; private set; }
 
         public UriLivenessOptions()
         {
-            _uris = new List<UriOptions>();
-            ExpectedHttpCodes = (200, 299);              // HTTP Succesful status codes
+            ExpectedHttpCodes = (200, 299);              // DEFAULT  = HTTP Succesful status codes
             HttpMethod = HttpMethod.Get;
         }
 
@@ -102,11 +105,13 @@ namespace BeatPulse.Uris
             return this;
         }
 
-        public UriLivenessOptions AddUri(Uri uriToAdd, Action<IUriOptions> uriOptions = null)
+        public UriLivenessOptions AddUri(Uri uriToAdd, Action<IUriOptions> setup = null)
         {
             var uri = new UriOptions(uriToAdd);
-            uriOptions?.Invoke(uri);
-            _uris.Add(uri);
+            setup?.Invoke(uri);
+
+            _urisOptions.Add(uri);
+
             return this;
         }
 
@@ -115,12 +120,23 @@ namespace BeatPulse.Uris
             ExpectedHttpCodes = (codeToExpect, codeToExpect);
             return this;
         }
+
         public UriLivenessOptions ExpectHttpCodes(int minCodeToExpect, int maxCodeToExpect)
         {
             ExpectedHttpCodes = (minCodeToExpect, maxCodeToExpect);
             return this;
         }
 
+        internal static UriLivenessOptions CreateFromUris(IEnumerable<Uri> uris)
+        {
+            var options = new UriLivenessOptions();
 
+            foreach (var item in uris)
+            {
+                options.AddUri(item);
+            }
+
+            return options;
+        }
     }
 }

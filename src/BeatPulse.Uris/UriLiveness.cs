@@ -1,7 +1,6 @@
 ﻿using BeatPulse.Core;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,8 +12,10 @@ namespace BeatPulse.Uris
     {
         private readonly UriLivenessOptions _options;
 
-
-        public UriLiveness(UriLivenessOptions options) => _options = options;
+        public UriLiveness(UriLivenessOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+        }
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
@@ -22,11 +23,10 @@ namespace BeatPulse.Uris
             var defaultCodes = _options.ExpectedHttpCodes;
             var idx = 0;
 
-            foreach (var item in _options.Uris)
+            foreach (var item in _options.UrisOptions)
             {
                 var method = item.HttpMethod ?? defaultHttpMethod;
                 var expectedCodes = item.ExpectedHttpCodes ?? defaultCodes;
-                var uri = item.Uri;
 
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -37,7 +37,7 @@ namespace BeatPulse.Uris
                 {
                     using (var httpClient = new HttpClient())
                     {
-                        var requestMessage = new HttpRequestMessage(method, uri);
+                        var requestMessage = new HttpRequestMessage(method, item.Uri);
 
                         foreach (var header in item.Headers)
                         {
@@ -53,7 +53,8 @@ namespace BeatPulse.Uris
 
                             return (message, false);
                         }
-                        idx++;
+
+                        ++idx;
                     }
                 }
                 catch (Exception ex)

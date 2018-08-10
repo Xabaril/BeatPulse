@@ -12,22 +12,23 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UsePath(defaultPath);
-
                 var options = new UriLivenessOptions();
                 options.AddUri(uri);
+
+                setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
         }
 
-        public static BeatPulseContext AddUrlGroup(this BeatPulseContext context, Uri uri,HttpMethod httpMethod, string defaultPath = "uri-group", string name = nameof(UriLiveness))
+        public static BeatPulseContext AddUrlGroup(this BeatPulseContext context, Uri uri, HttpMethod httpMethod, string defaultPath = "uri-group", string name = nameof(UriLiveness))
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UsePath(defaultPath);
                 var options = new UriLivenessOptions();
                 options.AddUri(uri);
                 options.UseHttpMethod(httpMethod);
+
+                setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
         }
@@ -36,13 +37,9 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UsePath(defaultPath);
-                var options = new UriLivenessOptions();
-                foreach (var uri in uris)
-                {
-                    options.AddUri(uri);
-                }
+                var options = UriLivenessOptions.CreateFromUris(uris);
 
+                setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
         }
@@ -51,15 +48,10 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UsePath(defaultPath);
-
-                var options = new UriLivenessOptions();
+                var options = UriLivenessOptions.CreateFromUris(uris);
                 options.UseHttpMethod(httpMethod);
-                foreach (var uri in uris)
-                {
-                    options.AddUri(uri);
-                }
 
+                setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
         }
@@ -68,9 +60,10 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UsePath(defaultPath);
                 var options = new UriLivenessOptions();
                 uriOptions.Invoke(options);
+
+                setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
 
