@@ -47,6 +47,7 @@ namespace BeatPulseLiveness
                 //add existing liveness packages
                 //
 
+                setup.AddOracle("Data Source=localhost:49161/xe;User Id=system;Password=oracle");
                 setup.AddSqlServer("Server=.;Integrated Security=true;Initial Catalog=master");
                 // or setup.AddXXXX() for all liveness packages on Nuget (mysql,sqlite,urlgroup,redis,idsvr,kafka,aws dynamo,azure storage and much more)
 

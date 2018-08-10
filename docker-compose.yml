@@ -52,3 +52,9 @@ services:
         image: nakah/identityserver4
         ports:
           - ${IDSVR_PORT}:8888
+    oracle:
+        image: wnameless/oracle-xe-11g
+        ports: 
+            - ${ORACLE_PORT}:1521
+        environment:
+            - ORACLE_ALLOW_REMOTE=true
