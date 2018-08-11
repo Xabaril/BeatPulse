@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\BeatPulse.Redis\BeatPulse.Redis.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.System\BeatPulse.System.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.UI\BeatPulse.UI.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Uris\BeatPulse.Uris.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
