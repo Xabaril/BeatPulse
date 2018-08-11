@@ -54,12 +54,6 @@ namespace BeatPulse.System
             }
 
             return (true, drive.AvailableFreeSpace / 1024 / 1024);
-        }
-
-        private (string, bool) CreateErrorMessage(LivenessExecutionContext livenessContext, string errorMessage)
-        {
-            return (livenessContext.IsDevelopment ? errorMessage : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name), false);
-        }
-        
+        }        
     }   
 }
