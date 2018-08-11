@@ -18,7 +18,7 @@ namespace FunctionalTests.BeatPulse.System
         public ping_liveness_should(ExecutionFixture fixture) => _fixture = fixture;
        
         [Fact]
-        public async Task be_healthy_when_all_hosts_replies_to_ping()
+        public async Task be_healthy_when_all_hosts_reply_to_ping()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
