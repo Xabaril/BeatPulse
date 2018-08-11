@@ -1,7 +1,10 @@
 # Change Log
 
+## Oracle 2.1.0-beta3
+    1. Added Oracle beta library to check database health. Currently working with Oracle managed data access library beta 3 version
+
 ## UrlGroup 2.1.0
-    1. Added library for check url groups liveness
+    1. Added library to check url groups liveness
 
 ## SqlLite 2.1.1
     1. Fix issue with AddSqlLite extension method namespace, now is no BeatPulse.
