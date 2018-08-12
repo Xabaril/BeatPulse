@@ -1,14 +1,15 @@
-﻿using FunctionalTests.Base;
-using System.Threading.Tasks;
-using Xunit;
-using BeatPulse;
+﻿using BeatPulse;
+using FluentAssertions;
+using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.TestHost;
 using System.Net;
-using FluentAssertions;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace FunctionalTests.BeatPulse.System
 {
@@ -16,11 +17,11 @@ namespace FunctionalTests.BeatPulse.System
     public class disk_storage_liveness_should
     {
         private readonly ExecutionFixture _fixture;
-        private DriveInfo[] _drives;
+        private DriveInfo[] _drives = DriveInfo.GetDrives();
+
         public disk_storage_liveness_should(ExecutionFixture fixture)
         {
-            _fixture = fixture;
-            _drives = DriveInfo.GetDrives();
+            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture)); ;
         }
 
         [Fact]

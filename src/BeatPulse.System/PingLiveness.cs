@@ -1,10 +1,9 @@
-﻿using System;
+﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
-using BeatPulse.Core;
-using BeatPulse.System.Extensions;
-using Microsoft.AspNetCore.Http;
 
 namespace BeatPulse.System
 {
@@ -19,28 +18,28 @@ namespace BeatPulse.System
 
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
+            var configuredHosts = _options.ConfiguredHosts.Values;
 
-            foreach (var registeredHost in _options.RegisteredHosts)
+            foreach (var item in configuredHosts)
             {
                 try
                 {
-                    var (host, timeout) = registeredHost.Value;
-
                     using (var ping = new Ping())
                     {
-                        var pingReply = await ping.SendPingAsync(host, timeout);
+                        var pingReply = await ping.SendPingAsync(item.Host, item.TimeOut);
 
                         if (pingReply.Status != IPStatus.Success)
                         {
-                            var reason = pingReply.Status == IPStatus.TimedOut ? "timed out" : "failed";
-                            return livenessContext.CreateErrorResponse($"Ping check for host {host} {reason}");
+                            return ($"Ping check for host {item.Host} is failed with status reply:{pingReply.Status}", false);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    var response = livenessContext.CreateErrorResponse($"Exception {ex.GetType().Name} with message (' {registeredHost.Value.Host} - {ex.Message}')");
-                    return response;
+                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                       : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                    return (message, false);
                 }
             }
 

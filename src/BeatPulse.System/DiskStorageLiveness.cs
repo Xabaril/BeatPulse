@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using BeatPulse.System.Extensions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
@@ -12,7 +11,6 @@ namespace BeatPulse.System
     public class DiskStorageLiveness : IBeatPulseLiveness
     {
         private readonly DiskStorageLivenessOptions _options;
-        private DriveInfo[] _drives;
 
         public DiskStorageLiveness(DiskStorageLivenessOptions options)
         {
@@ -20,40 +18,50 @@ namespace BeatPulse.System
         }
 
         public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
-        {
-             _drives = DriveInfo.GetDrives();
-            
-            foreach(var configuredDrive in _options.ConfiguredDrives)
+        { 
+            try
             {
-                var (driveName, minDriveMegabytes) = configuredDrive.Value;
-                var driveInfo = GetDriveInfo(driveName);
+                var configuredDrives = _options.ConfiguredDrives.Values;
 
-                if (!driveInfo.Exists)
+                foreach (var item in configuredDrives)
                 {
-                    return Task.FromResult(livenessContext.CreateErrorResponse($"Configured drive {driveName} is not present on system"));
+                    var systemDriveInfo = GetSystemDriveInfo(item.DriveName);
+
+                    if (systemDriveInfo.Exists)
+                    {
+                        if (systemDriveInfo.ActualFreeMegabytes < item.MinimumFreeMegabytes)
+                        {
+                            return Task.FromResult(($"Minimum configured megabytes for disk {item.DriveName} is {item.MinimumFreeMegabytes} but actual free space are {systemDriveInfo.ActualFreeMegabytes} megabytes", false));
+                        }
+                    }
+                    else
+                    {
+                        return Task.FromResult(($"Configured drive {item.DriveName} is not present on system",false));
+                    }
                 }
 
-                var successfulCheck = driveInfo.ActualFreeMegabytes >= minDriveMegabytes;
-                
-                if(!successfulCheck)
-                {
-                    return Task.FromResult(livenessContext.CreateErrorResponse($"Minimum configured megabytes for disk {driveName} is {minDriveMegabytes} but actual free space are {driveInfo.ActualFreeMegabytes} megabytes"));
-                }
+                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
             }
+            catch (Exception ex)
+            {
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                       : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-            return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult((message, false));
+            }
         }
 
-        private (bool Exists, long ActualFreeMegabytes) GetDriveInfo(string driveName)
+        private (bool Exists, long ActualFreeMegabytes) GetSystemDriveInfo(string driveName)
         {
-            var drive = _drives.FirstOrDefault(d => String.Equals(d.Name, driveName, StringComparison.InvariantCultureIgnoreCase));
+            var driveInfo = DriveInfo.GetDrives()
+                .FirstOrDefault(drive => String.Equals(drive.Name, driveName, StringComparison.InvariantCultureIgnoreCase));
 
-            if (drive == null)
+            if (driveInfo != null)
             {
-                return (false, 0);
+                return (true, driveInfo.AvailableFreeSpace / 1024 / 1024);
             }
 
-            return (true, drive.AvailableFreeSpace / 1024 / 1024);
-        }        
-    }   
+            return (false, 0);
+        }
+    }
 }

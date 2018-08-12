@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BeatPulse.System
 {
     public class PingLivenessOptions
     {
-        internal ConcurrentDictionary<string, (string Host, int TimeOut)> RegisteredHosts { get; } = new ConcurrentDictionary<string, (string, int)>();
-        public bool AddHost(string host, int timeout) => RegisteredHosts.TryAdd(host, (host, timeout));        
+        internal Dictionary<string, (string Host, int TimeOut)> ConfiguredHosts { get; } = new Dictionary<string, (string, int)>();
+
+        public PingLivenessOptions AddHost(string host, int timeout)
+        {
+            ConfiguredHosts.Add(host, (host, timeout));
+            return this;
+        }
     }
 }

@@ -1,13 +1,13 @@
-﻿using FunctionalTests.Base;
+﻿using BeatPulse;
+using FluentAssertions;
+using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
-using BeatPulse.System;
-using Microsoft.AspNetCore.TestHost;
-using BeatPulse;
-using FluentAssertions;
-using System.Net;
 
 namespace FunctionalTests.BeatPulse.System
 {
@@ -15,7 +15,11 @@ namespace FunctionalTests.BeatPulse.System
     public class ping_liveness_should
     {
         private readonly ExecutionFixture _fixture;
-        public ping_liveness_should(ExecutionFixture fixture) => _fixture = fixture;
+
+        public ping_liveness_should(ExecutionFixture fixture)
+        {
+            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture)); ;
+        }
        
         [Fact]
         public async Task be_healthy_when_all_hosts_reply_to_ping()

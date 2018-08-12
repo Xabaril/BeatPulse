@@ -2,7 +2,6 @@
 using BeatPulse.System;
 using System;
 
-
 namespace BeatPulse
 {
     public static class ServiceCollectionExtensions
@@ -14,7 +13,7 @@ namespace BeatPulse
                 setup.UsePath(defaultPath);
 
                 var pingLivenessOptions = new PingLivenessOptions();
-                options(pingLivenessOptions);
+                options?.Invoke(pingLivenessOptions);
 
                 setup.UseLiveness(new PingLiveness(pingLivenessOptions));
             });
@@ -27,7 +26,7 @@ namespace BeatPulse
                 setup.UsePath(defaultPath);
 
                 var diskStorageLivenesOptions = new DiskStorageLivenessOptions();
-                options(diskStorageLivenesOptions);
+                options?.Invoke(diskStorageLivenesOptions);
 
                 setup.UseLiveness(new DiskStorageLiveness(diskStorageLivenesOptions));
             });

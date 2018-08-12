@@ -1,10 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 
 namespace BeatPulse.System
 {
     public class DiskStorageLivenessOptions
     {
-        internal ConcurrentDictionary<string, (string DriveName, long MinimumFreeMegabytes)> ConfiguredDrives { get; } = new ConcurrentDictionary<string, (string, long)>();
-        public bool AddDrive(string driveName, long minimumFreeMegabytes) => ConfiguredDrives.TryAdd(driveName, (driveName, minimumFreeMegabytes));        
+        internal Dictionary<string, (string DriveName, long MinimumFreeMegabytes)> ConfiguredDrives { get; } = new Dictionary<string, (string DriveName, long MinimumFreeMegabytes)>();
+
+        public DiskStorageLivenessOptions AddDrive(string driveName, long minimumFreeMegabytes = 1)
+        { 
+            ConfiguredDrives.Add(driveName, (driveName, minimumFreeMegabytes));
+            return this;
+        }
     }
 }
