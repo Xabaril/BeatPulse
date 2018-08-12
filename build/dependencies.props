@@ -64,6 +64,7 @@
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
     <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
     <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
+    <BeatPulseSystemPackageVersion>2.1.0</BeatPulseSystemPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

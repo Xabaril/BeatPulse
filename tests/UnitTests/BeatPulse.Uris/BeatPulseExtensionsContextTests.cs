@@ -8,6 +8,8 @@ using System.Linq;
 using UnitTests.Base;
 using Xunit;
 using BeatPulse;
+using System;
+
 namespace UnitTests.BeatPulse.Uris
 {
     public class beat_pulse_context_should
@@ -22,7 +24,7 @@ namespace UnitTests.BeatPulse.Uris
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddUrlGroup(new System.Uri("https://www.your-uri-here.com"));
+                        context.AddUrlGroup(new Uri("https://www.your-uri-here.com"));
                     });
                 });
 

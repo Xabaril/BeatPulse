@@ -61,7 +61,7 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 var options = new UriLivenessOptions();
-                uriOptions.Invoke(options);
+                uriOptions?.Invoke(options);
 
                 setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));

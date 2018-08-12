@@ -1,5 +1,8 @@
 # Change Log
 
+## System 2.1.0
+    1. Added library with system health checks (ping and disk storage)
+
 ## Oracle 2.1.0-beta3
     1. Added Oracle beta library to check database health. Currently working with Oracle managed data access library beta 3 version
 

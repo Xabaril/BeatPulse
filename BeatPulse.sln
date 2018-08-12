@@ -81,7 +81,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.StatusPageTracker
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Uris", "src\BeatPulse.Uris\BeatPulse.Uris.csproj", "{525C2EBB-854C-40E5-B1CC-D42AFAF578E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.Oracle", "src\BeatPulse.Oracle\BeatPulse.Oracle.csproj", "{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Oracle", "src\BeatPulse.Oracle\BeatPulse.Oracle.csproj", "{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatPulse.System", "src\BeatPulse.System\BeatPulse.System.csproj", "{B3129148-8212-4ACC-A29A-8823D018F0F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +203,10 @@ Global
 		{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3129148-8212-4ACC-A29A-8823D018F0F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3129148-8212-4ACC-A29A-8823D018F0F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3129148-8212-4ACC-A29A-8823D018F0F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3129148-8212-4ACC-A29A-8823D018F0F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -234,6 +240,7 @@ Global
 		{5FBB54B1-2EDF-4F9E-A3DA-D371022A78D9} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{525C2EBB-854C-40E5-B1CC-D42AFAF578E9} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+		{B3129148-8212-4ACC-A29A-8823D018F0F2} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
