@@ -1,0 +1,47 @@
+﻿using System;
+using System.Net.Sockets;
+using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using BeatPulse.Network;
+
+namespace BeatPulse
+{
+    public class TcpLiveness : IBeatPulseLiveness
+    {
+        private readonly TcpLivenessOptions _options;
+
+        public TcpLiveness(TcpLivenessOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+        }
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        {
+            foreach (var item in _options.ConfiguredHosts)
+            {
+                using (var tcpClient = new TcpClient())
+                {
+                    try
+                    {
+                        await tcpClient.ConnectAsync(item.host, item.port);
+                        if (!tcpClient.Connected)
+                        {
+                            return ($"Connection to host {item.host}:{item.port} failed", false);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                            : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                        return (message, false);
+                    }
+
+                }
+            }
+
+            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+        }
+    }
+}

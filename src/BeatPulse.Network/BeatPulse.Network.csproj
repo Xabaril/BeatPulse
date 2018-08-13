@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
+    <Description>BeatPulse.MySql is the health check package for MySQL on BeatPulse </Description>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;MySQL</PackageTags>
+    <Version>2.1.0</Version>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <Company>$(Company)</Company>
+    <Authors>$(Authors)</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2016.1.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\BeatPulse\BeatPulse.csproj" />
+  </ItemGroup>
+
+</Project>
