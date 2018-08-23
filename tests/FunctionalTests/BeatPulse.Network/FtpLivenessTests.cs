@@ -23,7 +23,7 @@ namespace FunctionalTests.BeatPulse.Network
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_healthy_when_connection_is_successful()
         {
             var webHostBuilder = new WebHostBuilder()
