@@ -36,6 +36,7 @@
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
     <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
     <OracleManagedDataAccessCoreVersion>2.12.0-beta3</OracleManagedDataAccessCoreVersion>
+    <SSHNetPackageVersion>2016.1.0</SSHNetPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
