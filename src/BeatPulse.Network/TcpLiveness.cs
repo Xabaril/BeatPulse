@@ -1,10 +1,10 @@
-﻿using System;
-using System.Net.Sockets;
-using BeatPulse.Core;
+﻿using BeatPulse.Core;
+using BeatPulse.Network;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using BeatPulse.Network;
 
 namespace BeatPulse
 {

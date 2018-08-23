@@ -58,3 +58,11 @@ services:
             - ${ORACLE_PORT}:1521
         environment:
             - ORACLE_ALLOW_REMOTE=true
+    sftp:
+        image: atmoz/sftp
+        ports: 
+            - ${SFTP_PORT}:22
+        volumes:
+            - ./build/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
+        command: foo:pass:1001
+        
