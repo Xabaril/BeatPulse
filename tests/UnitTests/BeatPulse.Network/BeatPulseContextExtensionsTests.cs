@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using BeatPulse;
+﻿using BeatPulse;
+using BeatPulse.Core;
+using BeatPulse.Network;
+using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using UnitTests.Base;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using BeatPulse.System;
-using Microsoft.AspNetCore.TestHost;
-using BeatPulse.Core;
-using System.Linq;
-using FluentAssertions;
 
-namespace UnitTests.BeatPulse.System
+namespace UnitTests.BeatPulse.Network
 {
-    public class beat_pulse_context_should
+    public class beatpulse_context_should
     {
         [Fact]
-        public void register_disk_storage_liveness()
+        public void register_ping_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -23,9 +23,9 @@ namespace UnitTests.BeatPulse.System
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddDiskStorageLiveness(options =>
+                        context.AddPingLiveness(options =>
                         {
-                            options.AddDrive("C:\\", 5000);
+                            options.AddHost("fakehost", 5000);
                         });
                     });
                 });
@@ -35,8 +35,8 @@ namespace UnitTests.BeatPulse.System
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("diskstorage")
-                .Where(hc => hc.Name == nameof(DiskStorageLiveness))
+            beatPulseContex.GetAllLiveness("ping")
+                .Where(hc => hc.Name == nameof(PingLiveness))
                 .Should().HaveCount(1);
 
         }

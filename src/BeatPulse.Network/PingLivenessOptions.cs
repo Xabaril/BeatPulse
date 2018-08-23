@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BeatPulse.System
+namespace BeatPulse.Network
 {
     public class PingLivenessOptions
     {

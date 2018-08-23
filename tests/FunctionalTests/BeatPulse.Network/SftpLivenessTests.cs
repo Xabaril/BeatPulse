@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -26,7 +26,7 @@ namespace FunctionalTests.BeatPulse.Network
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_healthy_when_connection_to_sftp_is_successful_using_password_authentication()
         {
             var webHostBuilder = new WebHostBuilder()
@@ -38,10 +38,11 @@ namespace FunctionalTests.BeatPulse.Network
                     {
                         setup.AddSftpLiveness(options =>
                         {
-                            var sftpHostConfiguration = new SftpHostConfiguration("localhost", 22);
-                            sftpHostConfiguration.UsePasswordAuthentication("foo", "pass");
-                            
-                            options.AddHost(sftpHostConfiguration);
+                            var sftpConfiguration = new SftpConfigurationBuilder("localhost", 22, "foo")
+                                                    .AddPasswordAuthentication("pass")
+                                                    .Build();
+
+                            options.AddHost(sftpConfiguration);
                         });
                     });
                 });
@@ -54,7 +55,7 @@ namespace FunctionalTests.BeatPulse.Network
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_unhealthy_when_connection_to_sftp_is_using_wrong_password()
         {
             var webHostBuilder = new WebHostBuilder()
@@ -66,10 +67,11 @@ namespace FunctionalTests.BeatPulse.Network
                     {
                         setup.AddSftpLiveness(options =>
                         {
-                            var sftpHostConfiguration = new SftpHostConfiguration("localhost", 22);
-                            sftpHostConfiguration.UsePasswordAuthentication("foo", "wrongpass");
+                            var sftpConfiguration = new SftpConfigurationBuilder("localhost", 22, "foo")
+                                                    .AddPasswordAuthentication("wrongpass")
+                                                    .Build();
 
-                            options.AddHost(sftpHostConfiguration);
+                            options.AddHost(sftpConfiguration);
                         });
                     });
                 });
@@ -82,7 +84,7 @@ namespace FunctionalTests.BeatPulse.Network
             response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_healthy_when_connection_to_sftp_is_successful_using_private_key()
         {
             string privateKey = File.ReadAllText("id_rsa");
@@ -96,9 +98,45 @@ namespace FunctionalTests.BeatPulse.Network
                     {
                         setup.AddSftpLiveness(options =>
                         {
-                            var sftpHostConfiguration = new SftpHostConfiguration("localhost", 22);
-                            sftpHostConfiguration.UsePrivateKeyAuthentication("foo", privateKey, "beatpulse");
-                            options.AddHost(sftpHostConfiguration);
+                            var sftpConfiguration = new SftpConfigurationBuilder("localhost", 22, "foo")
+                                                    .AddPrivateKeyAuthentication(privateKey, "beatpulse")
+                                                    .Build();
+
+
+                            options.AddHost(sftpConfiguration);
+                        });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+
+        [SkipOnAppVeyor]
+        public async Task be_healthy_with_one_valid_authorization()
+        {
+            string privateKey = File.ReadAllText("id_rsa");
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(setup =>
+                    {
+                        setup.AddSftpLiveness(options =>
+                        {
+                            var sftpConfiguration = new SftpConfigurationBuilder("localhost", 22, "foo")
+                                                    .AddPasswordAuthentication("wrongpass")
+                                                    .AddPrivateKeyAuthentication(privateKey, "beatpulse")
+                                                    .Build();
+
+                            options.AddHost(sftpConfiguration);
                         });
                     });
                 });

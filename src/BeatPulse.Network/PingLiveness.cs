@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BeatPulse.System
+namespace BeatPulse.Network
 {
     public class PingLiveness : IBeatPulseLiveness
     {

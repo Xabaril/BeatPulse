@@ -24,14 +24,15 @@ namespace BeatPulse
             foreach (var item in _options.ConfiguredHosts.Values)
             {
                 try
-                {
+                {                    
                     var connectionInfo = new ConnectionInfo(item.Host, item.UserName, item.AuthenticationMethods.ToArray());
+
                     using (var sftpClient = new SftpClient(connectionInfo))
                     {
                         sftpClient.Connect();
                         
-                        bool connectionSuccess = sftpClient.IsConnected && sftpClient.ConnectionInfo.IsAuthenticated;
-
+                        var connectionSuccess = sftpClient.IsConnected && sftpClient.ConnectionInfo.IsAuthenticated;
+                        
                         if (!connectionSuccess)
                         {
                             return Task.FromResult(($"Connection with sftp host {item.Host}:{item.Port} failed", false));
@@ -50,5 +51,6 @@ namespace BeatPulse
 
             return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
         }
+        
     }
 }
