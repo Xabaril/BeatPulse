@@ -14,44 +14,72 @@ namespace BeatPulse
 
         public FtpLiveness(FtpLivenessOptions options)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentException(nameof(options));
         }
+
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
             CancellationToken cancellationToken = default)
         {
-            foreach (var item in _options.ConfiguredHosts.Values)
+            try
             {
-                try
+                foreach (var item in _options.Hosts.Values)
                 {
-
-                    var ftpRequest = (FtpWebRequest)WebRequest.Create(item.host);
-                    ftpRequest.Method = WebRequestMethods.Ftp.GetDateTimestamp;
-
-                    if (item.credentials != null)
-                    {
-                        ftpRequest.Credentials = item.credentials;
-                    }
+                    var ftpRequest = CreateFtpWebRequest(item.host, item.createFile, item.credentials);
 
                     using (var ftpResponse = (FtpWebResponse)await ftpRequest.GetResponseAsync())
                     {
-                        if (ftpResponse.StatusCode != FtpStatusCode.CommandOK)
+                        if (ftpResponse.StatusCode != FtpStatusCode.PathnameCreated
+                            && ftpResponse.StatusCode != FtpStatusCode.ClosingData)
                         {
                             return ($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}", false);
                         }
                     }
-
                 }
-                catch (Exception ex)
-                {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-                    return (message, false);
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+            }
+            catch (Exception ex)
+            {
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                return (message, false);
+            }
+        }
+
+        WebRequest CreateFtpWebRequest(string host, bool createFile = false, NetworkCredential credentials = null)
+        {
+            FtpWebRequest ftpRequest;
+
+            if (createFile)
+            {
+                ftpRequest = (FtpWebRequest)WebRequest.Create($"{host}/beatpulse");
+
+                if (credentials != null)
+                {
+                    ftpRequest.Credentials = credentials;
+                }
+
+                ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+
+                using (var stream = ftpRequest.GetRequestStream())
+                {
+                    stream.Write(new byte[] { 0x0 }, 0, 1);
                 }
             }
+            else
+            {
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host);
 
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                if (credentials != null)
+                {
+                    ftpRequest.Credentials = credentials;
+                }
 
+                ftpRequest.Method = WebRequestMethods.Ftp.PrintWorkingDirectory;
+            }
+
+            return ftpRequest;
         }
     }
 }

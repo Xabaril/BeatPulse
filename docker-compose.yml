@@ -58,6 +58,15 @@ services:
             - ${ORACLE_PORT}:1521
         environment:
             - ORACLE_ALLOW_REMOTE=true
+    ftp:
+        image: bogem/ftp
+        ports:
+            - ${FTP_PORT}:21
+            - 47400-47470:47400-47470
+        environment:
+            - FTP_USER=${FTP_USER}
+            - FTP_PASS=${FTP_PASS}
+            - PASV_ADDRESS=127.0.0.1
     sftp:
         image: atmoz/sftp
         ports: 

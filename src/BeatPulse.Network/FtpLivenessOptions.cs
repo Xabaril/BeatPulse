@@ -5,11 +5,12 @@ namespace BeatPulse.Network
 {
     public class FtpLivenessOptions
     {
-        internal Dictionary<string, (string host, NetworkCredential credentials)> ConfiguredHosts { get; } = new Dictionary<string, (string, NetworkCredential)>();
+        internal Dictionary<string, (string host, bool createFile, NetworkCredential credentials)> Hosts { get; } = new Dictionary<string, (string, bool, NetworkCredential)>();
 
-        public FtpLivenessOptions AddHost(string host, NetworkCredential credentials = null)
+        public FtpLivenessOptions AddHost(string host, bool createFile = false, NetworkCredential credentials = null)
         {
-            ConfiguredHosts.Add(host, (host, credentials));
+            Hosts.Add(host, (host, createFile, credentials));
+
             return this;
         }
     }

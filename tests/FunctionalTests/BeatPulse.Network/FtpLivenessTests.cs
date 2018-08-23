@@ -23,7 +23,7 @@ namespace FunctionalTests.BeatPulse.Network
             _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
-        [Fact]
+        [SkipOnAppVeyor]
         public async Task be_healthy_when_connection_is_successful()
         {
             var webHostBuilder = new WebHostBuilder()
@@ -35,7 +35,35 @@ namespace FunctionalTests.BeatPulse.Network
                     {
                         setup.AddFtpLiveness(options =>
                         {
-                            options.AddHost("ftp://localhost:21", new NetworkCredential("beatpulse", "pass"));
+                            options.AddHost("ftp://localhost:21",
+                                createFile:false,
+                                credentials:new NetworkCredential("bob", "12345"));
+                        });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        [SkipOnAppVeyor]
+        public async Task be_healthy_when_connection_is_successful_and_file_is_created()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(setup =>
+                    {
+                        setup.AddFtpLiveness(options =>
+                        {
+                            options.AddHost("ftp://localhost:21",
+                                createFile: true,
+                                credentials: new NetworkCredential("bob", "12345"));
                         });
                     });
                 });

@@ -18,30 +18,30 @@ namespace BeatPulse
         }
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
-            foreach (var item in _options.ConfiguredHosts)
+            try
             {
-                using (var tcpClient = new TcpClient())
+                foreach (var item in _options.ConfiguredHosts)
                 {
-                    try
+                    using (var tcpClient = new TcpClient())
                     {
                         await tcpClient.ConnectAsync(item.host, item.port);
+
                         if (!tcpClient.Connected)
                         {
                             return ($"Connection to host {item.host}:{item.port} failed", false);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                            : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                        return (message, false);
-                    }
-
                 }
-            }
 
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+            }
+            catch (Exception ex)
+            {
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                return (message, false);
+            }            
         }
     }
 }
