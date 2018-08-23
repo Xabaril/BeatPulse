@@ -1,10 +1,24 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.Network;
 using System;
 
-namespace BeatPulse.Network
+namespace BeatPulse
 {
     public static class ServiceCollectionExtensions
     {
+        public static BeatPulseContext AddPingLiveness(this BeatPulseContext context, Action<PingLivenessOptions> options, string name = nameof(PingLiveness), string defaultPath = "ping")
+        {
+
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UsePath(defaultPath);
+
+                var pingLivenessOptions = new PingLivenessOptions();
+                options?.Invoke(pingLivenessOptions);
+
+                setup.UseLiveness(new PingLiveness(pingLivenessOptions));
+            });
+        }
         public static BeatPulseContext AddSftpLiveness(this BeatPulseContext context, Action<SftpLivenessOptions> options,
             string name = nameof(SftpLiveness), string defaultPath = "sftp")
         {
