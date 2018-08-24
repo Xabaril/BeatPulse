@@ -44,7 +44,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>2.1.0</BeatPulsePackageVersion>
+    <BeatPulsePackageVersion>2.2.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>2.1.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>2.1.1</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>2.1.0</BeatPulseMongoDbPackageVersion>
@@ -64,7 +64,7 @@
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
     <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
     <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
-    <BeatPulseSystemPackageVersion>2.1.0</BeatPulseSystemPackageVersion>
+    <BeatPulseSystemPackageVersion>2.2.0</BeatPulseSystemPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

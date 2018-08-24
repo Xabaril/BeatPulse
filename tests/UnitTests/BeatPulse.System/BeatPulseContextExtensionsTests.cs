@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using BeatPulse;
+﻿using BeatPulse;
+using BeatPulse.Core;
+using BeatPulse.System;
+using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using UnitTests.Base;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using BeatPulse.System;
-using Microsoft.AspNetCore.TestHost;
-using BeatPulse.Core;
-using System.Linq;
-using FluentAssertions;
 
 namespace UnitTests.BeatPulse.System
 {
@@ -30,14 +29,12 @@ namespace UnitTests.BeatPulse.System
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("ping")
-                .Where(hc => hc.Name == nameof(PingLiveness))
-                .Should().HaveCount(1);
+            beatPulseContext.Should().ContainsLiveness(nameof(PingLiveness));
 
         }
 
@@ -58,15 +55,39 @@ namespace UnitTests.BeatPulse.System
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("diskstorage")
-                .Where(hc => hc.Name == nameof(DiskStorageLiveness))
-                .Should().HaveCount(1);
+            beatPulseContext.Should().ContainsLiveness(nameof(DiskStorageLiveness));
+        }
 
+        [Fact]
+        public void register_memory_liveness()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse()
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context
+                            .AddPrivateMemoryLiveness(104857600, Constants.PrivateMemoryLiveness)
+                            .AddWorkingSetLiveness(104857600, Constants.WorkingSetLiveness)
+                            .AddVirtualMemorySizeLiveness(104857600, Constants.VirtualMemorySizeLiveness); 
+                    });
+                });
+
+            var beatPulseContext = new TestServer(webHostBuilder)
+                .Host
+                .Services
+                .GetService<BeatPulseContext>();
+
+            beatPulseContext.Should().ContainsLiveness(Constants.PrivateMemoryLiveness);
+            beatPulseContext.Should().ContainsLiveness(Constants.WorkingSetLiveness);
+            beatPulseContext.Should().ContainsLiveness(Constants.VirtualMemorySizeLiveness);
         }
     }
 }
