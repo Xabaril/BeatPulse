@@ -3,7 +3,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using UnitTests.Base;
 using Xunit;
 
@@ -25,15 +24,13 @@ namespace BeatPulse.RabbitMQ
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("rabbitmq")
-                .Where(hc => hc.Name == nameof(RabbitMQLiveness))
-                .Should().HaveCount(1);
-
+            beatPulseContext.Should()
+               .ContainsLiveness(nameof(RabbitMQLiveness));
         }
     }
 }

@@ -1,5 +1,10 @@
 # Change Log
 
+## System 2.2.0
+    1. Added private memory process liveness.
+    2. Added virtual memory process liveness.
+    3. Added working set process liveness.
+
 ## System 2.1.0
     1. Added library with system health checks (ping and disk storage)
 

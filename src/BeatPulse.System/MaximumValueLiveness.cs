@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BeatPulse.Core
+namespace BeatPulse.System
 {
     public class MaximumValueLiveness<T> : IBeatPulseLiveness
         where T : IComparable<T>
