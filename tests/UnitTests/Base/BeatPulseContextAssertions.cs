@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace UnitTests.Base
 {
-    public class BeatPulseContextAssertions : ReferenceTypeAssertions<BeatPulseContext, BeatPulseContextAssertions>
+    public class BeatPulseContextAssertions : ObjectAssertions
     {
         private readonly BeatPulseContext context;
 
-        public BeatPulseContextAssertions(BeatPulseContext context)
+        public BeatPulseContextAssertions(BeatPulseContext context) : base(context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
