@@ -12,6 +12,7 @@ namespace BeatPulse.Network
         private string _host;
         private int _port;
         private string _userName;
+        private (bool createFile, string remotePath) _fileCreationOptions = (false, string.Empty);
 
         internal List<AuthenticationMethod> AuthenticationMethods { get; } = new List<AuthenticationMethod>();
 
@@ -50,6 +51,12 @@ namespace BeatPulse.Network
             return this;
         }
 
+        public SftpConfigurationBuilder CreateFileOnConnect(string remoteFilePath)
+        {
+            _fileCreationOptions = (true, remoteFilePath);
+            return this;
+        }
+
         public SftpConfiguration Build()
         {
             if(!AuthenticationMethods.Any())
@@ -57,7 +64,13 @@ namespace BeatPulse.Network
                 throw new Exception("No AuthenticationMethods have been configured for Sftp Configuration");
             }
 
-            return new SftpConfiguration(_host, _port, _userName, AuthenticationMethods);
+            var sftpConfiguration =  new SftpConfiguration(_host, _port, _userName, AuthenticationMethods);
+            if(_fileCreationOptions.createFile)
+            {
+                sftpConfiguration.CreateRemoteFile(_fileCreationOptions.remotePath);
+            }
+
+            return sftpConfiguration;
         }
     }
 
@@ -67,12 +80,19 @@ namespace BeatPulse.Network
         internal string UserName { get; set; }
         internal int Port { get; }
         internal List<AuthenticationMethod> AuthenticationMethods { get; }
+        internal (bool createFile, string remoteFilePath) FileCreationOptions = (false, string.Empty);
+
         internal SftpConfiguration(string host, int port, string userName, List<AuthenticationMethod> authenticationMethods)
         {
             Host = host;
             Port = port;
             UserName = userName;
             AuthenticationMethods = authenticationMethods;
+        }
+
+        internal void CreateRemoteFile(string remoteFilePath)
+        {
+            FileCreationOptions = (true, remoteFilePath);
         }
     }
     

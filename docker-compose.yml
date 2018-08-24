@@ -73,5 +73,5 @@ services:
             - ${SFTP_PORT}:22
         volumes:
             - ./build/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
-        command: foo:pass:1001
+        command: foo:pass:::upload
         

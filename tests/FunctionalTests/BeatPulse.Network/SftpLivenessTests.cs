@@ -116,6 +116,37 @@ namespace FunctionalTests.BeatPulse.Network
             response.EnsureSuccessStatusCode();
         }
 
+        [SkipOnAppVeyor]
+        public async Task be_healthy_with_valid_authorization_and_file_creation_enabled()
+        {
+            string privateKey = File.ReadAllText("id_rsa");
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(setup =>
+                    {
+                        setup.AddSftpLiveness(options =>
+                        {
+                            var sftpConfiguration = new SftpConfigurationBuilder("localhost", 22, "foo")                                                    
+                                                    .AddPrivateKeyAuthentication(privateKey, "beatpulse")
+                                                    .CreateFileOnConnect("upload/beatpulse")
+                                                    .Build();
+
+                            options.AddHost(sftpConfiguration);
+                        });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
 
         [SkipOnAppVeyor]
         public async Task be_healthy_with_one_valid_authorization()

@@ -3,6 +3,7 @@ using BeatPulse.Network;
 using Microsoft.AspNetCore.Http;
 using Renci.SshNet;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ConnectionInfo = Renci.SshNet.ConnectionInfo;
@@ -25,15 +26,23 @@ namespace BeatPulse
             {
                 try
                 {                    
+
                     var connectionInfo = new ConnectionInfo(item.Host, item.UserName, item.AuthenticationMethods.ToArray());
 
                     using (var sftpClient = new SftpClient(connectionInfo))
                     {
                         sftpClient.Connect();
-                        
+
                         var connectionSuccess = sftpClient.IsConnected && sftpClient.ConnectionInfo.IsAuthenticated;
-                        
-                        if (!connectionSuccess)
+
+                        if (connectionSuccess)
+                        {
+                            if (item.FileCreationOptions.createFile)
+                            {
+                                sftpClient.UploadFile(new MemoryStream(new byte[] { 0x0 }, 0, 1), item.FileCreationOptions.remoteFilePath);
+                            }
+                        }
+                        else
                         {
                             return Task.FromResult(($"Connection with sftp host {item.Host}:{item.Port} failed", false));
                         }
@@ -51,6 +60,6 @@ namespace BeatPulse
 
             return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
         }
-        
+
     }
 }
