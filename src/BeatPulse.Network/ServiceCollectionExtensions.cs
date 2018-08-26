@@ -39,11 +39,25 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                
+
                 var ftpLivenessOptions = new FtpLivenessOptions();
-                options?.Invoke(ftpLivenessOptions);;
+                options?.Invoke(ftpLivenessOptions);
 
                 setup.UseLiveness(new FtpLiveness(ftpLivenessOptions));
+            });
+        }
+
+        public static BeatPulseContext AddDnsResolveLiveness(this BeatPulseContext context, Action<DnsResolveOptions> options,
+             string name = nameof(DnsResolveOptions), string defaultPath = "dns")
+        {
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UsePath(defaultPath);
+
+                var dnsResolveOptions = new DnsResolveOptions();
+                options?.Invoke(dnsResolveOptions);
+
+                setup.UseLiveness(new DnsResolveLiveness(dnsResolveOptions));
             });
         }
     }

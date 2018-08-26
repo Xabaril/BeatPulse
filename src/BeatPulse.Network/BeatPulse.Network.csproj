@@ -4,9 +4,9 @@
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
     <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
-    <Description>BeatPulse.MySql is the health check package for MySQL on BeatPulse </Description>
-    <PackageTags>BeatPulse;HealthCheck;Beat;Health;MySQL</PackageTags>
-    <Version>2.1.0</Version>
+    <Description>BeatPulse.Network is the health check package for network services on BeatPulse </Description>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;Network;Sftp;Ftp;Tcp;DNS</PackageTags>
+    <Version>$(BeatPulseNetworkPackageVersion)</Version>
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>

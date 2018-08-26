@@ -22,10 +22,10 @@ namespace BeatPulse
         public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
             CancellationToken cancellationToken = default)
         {
-            foreach (var item in _options.ConfiguredHosts.Values)
+            try
             {
-                try
-                {                    
+                foreach (var item in _options.ConfiguredHosts.Values)
+                {
 
                     var connectionInfo = new ConnectionInfo(item.Host, item.UserName, item.AuthenticationMethods.ToArray());
 
@@ -39,7 +39,10 @@ namespace BeatPulse
                         {
                             if (item.FileCreationOptions.createFile)
                             {
-                                sftpClient.UploadFile(new MemoryStream(new byte[] { 0x0 }, 0, 1), item.FileCreationOptions.remoteFilePath);
+                                using (var stream = new MemoryStream(new byte[] { 0x0 }, 0, 1))
+                                {
+                                    sftpClient.UploadFile(stream, item.FileCreationOptions.remoteFilePath);
+                                }
                             }
                         }
                         else
@@ -48,18 +51,18 @@ namespace BeatPulse
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-                    return Task.FromResult((message, false));
-                }
+                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
 
             }
+            catch (Exception ex)
+            {
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-            return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult((message, false));
+            }
+
         }
-
     }
 }
