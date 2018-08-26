@@ -36,6 +36,7 @@
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
     <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
     <OracleManagedDataAccessCoreVersion>2.12.0-beta3</OracleManagedDataAccessCoreVersion>
+    <SSHNetPackageVersion>2016.1.0</SSHNetPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
@@ -64,7 +65,8 @@
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
     <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
     <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
-    <BeatPulseSystemPackageVersion>2.2.1</BeatPulseSystemPackageVersion>
+    <BeatPulseSystemPackageVersion>2.2.2</BeatPulseSystemPackageVersion>
+    <BeatPulseNetworkPackageVersion>2.1.0</BeatPulseNetworkPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

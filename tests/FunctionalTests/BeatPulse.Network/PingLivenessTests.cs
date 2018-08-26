@@ -9,7 +9,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FunctionalTests.BeatPulse.System
+
+namespace FunctionalTests.BeatPulse.Network
 {
     [Collection("execution")]
     public class ping_liveness_should

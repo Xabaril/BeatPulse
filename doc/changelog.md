@@ -1,5 +1,16 @@
 # Change Log
 
+## Network 2.2.1
+    The new package BeatPulse.Network was added, it includes the following livenesses:
+
+    1. Added Tcp connection liveness
+    2. Added Ftp connection liveness
+    3. Added Sftp connection liveness
+    4. Added Dns resolve liveness
+    
+## System 2.2.2
+    1. Ping liveness was moved to new BeatPulse.Network package as it suites better there (breaking change)
+
 ## System 2.2.0
     1. Added private memory process liveness.
     2. Added virtual memory process liveness.

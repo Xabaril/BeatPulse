@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\src\BeatPulse.Kafka\BeatPulse.Kafka.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MySql\BeatPulse.MySql.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.Network\BeatPulse.Network.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Oracle\BeatPulse.Oracle.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj" />
@@ -31,6 +32,10 @@
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\build\id_rsa" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

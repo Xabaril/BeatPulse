@@ -1,5 +1,6 @@
 ﻿using BeatPulse;
 using BeatPulse.Core;
+using BeatPulse.Network;
 using BeatPulse.System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
