@@ -5,7 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+using UnitTests.Base;
 using UnitTests.Base;
 using Xunit;
 
@@ -30,14 +30,12 @@ namespace UnitTests.BeatPulse.Network
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("ping")
-                .Where(hc => hc.Name == nameof(PingLiveness))
-                .Should().HaveCount(1);
+            beatPulseContext.Should().ContainsLiveness(nameof(PingLiveness));
 
         }
     }

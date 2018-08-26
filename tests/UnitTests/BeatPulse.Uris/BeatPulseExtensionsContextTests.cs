@@ -1,14 +1,13 @@
-﻿using BeatPulse.Core;
+﻿using BeatPulse;
+using BeatPulse.Core;
 using BeatPulse.Uris;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+using System;
 using UnitTests.Base;
 using Xunit;
-using BeatPulse;
-using System;
 
 namespace UnitTests.BeatPulse.Uris
 {
@@ -28,15 +27,13 @@ namespace UnitTests.BeatPulse.Uris
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("uri-group")
-                .Where(hc => hc.Name == nameof(UriLiveness))
-                .Should().HaveCount(1);
-
+            beatPulseContext.Should()
+                .ContainsLiveness(nameof(UriLiveness));
         }
     }
 }

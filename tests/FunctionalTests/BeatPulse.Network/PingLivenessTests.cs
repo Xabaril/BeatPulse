@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
+
 namespace FunctionalTests.BeatPulse.Network
 {
     [Collection("execution")]
