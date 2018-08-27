@@ -209,7 +209,7 @@ namespace BeatPulse.UI.Core
 
             if (lastNotification != null
                 &&
-                (DateTime.UtcNow - lastNotification.LastNotified).Seconds < _settings.MinimumSecondsBetweenFailureNotifications)
+                (DateTime.UtcNow - lastNotification.LastNotified).TotalSeconds < _settings.MinimumSecondsBetweenFailureNotifications)
             {
                 _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
             }

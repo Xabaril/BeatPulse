@@ -1,7 +1,8 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.DocumentDb;
 using System;
 
-namespace BeatPulse.DocumentDb
+namespace BeatPulse
 {
     public static class BeatPulseContextEntensions
     {

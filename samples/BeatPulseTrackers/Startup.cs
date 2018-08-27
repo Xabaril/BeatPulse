@@ -42,19 +42,32 @@ namespace BeatPulseTrackers
                     opt.UsePath("catapi");
                     opt.UseLiveness(new ActionLiveness(cancellationToken =>
                     {
+                        if (DateTime.Now.Minute == 20)
+                        {
+                            return Task.FromResult(("Service is down!", false));
+                        }
+
                         return Task.FromResult(("OK", true));
                     }));
                 });
 
-                    //
-                    //add trackers
-                    //
+                //
+                //add trackers
+                //
 
                 setup.AddApplicationInsightsTracker();
 
                 //setup.AddPrometheusTracker(new Uri("http://localhost:9091"), new Dictionary<string, string>()
                 //{
                 //    {"MachineName",Environment.MachineName}
+                //});
+
+                //setup.AddStatusPageTracker(opt =>
+                //{
+                //    opt.PageId = "your-page-id";
+                //    opt.ComponentId = "your-component-id";
+                //    opt.ApiKey = "your-api.key";
+                //    opt.IncidentName = "BeatPulse mark this component as outage";
                 //});
             });
 

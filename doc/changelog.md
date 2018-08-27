@@ -1,4 +1,37 @@
-# Version 1.7.2 to 2.1
+# Change Log
+
+## Network 2.2.1
+    The new package BeatPulse.Network was added, it includes the following livenesses:
+
+    1. Added Tcp connection liveness
+    2. Added Ftp connection liveness
+    3. Added Sftp connection liveness
+    4. Added Dns resolve liveness
+    
+## System 2.2.2
+    1. Ping liveness was moved to new BeatPulse.Network package as it suites better there (breaking change)
+
+## System 2.2.0
+    1. Added private memory process liveness.
+    2. Added virtual memory process liveness.
+    3. Added working set process liveness.
+
+## System 2.1.0
+    1. Added library with system health checks (ping and disk storage)
+
+## Oracle 2.1.0-beta3
+    1. Added Oracle beta library to check database health. Currently working with Oracle managed data access library beta 3 version
+
+## UrlGroup 2.1.0
+    1. Added library to check url groups liveness
+
+## SqlLite 2.1.1
+    1. Fix issue with AddSqlLite extension method namespace, now is no BeatPulse.
+
+## DocumentDb 2.1.1
+     1. Fix issue with AddDocumentDb extension method namespace, now is no BeatPulse.
+
+## Version 1.7.2 to 2.1
 
     1. ASP.NET Core 2.1 dependency
     2. Refactor *BeatPulseOptions* public surface.

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeatPulse;
+using BeatPulse.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BeatPulse;
-using BeatPulse.Core;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace BeatPulseLiveness
 {
@@ -34,17 +32,29 @@ namespace BeatPulseLiveness
             });
 
             services.AddBeatPulse(setup =>
-            {       
-                    //
-                    //add existing liveness packages
-                    //
+            {
+                //
+                //add existing liveness packages
+                //
 
                 setup.AddSqlServer("Server=.;Integrated Security=true;Initial Catalog=master");
-                // or setup.AddXXXX() for all liveness packages on Nuget
+                // or setup.AddXXXX() for all liveness packages on Nuget (mysql,sqlite,urlgroup,redis,idsvr,kafka,aws dynamo,azure storage and much more)
+                // ie: setup.AddOracle("Data Source=localhost:49161/xe;User Id=system;Password=oracle");
 
-                    //
-                    //create simple ad-hoc liveness
-                    //
+                setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es"), new Uri("http://nonexisting.com") });
+
+                setup.AddUrlGroup(opt =>
+                {
+                    opt.AddUri(new Uri("http://google.com"), uri =>
+                    {
+                        uri.UsePost()
+                           .AddCustomHeader("X-Method-Override", "DELETE");
+                    });
+                }, "uri-group2", "UriLiveness2");
+
+                //
+                //create simple ad-hoc liveness
+                //
 
                 setup.AddLiveness("custom-liveness", opt =>
                 {
@@ -55,9 +65,9 @@ namespace BeatPulseLiveness
                     }));
                 });
 
-                    //
-                    //ceate ad-hoc liveness with dependency resolution
-                    //
+                //
+                //ceate ad-hoc liveness with dependency resolution
+                //
 
                 setup.AddLiveness("custom-liveness-with-dependency", opt =>
                 {

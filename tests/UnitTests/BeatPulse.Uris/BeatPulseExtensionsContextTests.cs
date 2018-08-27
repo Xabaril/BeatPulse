@@ -1,21 +1,20 @@
-﻿using Amazon;
-using BeatPulse;
+﻿using BeatPulse;
 using BeatPulse.Core;
-using BeatPulse.DynamoDb;
+using BeatPulse.Uris;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+using System;
 using UnitTests.Base;
 using Xunit;
 
-namespace UnitTests.DynamoDb
+namespace UnitTests.BeatPulse.Uris
 {
     public class beat_pulse_context_should
     {
         [Fact]
-        public void register_mongodb_liveness()
+        public void register_uri_liveness()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -24,23 +23,17 @@ namespace UnitTests.DynamoDb
                 {
                     svc.AddBeatPulse(context =>
                     {
-                        context.AddDynamoDb(opt =>
-                        {
-                            opt.AccessKey = nameof(opt.AccessKey);
-                            opt.RegionEndpoint = RegionEndpoint.APNortheast1;
-                            opt.SecretKey = nameof(opt.SecretKey);
-                        });
+                        context.AddUrlGroup(new Uri("https://www.your-uri-here.com"));
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.GetAllLiveness("dynamodb")
-                .Where(hc => hc.Name == nameof(DynamoDbLiveness))
-                .Should().HaveCount(1);
+            beatPulseContext.Should()
+                .ContainsLiveness(nameof(UriLiveness));
         }
     }
 }

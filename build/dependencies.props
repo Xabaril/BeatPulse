@@ -35,6 +35,8 @@
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
     <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
+    <OracleManagedDataAccessCoreVersion>2.12.0-beta3</OracleManagedDataAccessCoreVersion>
+    <SSHNetPackageVersion>2016.1.0</SSHNetPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
@@ -43,23 +45,28 @@
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>2.1.0</BeatPulsePackageVersion>
+    <BeatPulsePackageVersion>2.2.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>2.1.0</BeatPulseAzureStoragePackageVersion>
-    <BeatPulseDocumentDbPackageVersion>2.1.0</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseDocumentDbPackageVersion>2.1.1</BeatPulseDocumentDbPackageVersion>
     <BeatPulseMongoDbPackageVersion>2.1.0</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>2.1.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>2.1.0</BeatpulseNpgSqlPackageVersion>
     <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
-    <BeatPulseSqlitePackageVersion>2.1.0</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlitePackageVersion>2.1.1</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>2.1.1</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>2.1.2</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
     <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>
     <BeatPulseAzureServiceBusVersion>2.1.0</BeatPulseAzureServiceBusVersion>
-    <BeatPulseAITrackerVersion>2.1.0</BeatPulseAITrackerVersion>
+    <BeatPulseAITrackerVersion>2.1.12</BeatPulseAITrackerVersion>
     <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
+    <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
+    <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
+    <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
+    <BeatPulseSystemPackageVersion>2.2.2</BeatPulseSystemPackageVersion>
+    <BeatPulseNetworkPackageVersion>2.1.0</BeatPulseNetworkPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">
