@@ -1,6 +1,5 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
 using Renci.SshNet;
 using System;
 using System.IO;
@@ -19,7 +18,7 @@ namespace BeatPulse
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
+        public Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext,
             CancellationToken cancellationToken = default)
         {
             try

@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace BeatPulse.System
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         { 
             try
             {

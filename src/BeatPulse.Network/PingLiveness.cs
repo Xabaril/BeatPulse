@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -16,7 +15,7 @@ namespace BeatPulse.Network
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             var configuredHosts = _options.ConfiguredHosts.Values;
 
