@@ -15,6 +15,11 @@ namespace BeatPulse.Hosted
 
         public Func<Task<bool>> OnRequestReceivedAsync { get; set; }
 
+        public void Setup(BeatPulseHostedOptions options)
+        {
+
+        }
+
 
         public Task OpenAsync()
         {

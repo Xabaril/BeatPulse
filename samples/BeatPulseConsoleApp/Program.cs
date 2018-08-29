@@ -12,6 +12,11 @@ namespace BeatPulseConsoleApp
             var builder = new HostBuilder();
             builder.UseBeatPulse(opt =>
            {
+               opt.Configure(bp =>
+               {
+                   bp.ConfigurePath("hc");
+               });
+
                opt.Setup(ctx =>
                {
                    ctx.AddSqlServer("my-db");
