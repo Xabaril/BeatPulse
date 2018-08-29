@@ -31,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada82x10c358}" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\build\id_rsa" CopyToOutputDirectory="Always" />
+    <None Include="..\..\docker-services\certificate\id_rsa" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

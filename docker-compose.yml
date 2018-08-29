@@ -74,4 +74,22 @@ services:
         volumes:
             - ./build/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
         command: foo:pass:::upload
+    
+    mail:
+        image: tvial/docker-mailserver:latest
+        hostname: mail
+        container_name: mail
+        domainname: beatpulse.com        
+        ports:
+            - 25:25               
+            - 143:143
+            - 587:587
+            - 993:993          
+            - 995:995  
+        environment:
+            - SSL_TYPE=self-signed
+            - DMS_DEBUG=1
+        volumes:
+            - ./docker-services/mail/:/tmp/docker-mailserver/
+        
         
