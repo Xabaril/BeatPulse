@@ -25,7 +25,7 @@ Install-Package BeatPulse
 2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for:
 
  - System (Disk Storage, Memory)
- - Network (Tcp, Ftp, Sftp, Dns resolve)
+ - Network (Tcp, Ftp, Sftp, Imap, Smtp, Dns resolve)
  - Redis
  - SqlServer
  - MongoDb

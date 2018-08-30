@@ -1,6 +1,19 @@
 # Change Log
 
-## Network 2.2.1
+## Network 2.1.1
+
+    1. Added IMAP connection liveness, supporting SSL/TLS and STARTTLS handshake.
+
+    - The imap liveness can try account logins and check mailbox
+    existance.
+
+    2. Added SMTP connection liveness, supporting SSL/TLS
+
+    - The smtp liveness cant try account logins.
+
+    No further dependencies were added to the package for added livenesses.
+
+## Network 2.1.0
     The new package BeatPulse.Network was added, it includes the following livenesses:
 
     1. Added Tcp connection liveness
