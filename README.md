@@ -26,7 +26,7 @@ Install-Package BeatPulse
 
  - System (Disk Storage, Memory)
  - Network (Tcp, Ftp, Sftp, Dns resolve)
- - *Redis
+ - Redis
  - SqlServer
  - MongoDb
  - Postgress Sql
@@ -40,7 +40,7 @@ Install-Package BeatPulse
  - RabbitMQ
  - Identity Server
  - AWS DynamoDB
- - Custom lambda liveness*.
+ - Custom lambda liveness.
 
  Install different livenesses by using Install-Package command:
 
