@@ -8,7 +8,6 @@ namespace BeatPulse
     {
         public static BeatPulseContext AddPingLiveness(this BeatPulseContext context, Action<PingLivenessOptions> options, string name = nameof(PingLiveness), string defaultPath = "ping")
         {
-
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);

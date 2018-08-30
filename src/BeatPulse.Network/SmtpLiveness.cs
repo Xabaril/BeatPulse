@@ -11,7 +11,6 @@ namespace BeatPulse.Network
     {
         private readonly SmtpLivenessOptions _options;
 
-
         public SmtpLiveness(SmtpLivenessOptions options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -27,9 +26,9 @@ namespace BeatPulse.Network
                         if (_options.AccountOptions.login)
                         {
                             var (user, password) = _options.AccountOptions.account;
-                            var authResult = await smtpConnection.AuthenticateAsync(user, password);
-                            if(!authResult)
-                            {
+
+                            if(! await smtpConnection.AuthenticateAsync(user, password))
+                            { 
                                 return ($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials", false);
                             }
                         }

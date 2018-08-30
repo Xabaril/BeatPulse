@@ -72,7 +72,7 @@ services:
         ports: 
             - ${SFTP_PORT}:22
         volumes:
-            - ./build/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
+            - ./docker-services/certificate/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
         command: foo:pass:::upload
     
     mail:

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using UnitTests.Base;
-using UnitTests.Base;
 using Xunit;
 
 namespace UnitTests.BeatPulse.Network

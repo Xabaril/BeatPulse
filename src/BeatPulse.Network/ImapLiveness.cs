@@ -11,7 +11,7 @@ namespace BeatPulse.Network
     {
         private readonly ImapLivenessOptions _options;
 
-        private  ImapConnection _imapConnection = null;
+        private ImapConnection _imapConnection = null;
 
         public ImapLiveness(ImapLivenessOptions options)
         {
@@ -19,7 +19,7 @@ namespace BeatPulse.Network
 
             if (string.IsNullOrEmpty(_options.Host)) throw new ArgumentNullException(nameof(_options.Host));
             if (_options.Port == default) throw new ArgumentNullException(nameof(_options.Port));
-            
+
         }
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
@@ -31,8 +31,7 @@ namespace BeatPulse.Network
                 {
                     if (_options.AccountOptions.login)
                     {
-                        var authenticationActionsResult =  await ExecuteAuthenticatedUserActions();
-                        return authenticationActionsResult;
+                        return await ExecuteAuthenticatedUserActions();
                     }
                 }
                 else
@@ -57,8 +56,7 @@ namespace BeatPulse.Network
         }
 
         private async Task<(string, bool)> ExecuteAuthenticatedUserActions()
-        {           
-
+        {
             var (user, password) = _options.AccountOptions.account;
 
             if (await _imapConnection.AuthenticateAsync(user, password))
@@ -82,6 +80,6 @@ namespace BeatPulse.Network
                     (string.Empty, true) :
                     ($"Folder {_options.FolderOptions.folderName} check failed", false);
             }
-        }        
+        }
     }
 }
