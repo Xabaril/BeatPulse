@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BeatPulse.Network.Core
 {
     public class MailConnection : IDisposable
-    {        
+    {
         public int Port { get; protected set; }
         public string Host { get; protected set; }
         protected bool UseSSL { get; set; } = true;
@@ -74,7 +74,7 @@ namespace BeatPulse.Network.Core
             await _stream.WriteAsync(buffer, 0, buffer.Length);
 
             var readBuffer = ArrayPool<byte>.Shared.Rent(512);
-                int read = await _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
+            int read = await _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
             var output = Encoding.UTF8.GetString(readBuffer);
 
             ArrayPool<byte>.Shared.Return(readBuffer);
