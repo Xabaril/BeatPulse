@@ -10,6 +10,7 @@ namespace BeatPulse.Network
     public class ImapLiveness : IBeatPulseLiveness
     {
         private readonly ImapLivenessOptions _options;
+
         private  ImapConnection _imapConnection = null;
 
         public ImapLiveness(ImapLivenessOptions options)

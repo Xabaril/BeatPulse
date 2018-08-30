@@ -7,7 +7,7 @@ namespace BeatPulse.Network.Core
     {
         public bool IsAuthenticated { get; private set; }
         public bool Connected => _tcpClient.Connected;
-     
+
         public ImapConnectionType ConnectionType
         {
             get
@@ -24,13 +24,13 @@ namespace BeatPulse.Network.Core
 
         private ImapConnectionType _connectionType;
 
-        internal ImapConnection(ImapConnectionOptions options):
+        internal ImapConnection(ImapConnectionOptions options) :
             base(options.Host, options.Port, true, options.AllowInvalidRemoteCertificates)
         {
-            if(options == null) throw new ArgumentNullException(nameof(options));           
-         
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
             ConnectionType = options.ConnectionType;
-            ComputeDefaultValues();            
+            ComputeDefaultValues();
         }
 
         private void ComputeDefaultValues()
@@ -38,19 +38,19 @@ namespace BeatPulse.Network.Core
             switch (ConnectionType)
             {
                 case ImapConnectionType.AUTO when Port == 993:
-                    ConnectionType = ImapConnectionType.SSL_TLS;                    
+                    ConnectionType = ImapConnectionType.SSL_TLS;
                     break;
                 case ImapConnectionType.AUTO when Port == 143:
                     ConnectionType = ImapConnectionType.STARTTLS;
                     break;
             }
 
-            if(ConnectionType == ImapConnectionType.AUTO)
+            if (ConnectionType == ImapConnectionType.AUTO)
             {
                 throw new Exception($"Port {Port} is not a valid imap port when using automatic configuration");
             }
         }
-        
+
         public async Task<bool> AuthenticateAsync(string user, string password)
         {
             if (ConnectionType == ImapConnectionType.STARTTLS)
@@ -90,6 +90,6 @@ namespace BeatPulse.Network.Core
         public async Task<string> GetFolders()
         {
             return await ExecuteCommand(ImapCommands.ListFolders());
-        }      
+        }
     }
 }
