@@ -50,7 +50,7 @@ namespace BeatPulse.Network.Core
             }
         }
 
-        public async Task<bool> ConnectAsync()
+        public new async Task<bool> ConnectAsync()
         {
             await base.ConnectAsync();
             var result = await ExecuteCommand(SmtpCommands.EHLO(Host));
