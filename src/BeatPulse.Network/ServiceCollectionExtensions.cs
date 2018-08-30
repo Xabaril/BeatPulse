@@ -74,5 +74,19 @@ namespace BeatPulse
                 setup.UseLiveness(new ImapLiveness(imapOptions));
             });
         }
+
+        public static BeatPulseContext AddSmtpLiveness(this BeatPulseContext context, Action<SmtpLivenessOptions> options,
+         string name = nameof(SmtpLiveness), string defaultPath = "smtp")
+        {
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UsePath(defaultPath);
+
+                var smtpOptions = new SmtpLivenessOptions();
+                options?.Invoke(smtpOptions);
+
+                setup.UseLiveness(new SmtpLiveness(smtpOptions));
+            });
+        }
     }
 }

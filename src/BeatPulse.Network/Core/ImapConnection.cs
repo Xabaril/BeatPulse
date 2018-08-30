@@ -1,166 +1,95 @@
 ﻿using System;
-using System.Buffers;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BeatPulse.Network.Core
 {
-    public class ImapConnection : IDisposable
+    internal class ImapConnection : MailConnection
     {
         public bool IsAuthenticated { get; private set; }
         public bool Connected => _tcpClient.Connected;
-
-        private TcpClient _tcpClient = null;
-        private Stream _stream = null;
-        private readonly ImapConnectionOptions _options;
-        private bool _disposed = false;
-       
-
-        Func<object, X509Certificate, X509Chain, SslPolicyErrors, bool> _validateRemoteCertificate = (o, c, ch, e) => true;
-
-
-        internal ImapConnection(ImapConnectionOptions options)
+     
+        public ImapConnectionType ConnectionType
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            get
+            {
+                return _connectionType;
+            }
 
-            if (string.IsNullOrEmpty(_options.Host)) throw new ArgumentNullException(nameof(_options.Host));
-            if (_options.Port == default) throw new ArgumentNullException(nameof(_options.Port));
+            private set
+            {
+                _connectionType = value;
+                UseSSL = ConnectionType == ImapConnectionType.SSL_TLS ? true : false;
+            }
+        }
 
+        private ImapConnectionType _connectionType;
+
+        internal ImapConnection(ImapConnectionOptions options):
+            base(options.Host, options.Port, true, options.AllowInvalidRemoteCertificates)
+        {
+            if(options == null) throw new ArgumentNullException(nameof(options));           
+         
+            ConnectionType = options.ConnectionType;
             ComputeDefaultValues();            
         }
 
         private void ComputeDefaultValues()
         {
-            switch (_options.ConnectionType)
+            switch (ConnectionType)
             {
-                case ImapConnectionType.AUTO when _options.Port == 993:
-                    _options.ConnectionType = ImapConnectionType.SSL_TLS;
+                case ImapConnectionType.AUTO when Port == 993:
+                    ConnectionType = ImapConnectionType.SSL_TLS;                    
                     break;
-                case ImapConnectionType.AUTO when _options.Port == 143:
-                    _options.ConnectionType = ImapConnectionType.STARTTLS;
+                case ImapConnectionType.AUTO when Port == 143:
+                    ConnectionType = ImapConnectionType.STARTTLS;
                     break;
             }
 
-            if(_options.ConnectionType == ImapConnectionType.AUTO)
+            if(ConnectionType == ImapConnectionType.AUTO)
             {
-                throw new Exception($"Port {_options.Port} is not a valid imap port when using automatic configuration");
+                throw new Exception($"Port {Port} is not a valid imap port when using automatic configuration");
             }
         }
-
-        internal async Task<bool> ConnectAsync()
-        {
-            _tcpClient = new TcpClient();
-            await _tcpClient.ConnectAsync(_options.Host, _options.Port);
-
-            _stream = GetStream();
-            await ExecuteImapCommand(string.Empty);
-
-            return Connected;
-        }
-
+        
         public async Task<bool> AuthenticateAsync(string user, string password)
         {
-            if (_options.ConnectionType == ImapConnectionType.STARTTLS)
+            if (ConnectionType == ImapConnectionType.STARTTLS)
             {
                 await UpgradeToSecureConnection();
             }
 
-            var result = await ExecuteImapCommand(ImapCommands.Login(user, password));
+            var result = await ExecuteCommand(ImapCommands.Login(user, password));
             IsAuthenticated = result.Contains(ImapResponse.OK);
             return IsAuthenticated;
         }
 
         private async Task<bool> UpgradeToSecureConnection()
         {
-            var commandResult = await ExecuteImapCommand(ImapCommands.StartTLS());
+            var commandResult = await ExecuteCommand(ImapCommands.StartTLS());
             var upgradeSuccess = commandResult.Contains(ImapResponse.OK_TLS_NEGOTIATION);
             if (upgradeSuccess)
             {
-                _options.ConnectionType = ImapConnectionType.SSL_TLS;
+                ConnectionType = ImapConnectionType.SSL_TLS;
                 _stream = GetStream();
                 return true;
             }
             else
             {
-                throw new Exception("Could not upgrade non SSL connection using STARTTLS handshake");
+                throw new Exception("Could not upgrade IMAP non SSL connection using STARTTLS handshake");
             }
         }
 
         public async Task<bool> SelectFolder(string folder)
         {
-            var result = await ExecuteImapCommand(ImapCommands.SelectFolder(folder));
-            return result.Contains(ImapResponse.OK);
+            var result = await ExecuteCommand(ImapCommands.SelectFolder(folder));
+
+            //Double check, some servers sometimes include a last line with a & OK appending extra info when command fails
+            return result.Contains(ImapResponse.OK) && !result.Contains(ImapResponse.ERROR);
         }
 
         public async Task<string> GetFolders()
         {
-            return await ExecuteImapCommand(ImapCommands.ListFolders());
-        }
-
-        private Stream GetStream()
-        {
-            var stream = _tcpClient.GetStream();
-
-            if (_options.ConnectionType == ImapConnectionType.SSL_TLS)
-            {
-                var sslStream = GetSSLStream(stream);
-                sslStream.AuthenticateAsClient(_options.Host);
-                return sslStream;
-            }
-            else
-            {
-                return stream;
-            }
-        }
-
-        private SslStream GetSSLStream(Stream stream)
-        {
-
-            if (_options.AllowInvalidRemoteCertificates)
-            {
-                return new SslStream(stream, true, new RemoteCertificateValidationCallback(_validateRemoteCertificate));
-            }
-            else
-            {
-                return new SslStream(stream);
-            }
-        }
-
-        private async Task<string> ExecuteImapCommand(string command)
-        {
-            var buffer = Encoding.ASCII.GetBytes(command);
-            await _stream.WriteAsync(buffer, 0, buffer.Length);
-
-            var readBuffer = ArrayPool<byte>.Shared.Rent(512);
-            int read = await _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
-            var output = Encoding.UTF8.GetString(readBuffer);
-
-            ArrayPool<byte>.Shared.Return(readBuffer);
-
-            return output;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-                return;
-
-            if (disposing)
-            {
-                _stream?.Dispose();
-                _tcpClient?.Dispose();
-            }
-            _disposed = true;
-        }
+            return await ExecuteCommand(ImapCommands.ListFolders());
+        }      
     }
 }

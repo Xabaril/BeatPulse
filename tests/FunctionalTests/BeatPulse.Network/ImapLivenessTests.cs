@@ -17,9 +17,14 @@ namespace FunctionalTests.BeatPulse.Network
     {
         private readonly ExecutionFixture _fixture;
 
+        //Host and login account to fast switch tests against different server
+        private string _host = "localhost";
+        private string _validAccount = "admin@beatpulse.com";
+        private string _validPassword = "beatpulse";
+
         public imap_liveness_should(ExecutionFixture fixture)
         {
-            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
+            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));            
         }
 
         [SkipOnAppVeyor]
@@ -34,7 +39,7 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
                        });
@@ -60,10 +65,10 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "beatpulse");
+                           options.LoginWith(_validAccount, _validPassword);
                        });
                    });
                });
@@ -87,11 +92,11 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 993;
                            options.ConnectionType = ImapConnectionType.SSL_TLS;
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "invalidpassword");
+                           options.LoginWith(_validAccount, "invalidpassword");
                        });
                    });
                });
@@ -115,10 +120,10 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "beatpulse");
+                           options.LoginWith(_validAccount, _validPassword);
                            options.CheckFolderExists("INBOX");
                        });
                    });
@@ -144,10 +149,10 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "beatpulse");
+                           options.LoginWith(_validAccount, _validPassword);
                            options.CheckFolderExists("INVALIDFOLDER");
                        });
                    });
@@ -172,7 +177,7 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 143;
                            options.AllowInvalidRemoteCertificates = true;                       
                        });
@@ -198,10 +203,10 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 143;                           
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "beatpulse");                           
+                           options.LoginWith(_validAccount, _validPassword);                           
                        });
                    });
                });
@@ -225,11 +230,11 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 143;
                            options.ConnectionType = ImapConnectionType.STARTTLS;
                            options.AllowInvalidRemoteCertificates = true;
-                           options.LoginWith("admin@beatpulse.com", "beatpulse");
+                           options.LoginWith(_validAccount, _validPassword);
                            options.CheckFolderExists("INBOX");
                        });
                    });
@@ -254,7 +259,7 @@ namespace FunctionalTests.BeatPulse.Network
                    {
                        setup.AddImapLiveness(options =>
                        {
-                           options.Host = "localhost";
+                           options.Host = _host;
                            options.Port = 135;
                        });
                    });

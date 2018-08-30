@@ -2,8 +2,6 @@
 using BeatPulse.Network.Core;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +10,7 @@ namespace BeatPulse.Network
     public class ImapLiveness : IBeatPulseLiveness
     {
         private readonly ImapLivenessOptions _options;
-        private ImapConnection _imapConnection = null;
+        private  ImapConnection _imapConnection = null;
 
         public ImapLiveness(ImapLivenessOptions options)
         {
@@ -32,7 +30,8 @@ namespace BeatPulse.Network
                 {
                     if (_options.AccountOptions.login)
                     {
-                        return await ExecuteAuthenticatedUserActions();
+                        var authenticationActionsResult =  await ExecuteAuthenticatedUserActions();
+                        return authenticationActionsResult;
                     }
                 }
                 else
