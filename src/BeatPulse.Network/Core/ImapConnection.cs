@@ -10,20 +10,25 @@ using System.Threading.Tasks;
 namespace BeatPulse.Network.Core
 {
     public class ImapConnection : IDisposable
-    {       
+    {
         public bool IsAuthenticated { get; private set; }
-        public bool Connected => _tcpClient.Connected;     
+        public bool Connected => _tcpClient.Connected;
 
         private TcpClient _tcpClient = null;
-        private Stream _stream = null;        
+        private Stream _stream = null;
         private readonly ImapConnectionOptions _options;
         private bool _disposed = false;
+        private bool UseSsl
+        {
+            set => _options.UseSsl = value;
+            get => _options.UseSsl;
+        }
 
         Func<object, X509Certificate, X509Chain, SslPolicyErrors, bool> _validateRemoteCertificate = (o, c, ch, e) => true;
-        
+
 
         internal ImapConnection(ImapConnectionOptions options)
-        {            
+        {
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             if (string.IsNullOrEmpty(_options.Host)) throw new ArgumentNullException(nameof(_options.Host));
@@ -43,9 +48,31 @@ namespace BeatPulse.Network.Core
 
         public async Task<bool> AuthenticateAsync(string user, string password)
         {
-            var result = await ExecuteImapCommand(ImapCommands.Login(user,password));
+            if (!_options.UseSsl)
+            {
+                await UpgradeSecureConnection();
+            }
+
+            var result = await ExecuteImapCommand(ImapCommands.Login(user, password));
             IsAuthenticated = result.Contains(ImapResponse.OK);
             return IsAuthenticated;
+        }
+
+        private async Task<bool> UpgradeSecureConnection()
+        {
+            var commandResult = await ExecuteImapCommand(ImapCommands.StartTLS());
+            var upgradeSuccess = commandResult.Contains(ImapResponse.OK_TLS_NEGOTIATION);
+            if (upgradeSuccess)
+            {
+                UseSsl = true;
+                _stream = GetStream();
+                return true;
+
+            }
+            else
+            {
+                throw new Exception("Could not upgrade non SSL connection using STARTTLS handshake");
+            }
         }
 
         public async Task<bool> SelectFolder(string folder)
@@ -101,7 +128,7 @@ namespace BeatPulse.Network.Core
 
             return output;
         }
-        
+
         public void Dispose()
         {
             Dispose(true);

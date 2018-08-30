@@ -163,5 +163,86 @@ namespace FunctionalTests.BeatPulse.Network
             response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         }
 
+        [SkipOnAppVeyor]
+        public async Task be_healthy_when_imap_connects_to_non_ssl_port()
+        {
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .UseBeatPulse()
+               .ConfigureServices(services =>
+               {
+                   services.AddBeatPulse(setup =>
+                   {
+                       setup.AddImapLiveness(options =>
+                       {
+                           options.Host = "localhost";
+                           options.Port = 143;
+                           options.AllowInvalidRemoteCertificates = true;                       
+                       });
+                   });
+               });
+
+            var server = new TestServer(webHostBuilder);
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        [SkipOnAppVeyor]
+        public async Task be_healthy_when_imap_performs_login_using_starttls_handshake()
+        {
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .UseBeatPulse()
+               .ConfigureServices(services =>
+               {
+                   services.AddBeatPulse(setup =>
+                   {
+                       setup.AddImapLiveness(options =>
+                       {
+                           options.Host = "localhost";
+                           options.Port = 143;                           
+                           options.AllowInvalidRemoteCertificates = true;
+                           options.LoginWith("admin@beatpulse.com", "beatpulse");                           
+                       });
+                   });
+               });
+
+            var server = new TestServer(webHostBuilder);
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        [SkipOnAppVeyor]
+        public async Task be_healthy_when_imap_performs_login_and_folder_check_using_starttls_handshake()
+        {
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .UseBeatPulse()
+               .ConfigureServices(services =>
+               {
+                   services.AddBeatPulse(setup =>
+                   {
+                       setup.AddImapLiveness(options =>
+                       {
+                           options.Host = "localhost";
+                           options.Port = 143;
+                           options.AllowInvalidRemoteCertificates = true;
+                           options.LoginWith("admin@beatpulse.com", "beatpulse");
+                           options.CheckFolderExists("INBOX");
+                       });
+                   });
+               });
+
+            var server = new TestServer(webHostBuilder);
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }
