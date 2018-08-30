@@ -18,11 +18,7 @@ namespace BeatPulse.Network.Core
         private Stream _stream = null;
         private readonly ImapConnectionOptions _options;
         private bool _disposed = false;
-        private bool UseSsl
-        {
-            set => _options.UseSsl = value;
-            get => _options.UseSsl;
-        }
+       
 
         Func<object, X509Certificate, X509Chain, SslPolicyErrors, bool> _validateRemoteCertificate = (o, c, ch, e) => true;
 
@@ -33,6 +29,26 @@ namespace BeatPulse.Network.Core
 
             if (string.IsNullOrEmpty(_options.Host)) throw new ArgumentNullException(nameof(_options.Host));
             if (_options.Port == default) throw new ArgumentNullException(nameof(_options.Port));
+
+            ComputeDefaultValues();            
+        }
+
+        private void ComputeDefaultValues()
+        {
+            switch (_options.ConnectionType)
+            {
+                case ImapConnectionType.AUTO when _options.Port == 993:
+                    _options.ConnectionType = ImapConnectionType.SSL_TLS;
+                    break;
+                case ImapConnectionType.AUTO when _options.Port == 143:
+                    _options.ConnectionType = ImapConnectionType.STARTTLS;
+                    break;
+            }
+
+            if(_options.ConnectionType == ImapConnectionType.AUTO)
+            {
+                throw new Exception($"Port {_options.Port} is not a valid imap port when using automatic configuration");
+            }
         }
 
         internal async Task<bool> ConnectAsync()
@@ -48,9 +64,9 @@ namespace BeatPulse.Network.Core
 
         public async Task<bool> AuthenticateAsync(string user, string password)
         {
-            if (!_options.UseSsl)
+            if (_options.ConnectionType == ImapConnectionType.STARTTLS)
             {
-                await UpgradeSecureConnection();
+                await UpgradeToSecureConnection();
             }
 
             var result = await ExecuteImapCommand(ImapCommands.Login(user, password));
@@ -58,16 +74,15 @@ namespace BeatPulse.Network.Core
             return IsAuthenticated;
         }
 
-        private async Task<bool> UpgradeSecureConnection()
+        private async Task<bool> UpgradeToSecureConnection()
         {
             var commandResult = await ExecuteImapCommand(ImapCommands.StartTLS());
             var upgradeSuccess = commandResult.Contains(ImapResponse.OK_TLS_NEGOTIATION);
             if (upgradeSuccess)
             {
-                UseSsl = true;
+                _options.ConnectionType = ImapConnectionType.SSL_TLS;
                 _stream = GetStream();
                 return true;
-
             }
             else
             {
@@ -90,7 +105,7 @@ namespace BeatPulse.Network.Core
         {
             var stream = _tcpClient.GetStream();
 
-            if (_options.UseSsl)
+            if (_options.ConnectionType == ImapConnectionType.SSL_TLS)
             {
                 var sslStream = GetSSLStream(stream);
                 sslStream.AuthenticateAsClient(_options.Host);

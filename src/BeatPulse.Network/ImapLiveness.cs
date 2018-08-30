@@ -12,7 +12,7 @@ namespace BeatPulse.Network
     public class ImapLiveness : IBeatPulseLiveness
     {
         private readonly ImapLivenessOptions _options;
-        private readonly ImapConnection _imapConnection = null;
+        private ImapConnection _imapConnection = null;
 
         public ImapLiveness(ImapLivenessOptions options)
         {
@@ -20,15 +20,15 @@ namespace BeatPulse.Network
 
             if (string.IsNullOrEmpty(_options.Host)) throw new ArgumentNullException(nameof(_options.Host));
             if (_options.Port == default) throw new ArgumentNullException(nameof(_options.Port));
-
-            _imapConnection = new ImapConnection(options);
-
+            
         }
         public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
-               if (await _imapConnection.ConnectAsync())
+                _imapConnection = new ImapConnection(_options);
+
+                if (await _imapConnection.ConnectAsync())
                 {
                     if (_options.AccountOptions.login)
                     {
@@ -37,7 +37,7 @@ namespace BeatPulse.Network
                 }
                 else
                 {
-                    return ($"Connection to server {_options.Host} has failed - SSL Enabled : {_options.UseSsl}", false);
+                    return ($"Connection to server {_options.Host} has failed - SSL Enabled : {_options.ConnectionType}", false);
                 }
 
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);

@@ -8,7 +8,7 @@ namespace BeatPulse.Network.Core
     {
         public string Host { get; set; }
         public int Port { get; set; }
-        public bool UseSsl { get; set; }
+        public ImapConnectionType ConnectionType { get; set; } = ImapConnectionType.AUTO;
         public bool AllowInvalidRemoteCertificates { get; set; }
     }
 }

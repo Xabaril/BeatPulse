@@ -1,4 +1,5 @@
 ﻿using BeatPulse;
+using BeatPulse.Network.Core;
 using FluentAssertions;
 using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
@@ -34,8 +35,7 @@ namespace FunctionalTests.BeatPulse.Network
                        setup.AddImapLiveness(options =>
                        {
                            options.Host = "localhost";
-                           options.Port = 993;
-                           options.UseSsl = true;
+                           options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
                        });
                    });
@@ -61,8 +61,7 @@ namespace FunctionalTests.BeatPulse.Network
                        setup.AddImapLiveness(options =>
                        {
                            options.Host = "localhost";
-                           options.Port = 993;
-                           options.UseSsl = true;
+                           options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
                            options.LoginWith("admin@beatpulse.com", "beatpulse");
                        });
@@ -90,7 +89,7 @@ namespace FunctionalTests.BeatPulse.Network
                        {
                            options.Host = "localhost";
                            options.Port = 993;
-                           options.UseSsl = true;
+                           options.ConnectionType = ImapConnectionType.SSL_TLS;
                            options.AllowInvalidRemoteCertificates = true;
                            options.LoginWith("admin@beatpulse.com", "invalidpassword");
                        });
@@ -117,8 +116,7 @@ namespace FunctionalTests.BeatPulse.Network
                        setup.AddImapLiveness(options =>
                        {
                            options.Host = "localhost";
-                           options.Port = 993;
-                           options.UseSsl = true;
+                           options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
                            options.LoginWith("admin@beatpulse.com", "beatpulse");
                            options.CheckFolderExists("INBOX");
@@ -147,8 +145,7 @@ namespace FunctionalTests.BeatPulse.Network
                        setup.AddImapLiveness(options =>
                        {
                            options.Host = "localhost";
-                           options.Port = 993;
-                           options.UseSsl = true;
+                           options.Port = 993;                           
                            options.AllowInvalidRemoteCertificates = true;
                            options.LoginWith("admin@beatpulse.com", "beatpulse");
                            options.CheckFolderExists("INVALIDFOLDER");
@@ -164,7 +161,7 @@ namespace FunctionalTests.BeatPulse.Network
         }
 
         [SkipOnAppVeyor]
-        public async Task be_healthy_when_imap_connects_to_non_ssl_port()
+        public async Task be_healthy_when_imap_connects_to_starttls_port()
         {
             var webHostBuilder = new WebHostBuilder()
                .UseStartup<DefaultStartup>()
@@ -230,6 +227,7 @@ namespace FunctionalTests.BeatPulse.Network
                        {
                            options.Host = "localhost";
                            options.Port = 143;
+                           options.ConnectionType = ImapConnectionType.STARTTLS;
                            options.AllowInvalidRemoteCertificates = true;
                            options.LoginWith("admin@beatpulse.com", "beatpulse");
                            options.CheckFolderExists("INBOX");
@@ -242,6 +240,31 @@ namespace FunctionalTests.BeatPulse.Network
                 .GetAsync();
 
             response.EnsureSuccessStatusCode();
+        }
+
+        [SkipOnAppVeyor]
+        public async Task be_unhealthy_when_using_configuration_auto_with_an_invalid_imap_port()
+        {
+            var webHostBuilder = new WebHostBuilder()
+               .UseStartup<DefaultStartup>()
+               .UseBeatPulse()
+               .ConfigureServices(services =>
+               {
+                   services.AddBeatPulse(setup =>
+                   {
+                       setup.AddImapLiveness(options =>
+                       {
+                           options.Host = "localhost";
+                           options.Port = 135;
+                       });
+                   });
+               });
+
+            var server = new TestServer(webHostBuilder);
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         }
 
     }
