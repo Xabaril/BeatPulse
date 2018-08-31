@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BeatPulse.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace BeatPulse.Hosted
         Task OpenAsync();
         void Stop();
 
-        Func<Task<bool>>  OnRequestReceivedAsync { get; set; }
+        Func<string, Task<IEnumerable<LivenessResult>>>  OnRequestReceivedAsync { get; set; }
 
         void Setup(BeatPulseHostedOptions options);
 

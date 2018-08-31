@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
+﻿using BeatPulse;
+using BeatPulse.Hosted;
+using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
-using BeatPulse;
 
 namespace BeatPulseConsoleApp
 {
@@ -14,7 +14,10 @@ namespace BeatPulseConsoleApp
            {
                opt.Configure(bp =>
                {
+                   bp.ConfigureDetailedOutput(true);
                    bp.ConfigurePath("hc");
+                   // bp.UseOutputFormatter<JsonOutputFormatter>(sp => new JsonOutputFormatter().Configure(json => { }));
+                   bp.UseOutputFormatter<JsonOutputFormatter>();
                });
 
                opt.Setup(ctx =>

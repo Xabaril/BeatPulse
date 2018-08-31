@@ -17,10 +17,19 @@ namespace Microsoft.Extensions.Hosting
             setup?.Invoke(options);
             builder.ConfigureHostConfiguration(cb => { });
             builder.ConfigureServices((hc, sc) =>
-            {   
+            {
                 sc.AddSingleton<BeatPulseContext>(options.Context);
                 sc.AddSingleton<IBeatPulseService, BeatPulseService>();
                 sc.AddSingleton(typeof(IHostedBeatPulseEndpoint), options.EndpointManagerType);
+                if (options.OutputFormatterCreator == null)
+                {
+                    sc.AddTransient(typeof(IHostedBeatpulseOutputFormatter), options.OutputFormatterType);
+                }
+                else
+                {
+                    sc.AddTransient<IHostedBeatpulseOutputFormatter>(options.OutputFormatterCreator);
+                }
+                sc.AddSingleton(options);
                 sc.AddHostedService<BeatPulseHostedPipeline>();
             });
 

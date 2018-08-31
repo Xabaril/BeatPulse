@@ -13,21 +13,26 @@ namespace BeatPulse.Hosted
     {
         private readonly IHostedBeatPulseEndpoint _endpoint;
         private readonly IBeatPulseService _beatpulseSvc;
-        public BeatPulseHostedPipeline(IHostedBeatPulseEndpoint endpoint, IBeatPulseService beatpulseSvc)
+        private readonly BeatPulseHostedOptions _hostedOptions;
+        private readonly BeatPulseOptions _options;
+        public BeatPulseHostedPipeline(IHostedBeatPulseEndpoint endpoint, IBeatPulseService beatpulseSvc, BeatPulseHostedOptions hostedOptions)
         {
             _endpoint = endpoint;
             _beatpulseSvc = beatpulseSvc;
+            _hostedOptions = hostedOptions;
+            _options = hostedOptions.BuildBeatPulseOptions();
         }
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _endpoint.Setup(_hostedOptions);
             _endpoint.OnRequestReceivedAsync = ProcessRequest;
             return _endpoint.OpenAsync();
         }
 
-        private async Task<bool> ProcessRequest()
+        private async Task<IEnumerable<LivenessResult>> ProcessRequest(string path)
         {
-            var results = await _beatpulseSvc.IsHealthy("", new BeatPulseOptions());
-            return results.All(x => x.IsHealthy);
+            var results = await _beatpulseSvc.IsHealthy(path, _options);
+            return results;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
