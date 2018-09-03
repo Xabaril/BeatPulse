@@ -1,9 +1,9 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Oracle.ManagedDataAccess.Client;
+
 namespace BeatPulse.Oracle
 {
     public class OracleLiveness : IBeatPulseLiveness
@@ -14,7 +14,7 @@ namespace BeatPulse.Oracle
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {

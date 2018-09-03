@@ -1,5 +1,4 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Threading;
@@ -17,7 +16,7 @@ namespace BeatPulse.Sqlite
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             SqliteConnection connection = null;
 
@@ -38,7 +37,7 @@ namespace BeatPulse.Sqlite
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

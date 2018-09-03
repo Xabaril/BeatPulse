@@ -51,8 +51,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("custom check is working", true)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("custom check is working", true)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -90,8 +89,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -128,8 +126,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("custom check is not working", false)));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -168,7 +165,7 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                async (httpcontext, cancellationToken) =>
+                async (cancellationToken) =>
                 {
                     await Task.Delay(100);
 
@@ -298,8 +295,6 @@ namespace BeatPulse
             response.EnsureSuccessStatusCode();
         }
 
-
-
         [Fact]
         public async Task response_content_type_is_text_plain_if_detailed_output_is_disabled()
         {
@@ -326,14 +321,14 @@ namespace BeatPulse
             var check2IsExecuted = false;
 
             var healthCheck1 = new ActionLiveness(
-               (httpcontext, cancellationToken) =>
+               (cancellationToken) =>
                {
                    check1IsExecuted = true;
                    return Task.FromResult(("custom check1 is not working", false));
                });
 
             var healthCheck2 = new ActionLiveness(
-              (httpcontext, cancellationToken) =>
+              (cancellationToken) =>
               {
                   check2IsExecuted = false;
                   return Task.FromResult(("custom check2 is  working", true));

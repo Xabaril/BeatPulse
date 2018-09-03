@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BeatPulseTrackers
@@ -40,7 +39,7 @@ namespace BeatPulseTrackers
                 setup.AddLiveness("catapi", opt =>
                 {
                     opt.UsePath("catapi");
-                    opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
+                    opt.UseLiveness(new ActionLiveness((_) =>
                     {
                         if (DateTime.Now.Minute == 20)
                         {

@@ -1,6 +1,5 @@
 ﻿using BeatPulse.Core;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
@@ -83,7 +82,7 @@ namespace UnitTests.BeatPulse.Core
 
         class FakeLiveness : IBeatPulseLiveness
         {
-            public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+            public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(("OK", true));
             }

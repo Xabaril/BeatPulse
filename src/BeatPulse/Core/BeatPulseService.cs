@@ -35,13 +35,12 @@ namespace BeatPulse.Core
                 var liveness = _beatPulseContext
                     .CreateLivenessFromRegistration(registration);
 
-                var livenessContext = LivenessExecutionContext
+                var context = LivenessExecutionContext
                     .FromRegistration(registration, _environment.IsDevelopment());
 
                 var livenessResult = await RunLiveness(
                     liveness,
-                    livenessContext,
-                    httpContext,
+                    context,
                     beatPulseOptions);
 
                 await RunTrackers(livenessResult);
@@ -52,7 +51,7 @@ namespace BeatPulse.Core
                 {
                     //if is unhealthy and not detailed options is true return inmediatly
 
-                    _logger.LogWarning($"Liveness {livenessContext.Name} is not healthy. Breaking liveness execution because detailed output is false.");
+                    _logger.LogWarning($"Liveness {context.Name} is not healthy. Breaking liveness execution because detailed output is false.");
 
                     return livenessResults;
                 }
@@ -80,11 +79,11 @@ namespace BeatPulse.Core
             return Task.WhenAll(trackerTasks);
         }
 
-        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, LivenessExecutionContext livenessContext, HttpContext httpContext, BeatPulseOptions beatPulseOptions)
+        async Task<LivenessResult> RunLiveness(IBeatPulseLiveness liveness, LivenessExecutionContext context, BeatPulseOptions beatPulseOptions)
         {
-            _logger.LogInformation($"Executing liveness {livenessContext.Name}.");
+            _logger.LogInformation($"Executing liveness {context.Name}.");
 
-            var livenessResult = new LivenessResult(livenessContext.Name, livenessContext.Path);
+            var livenessResult = new LivenessResult(context.Name, context.Path);
 
             livenessResult.StartCounter();
 
@@ -92,7 +91,7 @@ namespace BeatPulse.Core
             {
                 using (var cancellationTokenSource = new CancellationTokenSource())
                 {
-                    var livenessTask = liveness.IsHealthy(httpContext, livenessContext, cancellationTokenSource.Token);
+                    var livenessTask = liveness.IsHealthy(context, cancellationTokenSource.Token);
 
                     if (await Task.WhenAny(livenessTask, Task.Delay(beatPulseOptions.Timeout, cancellationTokenSource.Token)) == livenessTask)
                     {
@@ -101,12 +100,12 @@ namespace BeatPulse.Core
 
                         livenessResult.StopCounter(message, healthy);
 
-                        _logger.LogInformation($"The liveness {livenessContext.Name} is executed.");
+                        _logger.LogInformation($"The liveness {context.Name} is executed.");
                     }
                     else
                     {
                         // The liveness is timeout ( from configured options)
-                        _logger.LogWarning($"The liveness {livenessContext.Name} is timeout, execution is cancelled.");
+                        _logger.LogWarning($"The liveness {context.Name} is timeout, execution is cancelled.");
 
                         cancellationTokenSource.Cancel();
 
@@ -119,10 +118,10 @@ namespace BeatPulse.Core
                 // The uri executed is now well formed, dns not found
                 // or any unexpected errror 
 
-                _logger.LogError(ex, $"The liveness {livenessContext.Name} is unhealthy.");
+                _logger.LogError(ex, $"The liveness {context.Name} is unhealthy.");
 
                 var message = _environment.IsDevelopment()
-                    ? ex.Message : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name);
+                    ? ex.Message : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name);
 
                 livenessResult.StopCounter(message, false);
             }
