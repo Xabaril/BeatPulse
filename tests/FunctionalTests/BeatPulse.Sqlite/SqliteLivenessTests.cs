@@ -26,7 +26,6 @@ namespace FunctionalTests.BeatPulse.Sqlite
         [Fact]
         public async void be_healthy_when_sqlite_is_available()
         {
-
             var webHostBuilder = new WebHostBuilder()
                 .UseStartup<DefaultStartup>()
                 .UseBeatPulse()
@@ -65,7 +64,31 @@ namespace FunctionalTests.BeatPulse.Sqlite
             var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
                 .GetAsync();
 
-            response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.ServiceUnavailable);
+        }
+
+        [Fact]
+        public async void be_unhealthy_when_sqlquery_is_not_valid()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context.AddSqlite($"Data Source=sqlite.db", healthQuery: "select name from invaliddb");
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.ServiceUnavailable);
         }
     }
 }

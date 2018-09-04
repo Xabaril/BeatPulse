@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -10,10 +11,12 @@ namespace BeatPulse.Uris
         : IBeatPulseLiveness
     {
         private readonly UriLivenessOptions _options;
+        private readonly ILogger<UriLiveness> _logger;
 
-        public UriLiveness(UriLivenessOptions options)
+        public UriLiveness(UriLivenessOptions options,ILogger<UriLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger = logger;
         }
 
         public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
@@ -24,6 +27,9 @@ namespace BeatPulse.Uris
 
             try
             {
+
+                _logger?.LogDebug($"{nameof(UriLiveness)} is checking configured uri's.");
+
                 foreach (var item in _options.UrisOptions)
                 {
                     var method = item.HttpMethod ?? defaultHttpMethod;
@@ -47,6 +53,8 @@ namespace BeatPulse.Uris
 
                         if (!((int)response.StatusCode >= expectedCodes.Min && (int)response.StatusCode <= expectedCodes.Max))
                         {
+                            _logger?.LogDebug($"The {nameof(UriLiveness)} check fail for uri {item.Uri}.");
+
                             var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                                 : $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
 
@@ -55,18 +63,19 @@ namespace BeatPulse.Uris
 
                         ++idx;
                     }
-
                 }
+
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
             {
+                _logger?.LogDebug($"The {nameof(UriLiveness)} check fail with the exception {ex.ToString()}.");
+
                 var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);
             }
-
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
         }
     }
 }

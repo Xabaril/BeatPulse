@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Data.SqlClient;
 using System.Threading;
@@ -10,35 +11,45 @@ namespace BeatPulse.SqlServer
         : IBeatPulseLiveness
     {
         private readonly string _connectionString;
+        private readonly string _sql;
+        private readonly ILogger<SqlServerLiveness> _logger;
 
-        public SqlServerLiveness(string sqlserverconnectionstring)
+        public SqlServerLiveness(string sqlserverconnectionstring, string sql, ILogger<SqlServerLiveness> logger = null)
         {
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
+            _sql = sql ?? throw new ArgumentNullException(nameof(sql));
+            _logger = logger;
         }
 
         public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                try
+                using (var connection = new SqlConnection(_connectionString))
                 {
+                    _logger?.LogDebug($"{nameof(SqlServerLiveness)} is checking the SqlServer using the query {_sql}.");
+
                     await connection.OpenAsync(cancellationToken);
 
                     using (var command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT 1;";
+                        command.CommandText = _sql;
                         await command.ExecuteScalarAsync();
+
+                        _logger?.LogDebug($"The {nameof(SqlServerLiveness)} check success for {_connectionString}");
                     }
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
-                catch (Exception ex)
-                {
-                    var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogDebug($"The {nameof(SqlServerLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                    return (message, false);
-                }
+                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+
+                return (message, false);
             }
         }
     }

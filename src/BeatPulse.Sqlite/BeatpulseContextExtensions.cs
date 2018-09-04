@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -14,8 +16,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new SqliteLiveness(sqliteConnectionString, healthQuery, sp.GetService<ILogger<SqliteLiveness>>()));
             });
         }
     }

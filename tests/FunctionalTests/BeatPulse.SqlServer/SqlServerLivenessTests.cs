@@ -21,7 +21,7 @@ namespace BeatPulse.SqlServer
         }
 
         [Fact]
-        public async Task return_true_if_sqlServer_is_available()
+        public async Task be_healthy_if_sqlServer_is_available()
         {
             //read appveyor services default values on
             //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
@@ -50,7 +50,7 @@ namespace BeatPulse.SqlServer
         }
 
         [Fact]
-        public async Task return_false_if_sqlServer_is_not_available()
+        public async Task be_unhealthy_if_sqlServer_is_not_available()
         {
             var webHostBuilder = new WebHostBuilder()
                .UseStartup<DefaultStartup>()
@@ -70,6 +70,36 @@ namespace BeatPulse.SqlServer
 
             response.StatusCode
                 .Should().Be(HttpStatusCode.ServiceUnavailable);
+        }
+
+        [Fact]
+        public async Task be_unhealthy_if_sqlquery_spec_is_not_valid()
+        {
+            //read appveyor services default values on
+            //https://www.appveyor.com/docs/services-databases/#sql-server-2017 
+
+            var connectionString = _fixture.IsAppVeyorExecution
+                ? @"Server=(local)\SQL2016;Initial Catalog=master;User Id=sa;Password=Password12!"
+                : "Server=tcp:127.0.0.1,1833;Initial Catalog=master;User Id=sa;Password=Password12!";
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context.AddSqlServer(connectionString, "SELECT 1 FROM [NONVALIDDB];");
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}")
+                .GetAsync();
+
+            response.StatusCode
+                    .Should().Be(HttpStatusCode.ServiceUnavailable);
         }
     }
 }
