@@ -26,6 +26,16 @@ namespace BeatPulse
             CacheMode = CacheMode.Header;
         }
 
+        internal BeatPulseOptions(bool detailedOutput, string path, int timeout, bool cacheoutput, int cacheDuration, CacheMode cacheMode)
+        {
+            DetailedOutput = detailedOutput;
+            BeatPulsePath = path;
+            Timeout = timeout;
+            CacheOutput = cacheoutput;
+            CacheDuration = cacheDuration;
+            CacheMode = cacheMode;
+        }
+
         public BeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
         {
             CacheDuration = seconds;

@@ -12,14 +12,14 @@ namespace BeatPulse
     public class BeatPulseMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly BeatPulseOptions _options;
+        private readonly BeatPulseOptions _defaultOptions;
         private readonly IEnumerable<IBeatPulseAuthenticationFilter> _authenticationFilters;
         private readonly ConcurrentDictionary<string, OutputLivenessMessage> _cache;
 
         public BeatPulseMiddleware(RequestDelegate next, IEnumerable<IBeatPulseAuthenticationFilter> authenticationFilters, BeatPulseOptions options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
-            _options = options;
+            _defaultOptions = options;
             _authenticationFilters = authenticationFilters;
             _cache = new ConcurrentDictionary<string, OutputLivenessMessage>();
         }
@@ -27,27 +27,28 @@ namespace BeatPulse
         public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
         {
             var request = context.Request;
-
-            var beatPulsePath = context.GetBeatPulseRequestPath(_options);
+            var options = RequestOverrideOrGetDefaultOptions(request);
+            var beatPulsePath = context.GetBeatPulseRequestPath(options);
 
             if (!await IsAuthenticatedRequest(context))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
                 return;
             }
 
-            if (TryFromCache(beatPulsePath, out OutputLivenessMessage output))
+            if (TryFromCache(beatPulsePath, options, out OutputLivenessMessage output))
             {
                 await request.HttpContext
                     .Response
-                    .WriteLivenessMessage(_options, output);
+                    .WriteLivenessMessage(options, output);
 
                 return;
             }
 
             output = new OutputLivenessMessage();
 
-            var responses = await pulseService.IsHealthy(beatPulsePath, _options, context);
+            var responses = await pulseService.IsHealthy(beatPulsePath, options, context);
 
             if (!responses.Any())
             {
@@ -62,7 +63,7 @@ namespace BeatPulse
                 output.AddHealthCheckMessages(responses);
                 output.SetExecuted();
 
-                if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)
+                if (options.CacheMode.UseServerMemory() && options.CacheOutput)
                 {
                     _cache.TryAdd(beatPulsePath, output);
                 }
@@ -70,20 +71,20 @@ namespace BeatPulse
 
             await request.HttpContext
                .Response
-               .WriteLivenessMessage(_options, output);
+               .WriteLivenessMessage(options, output);
         }
 
-        bool TryFromCache(string path, out OutputLivenessMessage message)
+        bool TryFromCache(string path, BeatPulseOptions options, out OutputLivenessMessage message)
         {
             message = null;
 
-            if (_options.CacheOutput
-                && _options.CacheMode.UseServerMemory()
+            if (options.CacheOutput
+                && options.CacheMode.UseServerMemory()
                 && _cache.TryGetValue(path, out message))
             {
                 var seconds = (DateTime.UtcNow - message.EndAtUtc).TotalSeconds;
 
-                if (_options.CacheDuration > seconds)
+                if (options.CacheDuration > seconds)
                 {
                     return true;
                 }
@@ -109,6 +110,44 @@ namespace BeatPulse
             }
 
             return true;
+        }
+
+
+        BeatPulseOptions RequestOverrideOrGetDefaultOptions(HttpRequest request)
+        {
+            var queryStringValues = request.Query;
+
+            var options = new BeatPulseOptions(
+                _defaultOptions.DetailedOutput,
+                _defaultOptions.BeatPulsePath,
+                _defaultOptions.Timeout,
+                _defaultOptions.CacheOutput,
+                _defaultOptions.CacheDuration,
+                _defaultOptions.CacheMode);
+
+            if (queryStringValues.ContainsKey(nameof(BeatPulseOptions.DetailedOutput)))
+            {
+                var detailedOutputValue = queryStringValues[nameof(BeatPulseOptions.DetailedOutput)]
+                    .LastOrDefault();
+
+                if (Boolean.TryParse(detailedOutputValue, out bool detailedOutput))
+                {
+                    options.ConfigureDetailedOutput(detailedOutput);
+                }
+            }
+
+            if (queryStringValues.ContainsKey(nameof(BeatPulseOptions.Timeout)))
+            {
+                var detailedOutputValue = queryStringValues[nameof(BeatPulseOptions.Timeout)]
+                    .LastOrDefault();
+
+                if (Int32.TryParse(detailedOutputValue, out int timeout))
+                {
+                    options.ConfigureTimeout(timeout);
+                }
+            }
+
+            return options;
         }
     }
 }

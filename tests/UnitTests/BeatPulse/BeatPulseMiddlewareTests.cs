@@ -366,7 +366,7 @@ namespace BeatPulse
         }
 
         [Fact]
-        public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
+        public async Task response_content_type_is_application_json_if_detailed_output_is_enabled()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -383,7 +383,6 @@ namespace BeatPulse
 
             response.Content.Headers.ContentType.MediaType.Should().Be("application/json");
         }
-
 
         [Fact]
         public async Task response_is_not_cached_out_of_box()
@@ -472,7 +471,6 @@ namespace BeatPulse
 
         }
 
-
         [Fact]
         public async Task use_in_memory_cache_if_specified_in_options()
         {
@@ -536,7 +534,6 @@ namespace BeatPulse
 
             firstJson.Equals(secondJson).Should().BeFalse();
         }
-
 
         [Fact]
         public async Task response_http_status_not_found_if_beatpulse_path_is_not_registered()
@@ -706,6 +703,110 @@ namespace BeatPulse
 
             response.Headers.FirstOrDefault(s => s.Key == "Access-Control-Allow-Origin")
                 .Value.Should().BeEquivalentTo(null);
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_querystring_parameter()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput:false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+        }
+
+        [Fact]
+        public async Task default_timeout_option_can_be_override_with_querystring_parameter()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureTimeout(milliseconds: 100))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(setup=>
+                    {
+                        setup.AddLiveness("test", opt =>
+                         {
+                             opt.UsePath("test");
+                             opt.UseLiveness(new ActionLiveness(async ct => 
+                             {
+                                 await Task.Delay(200);
+                                 return ("Ok", true);
+                             }));
+                         });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true");
+
+            response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
+
+            response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true&Timeout=300");
+
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_querystring_parameters_without_same_case()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DeTaIlEdOuTpUt=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_latest_querystring_parameter_entry_if_multiple_entries_are_sent()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=false&DetailedOutput=false&DetailedOutput=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
         }
 
         class OutputMessage

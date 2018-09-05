@@ -1,5 +1,21 @@
 # Change Log
 
+## BeatPulse 3.0 Version
+
+- Functional
+
+    1. Removed ASP.NET Core HttpContext dependency from all liveness and IBeatPulseLiveness contract.
+    2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
+    3. Added log support for SqlServer, Sqllite,Postgress,Oracle,Uri liveness.
+
+- Non Functional
+
+    1. Improved naming on functional tests.
+
+- Breaking Changes
+
+    1.  
+
 ## Network 2.1.1
 
     1. Added IMAP connection liveness, supporting SSL/TLS and STARTTLS handshake.
