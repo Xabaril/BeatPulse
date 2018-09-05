@@ -37,35 +37,31 @@ namespace BeatPulse
                 return;
             }
 
-            if (TryFromCache(beatPulsePath, options, out OutputLivenessMessage output))
+            OutputLivenessMessage output;
+
+            if (!TryFromCache(beatPulsePath, options, out output))
             {
-                await request.HttpContext
-                    .Response
-                    .WriteLivenessMessage(options, output);
+                output = new OutputLivenessMessage();
 
-                return;
-            }
+                var responses = await pulseService.IsHealthy(beatPulsePath, options, context);
 
-            output = new OutputLivenessMessage();
-
-            var responses = await pulseService.IsHealthy(beatPulsePath, options, context);
-
-            if (!responses.Any())
-            {
-                // beat pulse path is not valid across any liveness
-                // return unavailable with not found reason.
-                output.SetNotFound();
-            }
-            else
-            {
-                // beat pulse is executed, set response
-                // messages and add to cache if is configured.
-                output.AddHealthCheckMessages(responses);
-                output.SetExecuted();
-
-                if (options.CacheMode.UseServerMemory() && options.CacheOutput)
+                if (!responses.Any())
                 {
-                    _cache.TryAdd(beatPulsePath, output);
+                    // beat pulse path is not valid across any liveness
+                    // return unavailable with not found reason.
+                    output.SetNotFound();
+                }
+                else
+                {
+                    // beat pulse is executed, set response
+                    // messages and add to cache if is configured.
+                    output.AddHealthCheckMessages(responses);
+                    output.SetExecuted();
+
+                    if (options.CacheMode.UseServerMemory() && options.CacheOutput)
+                    {
+                        _cache.TryAdd(beatPulsePath, output);
+                    }
                 }
             }
 

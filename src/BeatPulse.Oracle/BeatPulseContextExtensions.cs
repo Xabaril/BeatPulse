@@ -7,7 +7,7 @@ namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddOracle(this BeatPulseContext context, string connectionString, string healthQuery = "SELECT* FROM V$VERSION;", string name = nameof(OracleLiveness), string defaultPath = "oracle")
+        public static BeatPulseContext AddOracle(this BeatPulseContext context, string connectionString, string healthQuery = "select * from v$version", string name = nameof(OracleLiveness), string defaultPath = "oracle")
         {
             return context.AddLiveness(name, setup =>
             {

@@ -7,14 +7,16 @@
     1. Removed ASP.NET Core HttpContext dependency from all liveness and IBeatPulseLiveness contract.
     2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
     3. Added log support for SqlServer, Sqllite,Postgress,Oracle,Uri liveness.
+    4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
 
 - Non Functional
 
     1. Improved naming on functional tests.
+    2. Improve code quality.
 
 - Breaking Changes
 
-    1.  
+    1.
 
 ## Network 2.1.1
 
