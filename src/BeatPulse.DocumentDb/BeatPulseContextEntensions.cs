@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.DocumentDb;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace BeatPulse
@@ -14,7 +16,7 @@ namespace BeatPulse
             context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new DocumentDbLiveness(documentDbOptions));
+                setup.UseFactory(sp => new DocumentDbLiveness(documentDbOptions, sp.GetService<ILogger<DocumentDbLiveness>>()));
             });
 
             return context;
