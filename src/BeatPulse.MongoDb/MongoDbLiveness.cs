@@ -28,7 +28,7 @@ namespace BeatPulse.MongoDb
                 await new MongoClient(_connectionString)
                     .ListDatabasesAsync(cancellationToken);
 
-                _logger?.LogInformation($"The {nameof(MongoDbLiveness)} check success for {_connectionString}");
+                _logger?.LogInformation($"The {nameof(MongoDbLiveness)} check success.");
 
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
