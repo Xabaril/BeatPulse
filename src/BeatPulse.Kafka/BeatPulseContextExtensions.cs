@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Kafka;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace BeatPulse
@@ -10,8 +12,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new KafkaLiveness(config));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new KafkaLiveness(config, sp.GetService<ILogger<KafkaLiveness>>()));
             });
         }
     }

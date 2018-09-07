@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Redis;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -10,7 +12,7 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new RedisLiveness(redisConnectionString));
+                setup.UseFactory(sp=>new RedisLiveness(redisConnectionString,sp.GetService<ILogger<RedisLiveness>>()));
             });
         }
     }

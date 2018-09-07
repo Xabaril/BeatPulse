@@ -33,16 +33,16 @@ namespace BeatPulse.Oracle
                     {
                         command.CommandText = _sql;
                         await command.ExecuteScalarAsync();
-
-                        _logger?.LogDebug($"The {nameof(OracleLiveness)} check success for {_connectionString}");
                     }
+
+                    _logger?.LogDebug($"The {nameof(OracleLiveness)} check success for {_connectionString}");
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogDebug($"The {nameof(OracleLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
+                _logger?.LogWarning($"The {nameof(OracleLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
                 var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";

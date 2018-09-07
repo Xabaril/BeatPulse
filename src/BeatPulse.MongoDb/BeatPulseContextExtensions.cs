@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.MongoDb;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -9,8 +11,8 @@ namespace BeatPulse
         {
             context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new MongoDbLiveness(mongodbConnectionString));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp=>new MongoDbLiveness(mongodbConnectionString,sp.GetService<ILogger<MongoDbLiveness>>()));
             });
 
             return context;

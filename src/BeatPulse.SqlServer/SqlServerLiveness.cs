@@ -27,24 +27,25 @@ namespace BeatPulse.SqlServer
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    _logger?.LogDebug($"{nameof(SqlServerLiveness)} is checking the SqlServer using the query {_sql}.");
+                    _logger?.LogInformation($"{nameof(SqlServerLiveness)} is checking the SqlServer using the query {_sql}.");
 
                     await connection.OpenAsync(cancellationToken);
 
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = _sql;
-                        await command.ExecuteScalarAsync();
 
-                        _logger?.LogDebug($"The {nameof(SqlServerLiveness)} check success for {_connectionString}");
+                        await command.ExecuteScalarAsync();
                     }
+
+                    _logger?.LogInformation($"The {nameof(SqlServerLiveness)} check success for {_connectionString}");
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogDebug($"The {nameof(SqlServerLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
+                _logger?.LogWarning($"The {nameof(SqlServerLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
                 var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";

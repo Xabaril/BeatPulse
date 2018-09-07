@@ -36,9 +36,9 @@ namespace BeatPulse.NpgSql
                         command.CommandText = _sql;
 
                         await command.ExecuteScalarAsync();
-
-                        _logger?.LogDebug($"The {nameof(NpgSqlLiveness)} check success for {_connectionString}");
                     }
+
+                    _logger?.LogDebug($"The {nameof(NpgSqlLiveness)} check success for {_connectionString}");
 
                     return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
                 }

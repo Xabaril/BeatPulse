@@ -1,5 +1,6 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Threading;
@@ -10,16 +11,20 @@ namespace BeatPulse
     public class FtpLiveness : IBeatPulseLiveness
     {
         private readonly FtpLivenessOptions _options;
+        private readonly ILogger<FtpLiveness> _logger;
 
-        public FtpLiveness(FtpLivenessOptions options)
+        public FtpLiveness(FtpLivenessOptions options,ILogger<FtpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentException(nameof(options));
+            _logger = logger;
         }
 
         public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger?.LogInformation($"{nameof(FtpLiveness)} is checking FTP connections.");
+
                 foreach (var item in _options.Hosts.Values)
                 {
                     var ftpRequest = CreateFtpWebRequest(item.host, item.createFile, item.credentials);
@@ -29,15 +34,21 @@ namespace BeatPulse
                         if (ftpResponse.StatusCode != FtpStatusCode.PathnameCreated
                             && ftpResponse.StatusCode != FtpStatusCode.ClosingData)
                         {
+                            _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail for ftp host {item.host} the exit code eas {ftpResponse.StatusCode}.");
+
                             return ($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}", false);
                         }
                     }
                 }
 
+                _logger?.LogInformation($"The {nameof(FtpLiveness)} check success.");
+
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
             {
+                _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail with the exception {ex.ToString()}.");
+
                 var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 

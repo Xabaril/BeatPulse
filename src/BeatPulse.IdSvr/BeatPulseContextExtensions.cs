@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.IdSvr;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace BeatPulse
@@ -11,7 +13,7 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new IdSvrLiveness(idSvrUri));
+                setup.UseFactory(sp=>new IdSvrLiveness(idSvrUri,sp.GetService<ILogger<IdSvrLiveness>>()));
             });
         }
     }

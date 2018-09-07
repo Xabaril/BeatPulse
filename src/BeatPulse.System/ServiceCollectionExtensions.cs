@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
@@ -16,7 +18,7 @@ namespace BeatPulse
                 var diskStorageLivenesOptions = new DiskStorageLivenessOptions();
                 options?.Invoke(diskStorageLivenesOptions);
 
-                setup.UseLiveness(new DiskStorageLiveness(diskStorageLivenesOptions));
+                setup.UseFactory(sp => new DiskStorageLiveness(diskStorageLivenesOptions, sp.GetService<ILogger<DiskStorageLiveness>>()));
             });
         }
 
