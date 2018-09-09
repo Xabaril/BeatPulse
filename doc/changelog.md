@@ -6,8 +6,9 @@
 
     1. Removed ASP.NET Core HttpContext dependency from all liveness and IBeatPulseLiveness contract.
     2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
-    3. Added log support for SqlServer, Sqllite,Postgress,Oracle,Uri liveness.
+    3. Added log support for all out of box liveness.
     4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
+    5. BeatPulseOptions::ConfigureDetailedOutput can configure includeExceptionMessages property to enable or disable exception messages information. On previous versions this property are related only with IHostingEnvironment.IsDevelopment.
 
 - Non Functional
 
