@@ -44,7 +44,7 @@ namespace BeatPulse.Oracle
             {
                 _logger?.LogWarning($"The {nameof(OracleLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
+                var message = !livenessContext.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

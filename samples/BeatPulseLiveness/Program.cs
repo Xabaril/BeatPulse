@@ -17,7 +17,7 @@ namespace BeatPulseLiveness
                 options.ConfigurePath("health") //default hc
                     .ConfigureOutputCache(10)      // Can use CacheMode as second parameter
                     .ConfigureTimeout(milliseconds: 1500) // default -1 infinitely
-                    .ConfigureDetailedOutput(); //default false
+                    .ConfigureDetailedOutput(detailedOutput: true, includeExceptionMessages: true); //default false,false
             }).UseStartup<Startup>();
     }
 }

@@ -112,14 +112,7 @@ namespace BeatPulse
         BeatPulseOptions RequestOverrideOrGetDefaultOptions(HttpRequest request)
         {
             var queryStringValues = request.Query;
-
-            var options = new BeatPulseOptions(
-                _defaultOptions.DetailedOutput,
-                _defaultOptions.BeatPulsePath,
-                _defaultOptions.Timeout,
-                _defaultOptions.CacheOutput,
-                _defaultOptions.CacheDuration,
-                _defaultOptions.CacheMode);
+            var options = _defaultOptions.DeepClone();
 
             if (queryStringValues.ContainsKey(nameof(BeatPulseOptions.DetailedOutput)))
             {

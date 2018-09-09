@@ -54,7 +54,7 @@ namespace BeatPulse.Uris
                         {
                             _logger?.LogWarning($"The {nameof(UriLiveness)} check fail for uri {item.Uri}.");
 
-                            var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                            var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                                 : $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
 
                             return (message, false);
@@ -72,7 +72,7 @@ namespace BeatPulse.Uris
             {
                 _logger?.LogWarning($"The {nameof(UriLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

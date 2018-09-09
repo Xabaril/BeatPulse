@@ -47,7 +47,7 @@ namespace BeatPulse.NpgSql
             {
                 _logger?.LogDebug($"The {nameof(NpgSqlLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

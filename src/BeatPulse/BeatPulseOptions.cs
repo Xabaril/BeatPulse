@@ -16,6 +16,8 @@ namespace BeatPulse
 
         internal CacheMode CacheMode { get; private set; }
 
+        internal bool DetailedErrors { get; private set; }
+
         public BeatPulseOptions()
         {
             DetailedOutput = false;
@@ -24,9 +26,10 @@ namespace BeatPulse
             CacheOutput = false;
             CacheDuration = 0;
             CacheMode = CacheMode.Header;
+            DetailedErrors = false;
         }
 
-        internal BeatPulseOptions(bool detailedOutput, string path, int timeout, bool cacheoutput, int cacheDuration, CacheMode cacheMode)
+        private BeatPulseOptions(bool detailedOutput, string path, int timeout, bool cacheoutput, int cacheDuration, bool detailedErrors, CacheMode cacheMode)
         {
             DetailedOutput = detailedOutput;
             BeatPulsePath = path;
@@ -34,6 +37,7 @@ namespace BeatPulse
             CacheOutput = cacheoutput;
             CacheDuration = cacheDuration;
             CacheMode = cacheMode;
+            DetailedErrors = detailedErrors;
         }
 
         public BeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
@@ -45,9 +49,10 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true)
+        public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true, bool includeExceptionMessages = false)
         {
             DetailedOutput = detailedOutput;
+            DetailedErrors = detailedOutput ? includeExceptionMessages : false;
 
             return this;
         }
@@ -69,6 +74,18 @@ namespace BeatPulse
             Timeout = milliseconds;
 
             return this;
+        }
+
+        internal BeatPulseOptions DeepClone()
+        {
+            return new BeatPulseOptions(
+               DetailedOutput,
+               BeatPulsePath,
+               Timeout,
+               CacheOutput,
+               CacheDuration,
+               DetailedErrors,
+               CacheMode);
         }
     }
 }
