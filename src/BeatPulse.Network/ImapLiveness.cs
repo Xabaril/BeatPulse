@@ -40,7 +40,7 @@ namespace BeatPulse.Network
 
                 if (await _imapConnection.ConnectAsync())
                 {
-                    if (_options.AccountOptions.login)
+                    if (_options.AccountOptions.Login)
                     {
                         return await ExecuteAuthenticatedUserActions();
                     }
@@ -74,30 +74,27 @@ namespace BeatPulse.Network
 
         private async Task<(string, bool)> ExecuteAuthenticatedUserActions()
         {
-            var (user, password) = _options.AccountOptions.account;
+            var (User, Password) = _options.AccountOptions.Account;
 
-            if (await _imapConnection.AuthenticateAsync(user, password))
+            if (await _imapConnection.AuthenticateAsync(User, Password))
             {
-                if (_options.FolderOptions.checkFolder)
+                if (_options.FolderOptions.CheckFolder 
+                    && ! await _imapConnection.SelectFolder(_options.FolderOptions.FolderName))
                 {
-                    return await CheckConfiguredImapFolder();
-                }
+                    _logger?.LogWarning($"{nameof(ImapLiveness)} fail connect to server {_options.Host}- SSL Enabled : {_options.ConnectionType} and open folder {_options.FolderOptions.FolderName}.");
 
-                return (string.Empty, true);
+                    return ($"Folder {_options.FolderOptions.FolderName} check failed.", false);
+                }
+                
+                _logger?.LogInformation($"The {nameof(ImapLiveness)} check success.");
+
+                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             else
             {
                 _logger?.LogWarning($"{nameof(ImapLiveness)} fail connect to server {_options.Host}- SSL Enabled : {_options.ConnectionType}.");
 
                 return ($"Login on server {_options.Host} failed with configured user", false);
-            }
-
-
-            async Task<(string, bool)> CheckConfiguredImapFolder()
-            {
-                return await _imapConnection.SelectFolder(_options.FolderOptions.folderName) ?
-                    (string.Empty, true) :
-                    ($"Folder {_options.FolderOptions.folderName} check failed", false);
             }
         }
     }
