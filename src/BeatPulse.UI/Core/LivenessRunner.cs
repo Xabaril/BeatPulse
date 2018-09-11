@@ -75,6 +75,11 @@ namespace BeatPulse.UI.Core
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<int> AddConfiguredLiveness(LivenessConfiguration livenessConfiguration)
+        {
+            _context.LivenessConfigurations.Add(livenessConfiguration);
+            return await _context.SaveChangesAsync();
+        }
 
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {
@@ -237,7 +242,7 @@ namespace BeatPulse.UI.Core
                 await _context.SaveChangesAsync();
             }
         }
-
+       
         private class OutputLivenessMessageResponse
         {
             public IEnumerable<LivenessResultResponse> Checks { get; set; }

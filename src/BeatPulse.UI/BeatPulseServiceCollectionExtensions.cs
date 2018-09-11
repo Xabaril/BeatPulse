@@ -2,6 +2,7 @@
 using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
 using BeatPulse.UI.Core.HostedService;
+using BeatPulse.UI.Discovery.Kubernetes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,15 @@ namespace BeatPulse.UI
             {
                 db.UseSqlite("Data Source=livenessdb");
             });
+
+            var kubernetesDiscoveryOptions = new KubernetesDiscoveryOptions();
+            configuration.Bind(BeatPulseUIKeys.BEATPULSEUI_KUBERNETES_DISCOVERY_SETTING_KEY, kubernetesDiscoveryOptions);
+
+            if (kubernetesDiscoveryOptions.Enabled)
+            {
+                services.AddSingleton(kubernetesDiscoveryOptions);
+                services.AddHostedService<KubernetesDiscoveryHostedService>();
+            }
 
             var serviceProvider = services.BuildServiceProvider();
 
