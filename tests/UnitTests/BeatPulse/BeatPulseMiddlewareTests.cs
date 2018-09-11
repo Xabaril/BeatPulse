@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using UnitTests.Base;
 using Xunit;
@@ -611,16 +612,16 @@ namespace BeatPulse
                    svc.AddMvc();
                }).Configure(app =>
                {
-                   app.UseBeatPulse(setup => { },builder=>
-                   {
-                       builder.UseCors(setup =>
-                       {
-                           setup.AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader()
-                                .AllowCredentials();
-                       });
-                   });
+                   app.UseBeatPulse(setup => { }, builder =>
+                    {
+                        builder.UseCors(setup =>
+                        {
+                            setup.AllowAnyOrigin()
+                                 .AllowAnyMethod()
+                                 .AllowAnyHeader()
+                                 .AllowCredentials();
+                        });
+                    });
                    app.UseMvc();
                });
 
@@ -646,7 +647,7 @@ namespace BeatPulse
                    svc.AddCors();
                    svc.AddBeatPulse();
                    svc.AddMvc();
-               }).Configure(app=>
+               }).Configure(app =>
                {
                    app.UseCors(setup =>
                    {
@@ -655,7 +656,7 @@ namespace BeatPulse
                             .AllowAnyHeader()
                             .AllowCredentials();
                    });
-                   app.UseBeatPulse(setup=> { });
+                   app.UseBeatPulse(setup => { });
                    app.UseMvc();
                });
 
@@ -706,10 +707,50 @@ namespace BeatPulse
         }
 
         [Fact]
+        public async Task use_detailed_errors_configuration_property_on_liveness_exection_context()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options =>
+                {
+                    options.ConfigureDetailedOutput(detailedOutput: true, includeExceptionMessages: true);
+                })
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(ctx =>
+                    {
+                        ctx.AddLiveness("test", setup =>
+                         {
+                             setup.UsePath("test");
+                             setup.UseLiveness(new LivenessThatThrow(() => new ArgumentException("detail")));
+                         });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+
+            var responseContent = await response.Content
+                .ReadAsStringAsync();
+
+            responseContent.Contains("Show exception with details")
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
         public async Task default_detailedOutput_option_can_be_override_with_querystring_parameter()
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput:false))
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
@@ -736,12 +777,12 @@ namespace BeatPulse
                 .UseStartup<DefaultStartup>()
                 .ConfigureServices(svc =>
                 {
-                    svc.AddBeatPulse(setup=>
+                    svc.AddBeatPulse(setup =>
                     {
                         setup.AddLiveness("test", opt =>
                          {
                              opt.UsePath("test");
-                             opt.UseLiveness(new ActionLiveness(async ct => 
+                             opt.UseLiveness(new ActionLiveness(async ct =>
                              {
                                  await Task.Delay(200);
                                  return ("Ok", true);
@@ -816,6 +857,32 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
+        }
+
+        class LivenessThatThrow
+            : IBeatPulseLiveness
+        {
+            Func<Exception> _throwException;
+
+            public LivenessThatThrow(Func<Exception> thowException)
+            {
+                _throwException = thowException;
+            }
+
+            public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+            {
+                try
+                {
+                    throw _throwException();
+                }
+                catch (Exception ex)
+                {
+                    var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                        : $"Show exception with details)";
+
+                    return Task.FromResult<(string,bool)>((message, false));
+                }
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BeatPulse.Network
         private readonly SmtpLivenessOptions _options;
         private readonly ILogger<SmtpLiveness> _logger;
 
-        public SmtpLiveness(SmtpLivenessOptions options,ILogger<SmtpLiveness> logger = null)
+        public SmtpLiveness(SmtpLivenessOptions options, ILogger<SmtpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
@@ -26,15 +26,15 @@ namespace BeatPulse.Network
 
                 using (var smtpConnection = new SmtpConnection(_options))
                 {
-                    if(await smtpConnection.ConnectAsync())
+                    if (await smtpConnection.ConnectAsync())
                     {
-                        if (_options.AccountOptions.login)
+                        if (_options.AccountOptions.Login)
                         {
-                            var (user, password) = _options.AccountOptions.account;
+                            var (user, password) = _options.AccountOptions.Account;
 
-                            if(! await smtpConnection.AuthenticateAsync(user, password))
+                            if (!await smtpConnection.AuthenticateAsync(user, password))
                             {
-                                _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with invalid login to smtp server{_options.Host}:{_options.Port} with configured credentials.");
+                                _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with invalid login to smtp server {_options.Host}:{_options.Port} with configured credentials.");
 
                                 return ($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials", false);
                             }
@@ -56,7 +56,7 @@ namespace BeatPulse.Network
             {
                 _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                   : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

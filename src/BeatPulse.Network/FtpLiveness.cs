@@ -13,7 +13,7 @@ namespace BeatPulse
         private readonly FtpLivenessOptions _options;
         private readonly ILogger<FtpLiveness> _logger;
 
-        public FtpLiveness(FtpLivenessOptions options,ILogger<FtpLiveness> logger = null)
+        public FtpLiveness(FtpLivenessOptions options, ILogger<FtpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentException(nameof(options));
             _logger = logger;
@@ -34,9 +34,9 @@ namespace BeatPulse
                         if (ftpResponse.StatusCode != FtpStatusCode.PathnameCreated
                             && ftpResponse.StatusCode != FtpStatusCode.ClosingData)
                         {
-                            _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail for ftp host {item.host} the exit code eas {ftpResponse.StatusCode}.");
+                            _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail for ftp host {item.host} with exit code {ftpResponse.StatusCode}.");
 
-                            return ($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}", false);
+                            return ($"Error connecting to ftp host {item.host} with exit code {ftpResponse.StatusCode}", false);
                         }
                     }
                 }
@@ -49,7 +49,7 @@ namespace BeatPulse
             {
                 _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

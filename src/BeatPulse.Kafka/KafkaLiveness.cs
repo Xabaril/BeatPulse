@@ -35,7 +35,7 @@ namespace BeatPulse.Kafka
                     {
                         _logger?.LogWarning($"The {nameof(KafkaLiveness)} check failed.");
 
-                        var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                        var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                             : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
 
                         return (message, false);
@@ -50,7 +50,7 @@ namespace BeatPulse.Kafka
             {
                 _logger?.LogWarning($"The {nameof(KafkaLiveness)} check fail for Kafka broker with the exception {ex.ToString()}.");
 
-                var message = !context.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
+                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

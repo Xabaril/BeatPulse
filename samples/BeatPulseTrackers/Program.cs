@@ -15,7 +15,7 @@ namespace BeatPulseTrackers
                .UseApplicationInsights()
                .UseBeatPulse(setup =>
                {
-                   setup.ConfigureDetailedOutput()
+                   setup.ConfigureDetailedOutput(detailedOutput: true, includeExceptionMessages: true)
                        .ConfigureTimeout(1500);
                }).UseStartup<Startup>();
     }
