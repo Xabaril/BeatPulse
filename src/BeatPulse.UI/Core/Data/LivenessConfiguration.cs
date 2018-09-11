@@ -13,7 +13,7 @@
         public void Deconstruct(out string uri, out string name)
         {
             uri = this.LivenessUri;
-            name = this.LivenessName;            
+            name = this.LivenessName;
         }
     }
 }
