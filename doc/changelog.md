@@ -2,13 +2,14 @@
 
 ## BeatPulse 3.0 Version
 
-- Functional
+- Functional changes
 
     1. Removed ASP.NET Core HttpContext dependency from all liveness and IBeatPulseLiveness contract.
     2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
     3. Added log support for all out of box liveness.
     4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
     5. BeatPulseOptions::ConfigureDetailedOutput can configure includeExceptionMessages property to enable or disable exception messages information. On previous versions this property are related only with IHostingEnvironment.IsDevelopment.
+    6. BeatPulseOptions can configure Port property. On orchestrator scenarios you can configure multiple ports for the same application, port for the ingress or only for internal use. With this property you can set in wich port Beatpulse should work. 
 
 - Non Functional
 

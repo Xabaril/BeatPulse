@@ -20,7 +20,7 @@ namespace UnitTests.BeatPulse.Core
 
             var options = new BeatPulseOptions();
 
-            options.BeatPulsePath
+            options.Path
                 .Should().Be(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
             options.Timeout
@@ -47,12 +47,12 @@ namespace UnitTests.BeatPulse.Core
         {
             var options = new BeatPulseOptions();
 
-            options.BeatPulsePath
+            options.Path
                 .Should().Be(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
             options.ConfigurePath("health");
 
-            options.BeatPulsePath
+            options.Path
                .Should().Be("health");
         }
 

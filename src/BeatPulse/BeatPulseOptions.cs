@@ -6,7 +6,9 @@ namespace BeatPulse
     {
         internal bool DetailedOutput { get; private set; }
 
-        internal string BeatPulsePath { get; private set; }
+        internal string Path { get; private set; }
+
+        internal int? Port { get; private set; }
 
         internal int Timeout { get; private set; }
 
@@ -21,7 +23,8 @@ namespace BeatPulse
         public BeatPulseOptions()
         {
             DetailedOutput = false;
-            BeatPulsePath = BeatPulseKeys.BEATPULSE_DEFAULT_PATH;
+            Path = BeatPulseKeys.BEATPULSE_DEFAULT_PATH;
+            Port = null;
             Timeout = -1; // wait infinitely
             CacheOutput = false;
             CacheDuration = 0;
@@ -29,10 +32,11 @@ namespace BeatPulse
             DetailedErrors = false;
         }
 
-        private BeatPulseOptions(bool detailedOutput, string path, int timeout, bool cacheoutput, int cacheDuration, bool detailedErrors, CacheMode cacheMode)
+        private BeatPulseOptions(bool detailedOutput, string path, int? port, int timeout, bool cacheoutput, int cacheDuration, bool detailedErrors, CacheMode cacheMode)
         {
             DetailedOutput = detailedOutput;
-            BeatPulsePath = path;
+            Path = path;
+            Port = port;
             Timeout = timeout;
             CacheOutput = cacheoutput;
             CacheDuration = cacheDuration;
@@ -64,7 +68,14 @@ namespace BeatPulse
                 throw new ArgumentNullException(nameof(path));
             }
 
-            BeatPulsePath = path;
+            Path = path;
+
+            return this;
+        }
+
+        public BeatPulseOptions ConfigurePort(int port)
+        {
+            Port = port;
 
             return this;
         }
@@ -80,7 +91,8 @@ namespace BeatPulse
         {
             return new BeatPulseOptions(
                DetailedOutput,
-               BeatPulsePath,
+               Path,
+               Port,
                Timeout,
                CacheOutput,
                CacheDuration,
