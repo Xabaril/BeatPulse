@@ -22,6 +22,7 @@ namespace BeatPulse.UI.Core.Data
 
         public string LivenessResult { get; set; }
 
+        public string DiscoveryService { get; set; }
         public List<LivenessExecutionHistory> History { get; set; }
     }
 }

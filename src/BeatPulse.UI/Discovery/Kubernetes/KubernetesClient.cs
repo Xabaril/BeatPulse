@@ -14,10 +14,14 @@ namespace BeatPulse.UI.Discovery.Kubernetes
 
         public KubernetesClient(string host, string token)
         {
-            if (!Uri.TryCreate(host, UriKind.Absolute, out _host))
+            var validHttpEndpoint = Uri.TryCreate(host, UriKind.Absolute, out _host)
+                && (_host.Scheme == Uri.UriSchemeHttp || _host.Scheme == Uri.UriSchemeHttps);
+
+            if (!validHttpEndpoint)
             {
-                throw new Exception($"{nameof(host)} is not a valid Uri");
+                throw new Exception($"{nameof(host)} is not a valid Http Uri");
             }
+
             _token = token;
 
             _httpClient = new HttpClient();

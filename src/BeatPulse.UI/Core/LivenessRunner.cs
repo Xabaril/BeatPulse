@@ -161,6 +161,7 @@ namespace BeatPulse.UI.Core
                     Status = currentStatusName,
                     LivenessName = liveness.LivenessName,
                     LivenessUri = liveness.LivenessUri,
+                    DiscoveryService = liveness.DiscoveryService
                 };
 
                 await _context.LivenessExecutions

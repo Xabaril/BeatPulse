@@ -72,11 +72,9 @@ namespace BeatPulse.UI.Discovery.Kubernetes
                                 {
                                     var statusCode = await CallClusterService(serviceAddress);
                                     if (IsValidBeatpulseStatusCode(statusCode))
-                                    {
-                                        var livenessName = $"k8s-{item.Metadata.Name}";
-
-                                        await RegisterDiscoveredLiveness(livenessDbContext, serviceAddress, livenessName);
-                                        _logger.LogInformation($"Registered discovered liveness on {serviceAddress} with name {livenessName}");
+                                    {    
+                                        await RegisterDiscoveredLiveness(livenessDbContext, serviceAddress, item.Metadata.Name);
+                                        _logger.LogInformation($"Registered discovered liveness on {serviceAddress} with name {item.Metadata.Name}");
                                     }
                                 }
                             }

@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { Liveness, Check } from "../typings/models";
-import { getStatusImage, statusUp, statusDown, statusDegraded } from "../beatpulseResources";
+import { getStatusImage, discoveryServices } from "../beatpulseResources";
 import { CheckTable } from "./CheckTable";
 
 interface LivenessTableProps {
@@ -42,8 +42,18 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
         return new Date(date).toLocaleString();
     }
 
-    getStatusPic(status: string) {
+    getStatusImage(status: string) {
         return getStatusImage(status);
+    }
+
+    getDiscoveryServiceImage(discoveryService: string) {
+
+        if (discoveryService != null) {
+            let discoveryServiceImage = discoveryServices.find(ds => ds.name === discoveryService)!.image;
+            return <img className="discovery-icon" src={discoveryServiceImage} title="Kubernetes discovered liveness"/>
+        }
+
+        return null;
     }
 
     toggleVisibility(event: any) {
@@ -78,10 +88,11 @@ export class LivenessTable extends React.Component<LivenessTableProps> {
                                     <img className="plus-icon" src={PlusIcon} />
                                 </td>
                                 <td>
+                                    {this.getDiscoveryServiceImage(item.discoveryService)}
                                     {item.livenessName}
                                 </td>
                                 <td className="centered">
-                                    <img className="status-icon" src={this.getStatusPic(item.status)} />
+                                    <img className="status-icon" src={this.getStatusImage(item.status)} />
                                 </td>
                                 <td>
                                     {item.onStateFrom}

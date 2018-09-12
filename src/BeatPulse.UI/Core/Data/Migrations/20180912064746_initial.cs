@@ -34,7 +34,8 @@ namespace BeatPulse.UI.Core.Data.Migrations
                     LastExecuted = table.Column<DateTime>(nullable: false),
                     LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
                     LivenessName = table.Column<string>(maxLength: 500, nullable: false),
-                    LivenessResult = table.Column<string>(maxLength: 2000, nullable: false)
+                    LivenessResult = table.Column<string>(maxLength: 2000, nullable: false),
+                    DiscoveryService = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {

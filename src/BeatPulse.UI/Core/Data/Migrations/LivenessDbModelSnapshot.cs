@@ -3,20 +3,18 @@ using System;
 using BeatPulse.UI.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeatPulse.UI.Core.Data.Migrations
 {
     [DbContext(typeof(LivenessDb))]
-    [Migration("20180911221003_initial")]
-    partial class initial
+    partial class LivenessDbModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846");
+                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932");
 
             modelBuilder.Entity("BeatPulse.UI.Core.Data.LivenessConfiguration", b =>
                 {
@@ -43,6 +41,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("DiscoveryService")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("IsHealthy");
 
