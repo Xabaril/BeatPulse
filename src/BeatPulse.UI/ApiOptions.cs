@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace BeatPulse.UI.Middleware
 {
     public class ApiOptions

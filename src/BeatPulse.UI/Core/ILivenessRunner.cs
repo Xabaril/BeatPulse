@@ -12,5 +12,6 @@ namespace BeatPulse.UI.Core
         Task<LivenessExecution> GetLatestRun(string livenessName,CancellationToken cancellationToken);
 
         Task<List<LivenessConfiguration>> GetConfiguredLiveness(CancellationToken cancellationToken);
+        Task<int> AddConfiguredLiveness(LivenessConfiguration livenessConfiguration);
     }
 }

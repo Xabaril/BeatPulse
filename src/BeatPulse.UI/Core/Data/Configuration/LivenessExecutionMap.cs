@@ -33,6 +33,9 @@ namespace BeatPulse.UI.Core.Data.Configuration
                 .HasMaxLength(2000)
                 .IsRequired(true);
 
+            builder.Property(le => le.DiscoveryService)
+                .HasMaxLength(50);
+
             builder.HasMany(le => le.History)
                 .WithOne();
         }
