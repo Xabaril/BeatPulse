@@ -41,7 +41,7 @@ namespace BeatPulseLiveness
                 // or setup.AddXXXX() for all liveness packages on Nuget (mysql,sqlite,urlgroup,redis,idsvr,kafka,aws dynamo,azure storage and much more)
                 // ie: setup.AddOracle("Data Source=localhost:49161/xe;User Id=system;Password=oracle");
 
-                //setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es")});
+                setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es")});
 
                 //setup.AddUrlGroup(opt =>
                 //{
