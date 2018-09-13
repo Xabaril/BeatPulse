@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace BeatPulse.RabbitMQ
             _logger = logger;
         }
 
-        public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = new CancellationToken())
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             try
             {
@@ -33,19 +32,19 @@ namespace BeatPulse.RabbitMQ
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
+                    
                     _logger?.LogInformation($"The {nameof(RabbitMQLiveness)} check success.");
 
-                    return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                    return Task.FromResult(
+                        LivenessResult.Healthy());
                 }
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(RabbitMQLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return Task.FromResult((message, false));
+                return Task.FromResult(
+                        LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
             }
         }
     }

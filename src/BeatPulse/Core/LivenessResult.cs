@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace BeatPulse.Core
 {
     public class LivenessResult
     {
-        private readonly Stopwatch _watcher = new Stopwatch();
-
         public string Name { get; private set; }
 
         public string Message { get; private set; }
 
-        public TimeSpan Elapsed {get; private set;}
+        public TimeSpan Elapsed { get; private set; }
 
         public bool Run { get; private set; }
 
@@ -19,27 +16,53 @@ namespace BeatPulse.Core
 
         public bool IsHealthy { get; private set; }
 
-        public LivenessResult(string name,string path)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Path = path ?? throw new ArgumentNullException(nameof(path));
-            Run = false;
-            IsHealthy = false;
-        }
+        private LivenessResult() { }
 
-        internal void StartCounter()
+        public LivenessResult SetEnforced(string name, string path, TimeSpan duration)
         {
-            _watcher.Restart();
-        }
-
-        internal void StopCounter(string message, bool healthy)
-        {
-            _watcher.Stop();
-
-            Elapsed = _watcher.Elapsed;
+            Name = name;
+            Path = path;
             Run = true;
-            Message = message;
-            IsHealthy = healthy;
+            Elapsed = duration;
+
+            return this;
+        }
+
+        public static LivenessResult Healthy(string message = BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE)
+        {
+            return new LivenessResult()
+            {
+                IsHealthy = true,
+                Message = message
+            };
+        }
+
+        public static LivenessResult UnHealthy(string message)
+        {
+            return new LivenessResult()
+            {
+                IsHealthy = false,
+                Message = message
+            };
+        }
+
+        public static LivenessResult UnHealthy(Exception ex, bool showDetailedErrors = false)
+        {
+            return new LivenessResult()
+            {
+                IsHealthy = false,
+                Message = !showDetailedErrors ? BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE
+                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}').",
+            };
+        }
+
+        public static LivenessResult TimedOut()
+        {
+            return new LivenessResult()
+            {
+                IsHealthy = false,
+                Message = BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE
+            };
         }
     }
 }

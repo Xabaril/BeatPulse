@@ -7,14 +7,14 @@ namespace BeatPulse.Core
     public class ActionLiveness
         : IBeatPulseLiveness
     {
-        private readonly Func<CancellationToken,Task<(string, bool)>> _check;
+        private readonly Func<CancellationToken,Task<LivenessResult>> _check;
 
-        public ActionLiveness(Func<CancellationToken,Task<(string, bool)>> check)
+        public ActionLiveness(Func<CancellationToken,Task<LivenessResult>> check)
         {
             _check = check ?? throw new ArgumentNullException(nameof(check));
         }
 
-        public Task<(string, bool)> IsHealthy(LivenessExecutionContext context,CancellationToken cancellationToken = default)
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context,CancellationToken cancellationToken = default)
         {
             return _check(cancellationToken);
         }

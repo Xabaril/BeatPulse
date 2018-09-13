@@ -80,8 +80,7 @@ namespace BeatPulse.Core
         {
             _logger.LogInformation($"Executing liveness {executionContext.Name}.");
 
-            var livenessResult = new LivenessResult(executionContext.Name, executionContext.Path);
-            livenessResult.StartCounter();
+            var clock = Clock.StartNew();
 
             try
             {
@@ -91,21 +90,19 @@ namespace BeatPulse.Core
 
                     if (await Task.WhenAny(livenessTask, Task.Delay(options.Timeout, cancellationTokenSource.Token)) == livenessTask)
                     {
-                        // The liveness is executed successfully and get the results
-                        var (message, healthy) = await livenessTask;
-
-                        livenessResult.StopCounter(message, healthy);
-
                         _logger.LogInformation($"The liveness {executionContext.Name} is executed.");
+
+                        return (await livenessTask)
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
                     }
                     else
                     {
-                        // The liveness is timeout ( from configured options)
                         _logger.LogWarning($"The liveness {executionContext.Name} return timeout, execution is cancelled.");
 
                         cancellationTokenSource.Cancel();
 
-                        livenessResult.StopCounter(BeatPulseKeys.BEATPULSE_TIMEOUT_MESSAGE, false);
+                        return LivenessResult.TimedOut()
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
                     }
                 }
             }
@@ -119,10 +116,9 @@ namespace BeatPulse.Core
                 var message = options.DetailedErrors
                     ? ex.Message : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, executionContext.Name);
 
-                livenessResult.StopCounter(message, false);
+                return LivenessResult.UnHealthy(message)
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
             }
-
-            return livenessResult;
         }
     }
 }

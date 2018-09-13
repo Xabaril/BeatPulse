@@ -21,7 +21,7 @@ namespace BeatPulse.IdSvr
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -34,26 +34,20 @@ namespace BeatPulse.IdSvr
                     if (!response.IsSuccessStatusCode)
                     {
                         _logger?.LogWarning($"The {nameof(IdSvrLiveness)} check failed for server {_idSvrUri}.");
-
-                        var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                            : $"Discover endpoint is not responding with 200 OK, the current status is {response.StatusCode} and the content { (await response.Content.ReadAsStringAsync())}";
-
-                        return (message, false);
+                        
+                        return LivenessResult.UnHealthy("Discover endpoint is not responding with 200 OK, the current status is {response.StatusCode} and the content { (await response.Content.ReadAsStringAsync())}");
                     }
 
                     _logger?.LogInformation($"The {nameof(IdSvrLiveness)} check success.");
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(IdSvrLiveness)} check fail for IdSvr with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

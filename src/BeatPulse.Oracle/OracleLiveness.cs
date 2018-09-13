@@ -13,13 +13,13 @@ namespace BeatPulse.Oracle
         private readonly string _sql;
         private readonly ILogger<OracleLiveness> _logger;
 
-        public OracleLiveness(string connectionString,string sql,ILogger<OracleLiveness> logger = null)
+        public OracleLiveness(string connectionString, string sql, ILogger<OracleLiveness> logger = null)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _sql = sql ?? throw new ArgumentNullException(nameof(sql));
             _logger = logger;
         }
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -37,17 +37,14 @@ namespace BeatPulse.Oracle
 
                     _logger?.LogDebug($"The {nameof(OracleLiveness)} check success for {_connectionString}");
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(OracleLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                var message = !livenessContext.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

@@ -17,16 +17,18 @@ namespace BeatPulse.System
             this.currentValueFunc = currentValueFunc;
         }
 
-        public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             var currentValue = currentValueFunc();
 
             if (currentValue.CompareTo(maximunValue) <= 0)
             {
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult(
+                    LivenessResult.Healthy());
             }
 
-            return Task.FromResult(($"Maximun={maximunValue}, Current={currentValue}", false));
+            return Task.FromResult(
+                LivenessResult.UnHealthy($"Maximun={maximunValue}, Current={currentValue}"));
         }
     }
 }

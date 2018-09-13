@@ -2,6 +2,7 @@
 using BeatPulse.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 namespace BeatPulse
 {
     public static class BeatPulseContextExtensions

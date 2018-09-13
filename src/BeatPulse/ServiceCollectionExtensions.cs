@@ -14,11 +14,12 @@ namespace Microsoft.Extensions.DependencyInjection
             var context = new BeatPulseContext();
             context.AddLiveness(BeatPulseKeys.BEATPULSE_SELF_NAME, opt =>
             {
-                var selfLiveness = new ActionLiveness(
-                    (cancellationToken) => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true)));
-
                 opt.UsePath(BeatPulseKeys.BEATPULSE_SELF_SEGMENT);
-                opt.UseLiveness(selfLiveness);
+                opt.UseLiveness(new ActionLiveness((cancellationToken) =>
+                {
+                    return Task.FromResult(
+                        LivenessResult.Healthy());
+                }));
             });
 
             setup?.Invoke(context);

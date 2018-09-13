@@ -82,9 +82,10 @@ namespace UnitTests.BeatPulse.Core
 
         class FakeLiveness : IBeatPulseLiveness
         {
-            public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+            public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
             {
-                return Task.FromResult(("OK", true));
+                return Task.FromResult(
+                    LivenessResult.Healthy());
             }
         }
     }

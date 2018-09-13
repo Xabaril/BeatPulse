@@ -22,7 +22,7 @@ namespace BeatPulse
             _logger = logger;
         }
 
-        public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -52,24 +52,24 @@ namespace BeatPulse
                         {
                             _logger?.LogWarning($"The {nameof(SftpLiveness)} check fail for sftp host {item.Host}.");
 
-                            return Task.FromResult(($"Connection with sftp host {item.Host}:{item.Port} failed", false));
+                            return Task.FromResult(
+                                LivenessResult.UnHealthy($"Connection with sftp host {item.Host}:{item.Port} failed"));
                         }
                     }
                 }
 
                 _logger?.LogInformation($"The {nameof(SftpLiveness)} check success.");
 
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult(
+                    LivenessResult.Healthy());
 
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(SftpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return Task.FromResult((message, false));
+                return Task.FromResult(
+                    LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
             }
         }
     }

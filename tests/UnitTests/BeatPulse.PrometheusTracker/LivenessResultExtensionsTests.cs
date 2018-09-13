@@ -1,6 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.PrometheusTracker;
 using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -14,9 +15,8 @@ namespace UnitTests.BeatPulse.PrometheusTracker
             string path = "sql";
             string name = "liveness1";
 
-            var livenessResult = new LivenessResult(name, path);
-            livenessResult.StartCounter();
-            livenessResult.StopCounter("ok", true);
+            var livenessResult = LivenessResult.Healthy()
+                .SetEnforced(name, path, TimeSpan.FromSeconds(1));
 
 
             livenessResult.GetPrometheusMetrics()
@@ -40,9 +40,8 @@ namespace UnitTests.BeatPulse.PrometheusTracker
                 {"labelB","valueB" },
             };
 
-            var livenessResult = new LivenessResult(name, path);
-            livenessResult.StartCounter();
-            livenessResult.StopCounter("ok", true);
+            var livenessResult = LivenessResult.Healthy()
+                .SetEnforced(name, path, TimeSpan.FromSeconds(1));
 
             var prometheusMetrics = livenessResult.GetPrometheusMetrics(customLabels);
 

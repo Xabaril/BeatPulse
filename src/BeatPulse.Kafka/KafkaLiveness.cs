@@ -21,7 +21,7 @@ namespace BeatPulse.Kafka
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -35,25 +35,19 @@ namespace BeatPulse.Kafka
                     {
                         _logger?.LogWarning($"The {nameof(KafkaLiveness)} check failed.");
 
-                        var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                            : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
-
-                        return (message, false);
+                        return LivenessResult.UnHealthy($"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')");
                     }
 
                     _logger?.LogInformation($"The {nameof(KafkaLiveness)} check success.");
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(KafkaLiveness)} check fail for Kafka broker with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

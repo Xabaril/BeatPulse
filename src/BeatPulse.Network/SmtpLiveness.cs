@@ -18,7 +18,7 @@ namespace BeatPulse.Network
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -36,19 +36,19 @@ namespace BeatPulse.Network
                             {
                                 _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with invalid login to smtp server {_options.Host}:{_options.Port} with configured credentials.");
 
-                                return ($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials", false);
+                                return LivenessResult.UnHealthy($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials");
                             }
                         }
 
                         _logger?.LogInformation($"The {nameof(SmtpLiveness)} check success.");
 
-                        return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                        return LivenessResult.Healthy();
                     }
                     else
                     {
                         _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail for connecting to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}.");
 
-                        return ($"Could not connect to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}", false);
+                        return LivenessResult.UnHealthy($"Could not connect to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}");
                     }
                 }
             }
@@ -56,10 +56,7 @@ namespace BeatPulse.Network
             {
                 _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                  : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

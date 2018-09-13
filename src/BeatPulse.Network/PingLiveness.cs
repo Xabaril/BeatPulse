@@ -18,7 +18,7 @@ namespace BeatPulse.Network
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             var configuredHosts = _options.ConfiguredHosts.Values;
 
@@ -26,33 +26,30 @@ namespace BeatPulse.Network
             {
                 _logger?.LogInformation($"{nameof(PingLiveness)} is checking hosts.");
 
-                foreach (var item in configuredHosts)
+                foreach (var (host, timeout) in configuredHosts)
                 {
                     using (var ping = new Ping())
                     {
-                        var pingReply = await ping.SendPingAsync(item.Host, item.TimeOut);
+                        var pingReply = await ping.SendPingAsync(host, timeout);
 
                         if (pingReply.Status != IPStatus.Success)
                         {
-                            _logger?.LogWarning($"The {nameof(PingLiveness)} check failed for host {item.Host} is failed with status reply:{pingReply.Status}.");
+                            _logger?.LogWarning($"The {nameof(PingLiveness)} check failed for host {host} is failed with status reply:{pingReply.Status}.");
 
-                            return ($"Ping check for host {item.Host} is failed with status reply:{pingReply.Status}", false);
+                            return LivenessResult.UnHealthy($"Ping check for host {host} is failed with status reply:{pingReply.Status}");
                         }
                     }
                 }
 
                 _logger?.LogInformation($"The {nameof(PingLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(PingLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                   : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

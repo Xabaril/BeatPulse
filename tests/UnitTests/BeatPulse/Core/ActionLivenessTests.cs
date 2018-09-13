@@ -9,7 +9,7 @@ namespace BeatPulse.Core
         [Fact]
         public async Task execute_definded_action_for_health_check()
         {
-            var taskResult = Task.FromResult((string.Empty, false));
+            var taskResult = Task.FromResult(LivenessResult.UnHealthy("action liveness is not working"));
 
             var livenessContext = new LivenessExecutionContext();
 

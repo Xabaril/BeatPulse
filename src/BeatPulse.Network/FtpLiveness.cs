@@ -19,7 +19,7 @@ namespace BeatPulse
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -36,23 +36,20 @@ namespace BeatPulse
                         {
                             _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail for ftp host {item.host} with exit code {ftpResponse.StatusCode}.");
 
-                            return ($"Error connecting to ftp host {item.host} with exit code {ftpResponse.StatusCode}", false);
+                            LivenessResult.UnHealthy($"Error connecting to ftp host {item.host} with exit code {ftpResponse.StatusCode}");
                         }
                     }
                 }
 
                 _logger?.LogInformation($"The {nameof(FtpLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
 

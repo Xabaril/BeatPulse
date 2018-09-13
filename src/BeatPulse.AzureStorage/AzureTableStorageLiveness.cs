@@ -19,7 +19,7 @@ namespace BeatPulse.AzureStorage
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -34,16 +34,13 @@ namespace BeatPulse.AzureStorage
 
                 _logger?.LogInformation($"The {nameof(AzureTableStorageLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(AzureTableStorageLiveness)} check fail for {_storageAccount.TableStorageUri} with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

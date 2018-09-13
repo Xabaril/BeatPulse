@@ -13,13 +13,13 @@ namespace BeatPulse.Uris
         private readonly UriLivenessOptions _options;
         private readonly ILogger<UriLiveness> _logger;
 
-        public UriLiveness(UriLivenessOptions options,ILogger<UriLiveness> logger = null)
+        public UriLiveness(UriLivenessOptions options, ILogger<UriLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             var defaultHttpMethod = _options.HttpMethod;
             var defaultCodes = _options.ExpectedHttpCodes;
@@ -36,7 +36,7 @@ namespace BeatPulse.Uris
 
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, false);
+                        return LivenessResult.UnHealthy($"Liveness execution is cancelled.");
                     }
 
                     using (var httpClient = new HttpClient())
@@ -54,10 +54,7 @@ namespace BeatPulse.Uris
                         {
                             _logger?.LogWarning($"The {nameof(UriLiveness)} check fail for uri {item.Uri}.");
 
-                            var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                                : $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
-
-                            return (message, false);
+                            return LivenessResult.UnHealthy($"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.");
                         }
 
                         ++idx;
@@ -66,16 +63,13 @@ namespace BeatPulse.Uris
 
                 _logger?.LogDebug($"The {nameof(UriLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(UriLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

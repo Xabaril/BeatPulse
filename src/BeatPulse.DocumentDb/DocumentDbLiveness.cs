@@ -9,7 +9,6 @@ namespace BeatPulse.DocumentDb
 {
     public class DocumentDbLiveness : IBeatPulseLiveness
     {
-
         private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();
         private readonly ILogger<DocumentDbLiveness> _logger;
 
@@ -20,7 +19,7 @@ namespace BeatPulse.DocumentDb
             _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -34,17 +33,14 @@ namespace BeatPulse.DocumentDb
 
                     _logger?.LogDebug($"The {nameof(DocumentDbLiveness)} check success.");
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
                 _logger?.LogDebug($"The {nameof(DocumentDbLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
         }
     }

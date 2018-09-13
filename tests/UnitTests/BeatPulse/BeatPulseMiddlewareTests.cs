@@ -52,7 +52,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("custom check is working", true)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.Healthy()));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -90,7 +90,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.UnHealthy("Some message when service is not available")));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -127,7 +127,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(("custom check is not working", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.UnHealthy("custom check is not working")));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -170,7 +170,7 @@ namespace BeatPulse
                 {
                     await Task.Delay(100);
 
-                    return ("custom check is  working", true);
+                    return LivenessResult.Healthy();
                 });
 
             var webHostBuilder = new WebHostBuilder()
@@ -325,14 +325,14 @@ namespace BeatPulse
                (cancellationToken) =>
                {
                    check1IsExecuted = true;
-                   return Task.FromResult(("custom check1 is not working", false));
+                   return Task.FromResult(LivenessResult.UnHealthy("custom check1 is not working"));
                });
 
             var healthCheck2 = new ActionLiveness(
               (cancellationToken) =>
               {
                   check2IsExecuted = false;
-                  return Task.FromResult(("custom check2 is  working", true));
+                  return Task.FromResult(LivenessResult.Healthy());
               });
 
             var webHostBuilder = new WebHostBuilder()
@@ -361,7 +361,9 @@ namespace BeatPulse
             var response = await server.CreateClient()
                 .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
-            response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
+            response.StatusCode
+                .Should().Be(StatusCodes.Status503ServiceUnavailable);
+
             check1IsExecuted.Should().BeTrue();
             check2IsExecuted.Should().BeFalse();
         }
@@ -785,7 +787,8 @@ namespace BeatPulse
                              opt.UseLiveness(new ActionLiveness(async ct =>
                              {
                                  await Task.Delay(200);
-                                 return ("Ok", true);
+
+                                 return LivenessResult.Healthy();
                              }));
                          });
                     });
@@ -869,7 +872,7 @@ namespace BeatPulse
                 _throwException = thowException;
             }
 
-            public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+            public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
             {
                 try
                 {
@@ -877,10 +880,8 @@ namespace BeatPulse
                 }
                 catch (Exception ex)
                 {
-                    var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                        : $"Show exception with details)";
-
-                    return Task.FromResult<(string,bool)>((message, false));
+                    return Task.FromResult(
+                        LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
                 }
             }
         }

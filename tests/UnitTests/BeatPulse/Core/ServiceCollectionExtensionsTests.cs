@@ -64,7 +64,7 @@ namespace BeatPulse.Core
             var beatPulseService = _serviceProvider.GetService<IBeatPulseService>();
             var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
 
-          
+
             beatPulseContext.GetAllTrackers()
                 .Where(tracker => tracker.GetType() == (typeof(TestTracker)))
                 .SingleOrDefault()
@@ -101,7 +101,8 @@ namespace BeatPulse.Core
                 string path;
                 string path2;
 
-                var taskResult = Task.FromResult((string.Empty, true));
+                var taskResult = Task.FromResult(
+                    LivenessResult.Healthy());
 
                 services.AddBeatPulse(context =>
                 {

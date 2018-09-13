@@ -5,6 +5,6 @@ namespace BeatPulse.Core
 {
     public interface IBeatPulseLiveness
     {
-        Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default);
+        Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default);
     }
 }

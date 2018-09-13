@@ -30,7 +30,7 @@ namespace BeatPulse.Network
             }
 
         }
-        public async Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -49,22 +49,19 @@ namespace BeatPulse.Network
                 {
                     _logger?.LogWarning($"{nameof(ImapLiveness)} fail connect to server {_options.Host}- SSL Enabled : {_options.ConnectionType}.");
 
-                    return ($"Connection to server {_options.Host} has failed - SSL Enabled : {_options.ConnectionType}", false);
+                    return LivenessResult.UnHealthy($"Connection to server {_options.Host} has failed - SSL Enabled : {_options.ConnectionType}");
                 }
 
                 _logger?.LogInformation($"The {nameof(ImapLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
 
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(ImapLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                   : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
             }
             finally
             {
@@ -72,7 +69,7 @@ namespace BeatPulse.Network
             }
         }
 
-        private async Task<(string, bool)> ExecuteAuthenticatedUserActions()
+        private async Task<LivenessResult> ExecuteAuthenticatedUserActions()
         {
             var (User, Password) = _options.AccountOptions.Account;
 
@@ -83,18 +80,18 @@ namespace BeatPulse.Network
                 {
                     _logger?.LogWarning($"{nameof(ImapLiveness)} fail connect to server {_options.Host}- SSL Enabled : {_options.ConnectionType} and open folder {_options.FolderOptions.FolderName}.");
 
-                    return ($"Folder {_options.FolderOptions.FolderName} check failed.", false);
+                    return LivenessResult.UnHealthy($"Folder {_options.FolderOptions.FolderName} check failed.");
                 }
                 
                 _logger?.LogInformation($"The {nameof(ImapLiveness)} check success.");
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.Healthy();
             }
             else
             {
                 _logger?.LogWarning($"{nameof(ImapLiveness)} fail connect to server {_options.Host}- SSL Enabled : {_options.ConnectionType}.");
 
-                return ($"Login on server {_options.Host} failed with configured user", false);
+                return LivenessResult.UnHealthy($"Login on server {_options.Host} failed with configured user");
             }
         }
     }

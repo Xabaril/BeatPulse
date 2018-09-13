@@ -19,8 +19,8 @@ namespace BeatPulse.System
             _logger = logger;
         }
 
-        public Task<(string, bool)> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
-        { 
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+        {
             try
             {
                 _logger?.LogInformation($"{nameof(DiskStorageLiveness)} is checking configured drives.");
@@ -37,29 +37,30 @@ namespace BeatPulse.System
                         {
                             _logger?.LogWarning($"The {nameof(DiskStorageLiveness)} check fail for drive {item.DriveName}.");
 
-                            return Task.FromResult(($"Minimum configured megabytes for disk {item.DriveName} is {item.MinimumFreeMegabytes} but actual free space are {systemDriveInfo.ActualFreeMegabytes} megabytes", false));
+                            return Task.FromResult(
+                                LivenessResult.UnHealthy($"Minimum configured megabytes for disk {item.DriveName} is {item.MinimumFreeMegabytes} but actual free space are {systemDriveInfo.ActualFreeMegabytes} megabytes"));
                         }
                     }
                     else
                     {
                         _logger?.LogWarning($"{nameof(DiskStorageLiveness)} is checking a not present disk {item.DriveName} on system.");
 
-                        return Task.FromResult(($"Configured drive {item.DriveName} is not present on system",false));
+                        return Task.FromResult(
+                            LivenessResult.UnHealthy($"Configured drive {item.DriveName} is not present on system"));
                     }
                 }
 
                 _logger?.LogDebug($"The {nameof(DiskStorageLiveness)} check success.");
 
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult(
+                    LivenessResult.Healthy());
             }
             catch (Exception ex)
             {
                 _logger?.LogWarning($"The {nameof(DiskStorageLiveness)} check fail with the exception {ex.ToString()}.");
 
-                var message = !context.ShowDetailedErrors ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, context.Name)
-                       : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return Task.FromResult((message, false));
+                return Task.FromResult(
+                    LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
             }
         }
 
