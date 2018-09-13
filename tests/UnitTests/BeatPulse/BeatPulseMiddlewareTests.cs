@@ -743,7 +743,7 @@ namespace BeatPulse
             var responseContent = await response.Content
                 .ReadAsStringAsync();
 
-            responseContent.Contains("Show exception with details")
+            responseContent.Contains("Exception ArgumentException with message ('detail').")
                 .Should()
                 .BeTrue();
         }
