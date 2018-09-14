@@ -309,6 +309,11 @@ namespace BeatPulse.UI.Core
             {
                 return _notifications[name].Item1;
             }
+
+            public Task NotifyLivenessRestored(string livenessName, string context)
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 
