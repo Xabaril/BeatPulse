@@ -4,21 +4,21 @@ namespace BeatPulse
 {
     public class BeatPulseOptions
     {
-        internal bool DetailedOutput { get; private set; }
+        protected internal bool DetailedOutput { get; protected set; }
 
-        internal string Path { get; private set; }
+        protected internal string Path { get; protected set; }
 
-        internal int? Port { get; private set; }
+        protected internal int? Port { get; protected set; }
 
-        internal int Timeout { get; private set; }
+        protected internal int Timeout { get; protected set; }
 
-        internal int CacheDuration { get; private set; }
+        protected internal int CacheDuration { get; protected set; }
 
-        internal bool CacheOutput { get; private set; }
+        protected internal bool CacheOutput { get; protected set; }
 
-        internal CacheMode CacheMode { get; private set; }
+        protected internal CacheMode CacheMode { get; protected set; }
 
-        internal bool DetailedErrors { get; private set; }
+        protected internal bool DetailedErrors { get; protected set; }
 
         public BeatPulseOptions()
         {

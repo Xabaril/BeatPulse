@@ -28,7 +28,7 @@
     <MicrosoftEntityFrameworkCoreDesignVersion>2.1.0</MicrosoftEntityFrameworkCoreDesignVersion>
     <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.0</MicrosoftEntityFrameworkCoreSqlLiteVersion>
     <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
-    <MicrosoftExtensionConfigurationBinderVersion>2.1.0</MicrosoftExtensionConfigurationBinderVersion>
+    <MicrosoftExtensionConfigurationBinderVersion>2.1.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
     <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
     <MicrosoftAzureServiceBusVersion>2.0.0</MicrosoftAzureServiceBusVersion>
