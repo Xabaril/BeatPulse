@@ -60,7 +60,7 @@ namespace BeatPulse.System
                 _logger?.LogWarning($"The {nameof(DiskStorageLiveness)} check fail with the exception {ex.ToString()}.");
 
                 return Task.FromResult(
-                    LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
+                    LivenessResult.UnHealthy(ex));
             }
         }
 

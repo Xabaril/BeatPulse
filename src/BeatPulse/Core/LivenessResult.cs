@@ -8,6 +8,8 @@ namespace BeatPulse.Core
 
         public string Message { get; private set; }
 
+        public string Exception { get; private set; }
+
         public TimeSpan Elapsed { get; private set; }
 
         public bool Run { get; private set; }
@@ -18,12 +20,22 @@ namespace BeatPulse.Core
 
         private LivenessResult() { }
 
-        public LivenessResult SetEnforced(string name, string path, TimeSpan duration)
+        public LivenessResult SetEnforced(string name, string path, TimeSpan duration, bool detailedErrors = false)
         {
             Name = name;
             Path = path;
             Run = true;
             Elapsed = duration;
+
+            if (Exception != null)
+            {
+                Message = BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE;
+
+                if (!detailedErrors)
+                {
+                    Exception = null;
+                }
+            }
 
             return this;
         }
@@ -46,13 +58,12 @@ namespace BeatPulse.Core
             };
         }
 
-        public static LivenessResult UnHealthy(Exception ex, bool showDetailedErrors = false)
+        public static LivenessResult UnHealthy(Exception exception)
         {
             return new LivenessResult()
             {
                 IsHealthy = false,
-                Message = !showDetailedErrors ? BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}').",
+                Exception = exception.Message
             };
         }
 

@@ -25,36 +25,36 @@ namespace BeatPulse.Core
         {
             _logger.LogInformation($"BeatPulse is checking health on all registered liveness on [BeatPulsePath]/{path}.");
 
-            var livenessResults = new List<LivenessResult>();
-
-            foreach (var registration in _beatPulseContext.GetAllLiveness(path))
+            using (_logger.BeginScope($"BeatPulse is checking health status on all registered liveness from [BeatPulsePath]/{path} path."))
             {
-                var liveness = _beatPulseContext
-                    .CreateLivenessFromRegistration(registration);
+                var livenessResults = new List<LivenessResult>();
 
-                var executionContext = LivenessExecutionContext
-                    .FromRegistration(registration, showDetailedErrors: options.DetailedErrors);
-
-                var livenessResult = await RunLiveness(
-                    liveness,
-                    executionContext,
-                    options);
-
-                await RunTrackers(livenessResult);
-
-                livenessResults.Add(livenessResult);
-
-                if (!livenessResult.IsHealthy && !options.DetailedOutput)
+                foreach (var registration in _beatPulseContext.GetAllLiveness(path))
                 {
-                    //if is unhealthy and not detailed options is true return inmediatly
+                    var liveness = _beatPulseContext
+                        .CreateLivenessFromRegistration(registration);
 
-                    _logger.LogWarning($"Liveness {executionContext.Name} is not healthy. Breaking liveness execution because detailed output is false.");
+                    var executionContext = LivenessExecutionContext
+                        .FromRegistration(registration, showDetailedErrors: options.DetailedErrors);
 
-                    return livenessResults;
+                    var livenessResult = await RunLiveness(liveness, executionContext, options);
+
+                    await RunTrackers(livenessResult);
+
+                    livenessResults.Add(livenessResult);
+
+                    if (!livenessResult.IsHealthy && !options.DetailedOutput)
+                    {
+                        //if is unhealthy and not detailed options is true return inmediatly
+
+                        _logger.LogWarning($"Liveness {executionContext.Name} is not healthy. Breaking liveness execution because detailed output is false.");
+
+                        return livenessResults;
+                    }
                 }
-            }
 
-            return livenessResults;
+                return livenessResults;
+            }
         }
 
         Task RunTrackers(LivenessResult responses)
@@ -93,7 +93,7 @@ namespace BeatPulse.Core
                         _logger.LogInformation($"The liveness {executionContext.Name} is executed.");
 
                         return (await livenessTask)
-                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed(), detailedErrors: options.DetailedErrors);
                     }
                     else
                     {
@@ -102,22 +102,19 @@ namespace BeatPulse.Core
                         cancellationTokenSource.Cancel();
 
                         return LivenessResult.TimedOut()
-                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed(), detailedErrors: options.DetailedErrors);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // The uri executed is now well formed, dns not found
-                // or any unexpected errror 
+                // The uri executed is now well formed, dns not found 
+                // or any other unexpected exceptions from liveness executions.
 
                 _logger.LogError(ex, $"The liveness {executionContext.Name} is unhealthy.");
 
-                var message = options.DetailedErrors
-                    ? ex.Message : string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, executionContext.Name);
-
-                return LivenessResult.UnHealthy(message)
-                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed());
+                return LivenessResult.UnHealthy(ex)
+                            .SetEnforced(name: executionContext.Name, path: executionContext.Path, duration: clock.Elapsed(), detailedErrors: options.DetailedErrors);
             }
         }
     }

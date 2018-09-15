@@ -47,7 +47,7 @@ namespace BeatPulse.NpgSql
             {
                 _logger?.LogDebug($"The {nameof(NpgSqlLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

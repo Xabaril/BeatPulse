@@ -44,7 +44,7 @@ namespace BeatPulse.AzureServiceBus
             {
                 _logger?.LogWarning($"The {nameof(AzureEventHubLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }
