@@ -47,7 +47,7 @@ namespace BeatPulse.SqlServer
             {
                 _logger?.LogWarning($"The {nameof(SqlServerLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

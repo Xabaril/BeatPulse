@@ -47,7 +47,7 @@ namespace BeatPulse.IdSvr
             {
                 _logger?.LogWarning($"The {nameof(IdSvrLiveness)} check fail for IdSvr with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

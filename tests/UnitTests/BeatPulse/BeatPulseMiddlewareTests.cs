@@ -743,9 +743,17 @@ namespace BeatPulse
             var responseContent = await response.Content
                 .ReadAsStringAsync();
 
-            responseContent.Contains("Exception ArgumentException with message ('detail').")
-                .Should()
-                .BeTrue();
+            var exception = (string)JsonConvert.DeserializeObject<dynamic>(responseContent)
+                .checks[1].exception;
+
+            var message = (string)JsonConvert.DeserializeObject<dynamic>(responseContent)
+                .checks[1].message;
+
+            exception.Should()
+                .BeEquivalentTo(new ArgumentException("detail").Message);
+
+            message.Should()
+                .BeEquivalentTo(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE);
         }
 
         [Fact]
@@ -881,7 +889,7 @@ namespace BeatPulse
                 catch (Exception ex)
                 {
                     return Task.FromResult(
-                        LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
+                        LivenessResult.UnHealthy(ex));
                 }
             }
         }

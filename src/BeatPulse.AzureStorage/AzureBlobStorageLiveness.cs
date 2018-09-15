@@ -40,7 +40,7 @@ namespace BeatPulse.AzureStorage
             {
                 _logger?.LogWarning($"The {nameof(AzureBlobStorageLiveness)} check fail for {_storageAccount.BlobStorageUri} with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

@@ -69,7 +69,7 @@ namespace BeatPulse
                 _logger?.LogWarning($"The {nameof(SftpLiveness)} check fail with the exception {ex.ToString()}.");
 
                 return Task.FromResult(
-                    LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors));
+                    LivenessResult.UnHealthy(ex));
             }
         }
     }
