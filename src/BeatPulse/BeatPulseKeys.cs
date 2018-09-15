@@ -1,5 +1,9 @@
 ﻿namespace BeatPulse
 {
+
+    /// <summary>
+    /// BeatPulse constants.
+    /// </summary>
     public class BeatPulseKeys
     {
         public const string BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE = "The beat pulse check is not working properly.";
