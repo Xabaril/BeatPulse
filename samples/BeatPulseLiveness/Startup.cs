@@ -33,7 +33,6 @@ namespace BeatPulseLiveness
 
             services.AddBeatPulse(setup =>
             {
-                setup.AddLiveness
                 //
                 //add existing liveness packages
                 //
