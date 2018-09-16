@@ -1,22 +1,18 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Sqlite;
+﻿using BeatPulse.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
+        public static IHealthChecksBuilder AddSqlite(this IHealthChecksBuilder builder, string sqliteConnectionString, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
         {
-            return AddSqlite(context, sqliteConnectionString, "select name from sqlite_master where type='table'", name, defaultPath);
+            return AddSqlite(builder, sqliteConnectionString, "select name from sqlite_master where type='table'", name, defaultPath);
         }
 
-        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string healthQuery, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
+        public static IHealthChecksBuilder AddSqlite(this IHealthChecksBuilder builder, string sqliteConnectionString, string healthQuery, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery));
-                setup.UsePath(defaultPath);
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new SqliteLiveness(sqliteConnectionString, healthQuery));
         }
     }
 }

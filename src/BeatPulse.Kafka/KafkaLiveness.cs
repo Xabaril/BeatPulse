@@ -1,16 +1,15 @@
-﻿using BeatPulse.Core;
-using Confluent.Kafka;
-using Confluent.Kafka.Serialization;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
+using Confluent.Kafka.Serialization;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Kafka
 {
-    public class KafkaLiveness : IBeatPulseLiveness
+    public class KafkaLiveness : IHealthCheck
     {
         private readonly Dictionary<string, object> _config;
 
@@ -19,31 +18,20 @@ namespace BeatPulse.Kafka
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            try
+            using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
             {
-                using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
+                var result = await producer.ProduceAsync("beatpulse-topic", null, $"Check Kafka healthy on {DateTime.UtcNow}");
+
+                if (result.Error.Code != ErrorCode.NoError)
                 {
-                    var result = await producer.ProduceAsync("beatpulse-topic",null, $"Check Kafka healthy on {DateTime.UtcNow}");
+                    var message = $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
 
-                    if (result.Error.Code != ErrorCode.NoError)
-                    {
-                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                            : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
-
-                        return (message, false);
-                    }
-
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return HealthCheckResult.Failed(description: message);
                 }
-            }
-            catch (Exception ex)
-            {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-                return (message, false);
+                return HealthCheckResult.Passed();
             }
         }
     }

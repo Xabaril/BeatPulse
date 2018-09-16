@@ -1,14 +1,14 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.System
 {
-    public class DiskStorageLiveness : IBeatPulseLiveness
+    public class DiskStorageLiveness : IHealthCheck
     {
         private readonly DiskStorageLivenessOptions _options;
 
@@ -17,40 +17,29 @@ namespace BeatPulse.System
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
-        { 
-            try
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        {
+            var configuredDrives = _options.ConfiguredDrives.Values;
+
+            foreach (var item in configuredDrives)
             {
-                var configuredDrives = _options.ConfiguredDrives.Values;
+                var systemDriveInfo = GetSystemDriveInfo(item.DriveName);
 
-                foreach (var item in configuredDrives)
+                if (systemDriveInfo.Exists)
                 {
-                    var systemDriveInfo = GetSystemDriveInfo(item.DriveName);
-
-                    if (systemDriveInfo.Exists)
+                    if (systemDriveInfo.ActualFreeMegabytes < item.MinimumFreeMegabytes)
                     {
-                        if (systemDriveInfo.ActualFreeMegabytes < item.MinimumFreeMegabytes)
-                        {
-                            return Task.FromResult(($"Minimum configured megabytes for disk {item.DriveName} is {item.MinimumFreeMegabytes} but actual free space are {systemDriveInfo.ActualFreeMegabytes} megabytes", false));
-                        }
-                    }
-                    else
-                    {
-                        return Task.FromResult(($"Configured drive {item.DriveName} is not present on system",false));
+                        return Task.FromResult(HealthCheckResult.Failed($"Minimum configured megabytes for disk {item.DriveName} is {item.MinimumFreeMegabytes} but actual free space are {systemDriveInfo.ActualFreeMegabytes} megabytes"));
                     }
                 }
-
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                else
+                {
+                    return Task.FromResult(HealthCheckResult.Failed($"Configured drive {item.DriveName} is not present on system"));
+                }
             }
-            catch (Exception ex)
-            {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                       : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-                return Task.FromResult((message, false));
-            }
+            return Task.FromResult(HealthCheckResult.Passed());
         }
-
         private (bool Exists, long ActualFreeMegabytes) GetSystemDriveInfo(string driveName)
         {
             var driveInfo = DriveInfo.GetDrives()

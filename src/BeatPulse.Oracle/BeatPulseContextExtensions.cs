@@ -1,19 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BeatPulse.Oracle;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddOracle(this BeatPulseContext context, string connectionString, string name = nameof(OracleLiveness), string defaultPath = "oracle")
+        public static IHealthChecksBuilder AddOracle(this IHealthChecksBuilder builder, string connectionString, string name = nameof(OracleLiveness), string defaultPath = "oracle")
         {
-            return context.AddLiveness(name, setup => {
-                setup.UsePath(defaultPath);                
-                setup.UseLiveness(new OracleLiveness(connectionString));
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new OracleLiveness(connectionString));
         }
     }
 }

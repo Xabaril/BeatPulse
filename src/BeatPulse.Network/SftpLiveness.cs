@@ -1,16 +1,15 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
-using Renci.SshNet;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BeatPulse.Network;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Renci.SshNet;
 using ConnectionInfo = Renci.SshNet.ConnectionInfo;
 
 namespace BeatPulse
 {
-    public class SftpLiveness : IBeatPulseLiveness
+    public class SftpLiveness : IHealthCheck
     {
         private readonly SftpLivenessOptions _options;
 
@@ -19,8 +18,7 @@ namespace BeatPulse
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
-            CancellationToken cancellationToken = default)
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -47,20 +45,17 @@ namespace BeatPulse
                         }
                         else
                         {
-                            return Task.FromResult(($"Connection with sftp host {item.Host}:{item.Port} failed", false));
+                            return Task.FromResult(HealthCheckResult.Failed($"Connection with sftp host {item.Host}:{item.Port} failed"));
                         }
                     }
                 }
 
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return Task.FromResult(HealthCheckResult.Passed());
 
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return Task.FromResult((message, false));
+                return Task.FromResult(HealthCheckResult.Failed(exception: ex));
             }
 
         }

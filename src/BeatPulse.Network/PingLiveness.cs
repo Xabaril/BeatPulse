@@ -1,13 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Network
 {
-    public class PingLiveness : IBeatPulseLiveness
+    public class PingLiveness : IHealthCheck
     {
         private readonly PingLivenessOptions _options;
 
@@ -16,7 +15,7 @@ namespace BeatPulse.Network
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var configuredHosts = _options.ConfiguredHosts.Values;
 
@@ -30,20 +29,17 @@ namespace BeatPulse.Network
 
                         if (pingReply.Status != IPStatus.Success)
                         {
-                            return ($"Ping check for host {item.Host} is failed with status reply:{pingReply.Status}", false);
+                            return HealthCheckResult.Failed($"Ping check for host {item.Host} is failed with status reply:{pingReply.Status}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                       : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                    return (message, false);
+                    return HealthCheckResult.Failed(exception: ex);
                 }
             }
 
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+            return HealthCheckResult.Passed();
         }
     }
 }

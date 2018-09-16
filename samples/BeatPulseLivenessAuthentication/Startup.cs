@@ -1,14 +1,10 @@
-﻿using BeatPulse;
-using BeatPulse.Core;
-using BeatPulse.Core.Authentication;
-using BeatPulseLivenessAuthentication.Infrastructure.AuthenticationFilters;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulseLivenessAuthentication
 {
@@ -31,9 +27,9 @@ namespace BeatPulseLivenessAuthentication
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-                //
-                // Configure BeatPulse Authenthication filters
-                //
+            //
+            // Configure BeatPulse Authenthication filters
+            //
 
             //api-key filter
             //services.AddSingleton<IBeatPulseAuthenticationFilter>
@@ -48,21 +44,7 @@ namespace BeatPulseLivenessAuthentication
             //        (new HeaderValueAuthenticationFilter("header1", "value1"));
 
 
-            services.AddBeatPulse(setup =>
-            {
-                //
-                //create simple ad-hoc liveness
-                //
-
-                setup.AddLiveness("catapi", opt =>
-                {
-                    opt.UsePath("catapi");
-                    opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
-                    {
-                        return Task.FromResult(("OK", true));
-                    }));
-                });
-            });
+            services.AddBeatPulse().AddDelegateCheck("catapi", () => HealthCheckResult.Passed());
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

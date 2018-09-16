@@ -1,35 +1,23 @@
 ﻿using BeatPulse.AzureServiceBus;
-using BeatPulse.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddAzureEventHub(this BeatPulseContext context, string connectionString, string eventHubName, string name = nameof(AzureEventHubLiveness), string defaultPath = "azureeventhub")
+        public static IHealthChecksBuilder AddAzureEventHub(this IHealthChecksBuilder builder, string connectionString, string eventHubName, string name = nameof(AzureEventHubLiveness), string defaultPath = "azureeventhub")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new AzureEventHubLiveness(connectionString, eventHubName));
-                setup.UsePath(defaultPath);
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new AzureEventHubLiveness(connectionString, eventHubName));
         }
 
-        public static BeatPulseContext AddAzureServiceBusQueue(this BeatPulseContext context, string connectionString, string queueName, string name = nameof(AzureServiceBusQueueLiveness), string defaultPath = "azureservicebusqueue")
+        public static IHealthChecksBuilder AddAzureServiceBusQueue(this IHealthChecksBuilder builder, string connectionString, string queueName, string name = nameof(AzureServiceBusQueueLiveness), string defaultPath = "azureservicebusqueue")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName));
-                setup.UsePath(defaultPath);
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new AzureServiceBusQueueLiveness(connectionString, queueName));
         }
 
-        public static BeatPulseContext AddAzureServiceBusTopic(this BeatPulseContext context, string connectionString, string topicName, string name = nameof(AzureServiceBusTopicLiveness), string defaultPath = "azureservicebustopic")
+        public static IHealthChecksBuilder AddAzureServiceBusTopic(this IHealthChecksBuilder builder, string connectionString, string topicName, string name = nameof(AzureServiceBusTopicLiveness), string defaultPath = "azureservicebustopic")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName));
-                setup.UsePath(defaultPath);
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new AzureServiceBusTopicLiveness(connectionString, topicName));
         }
     }
 }

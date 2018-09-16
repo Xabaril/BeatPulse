@@ -1,17 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Redis;
+﻿using BeatPulse.Redis;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddRedis(this BeatPulseContext context, string redisConnectionString, string name = nameof(RedisLiveness), string defaultPath = "redis")
+        public static IHealthChecksBuilder AddRedis(this IHealthChecksBuilder builder, string redisConnectionString, string name = nameof(RedisLiveness), string defaultPath = "redis")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UsePath(defaultPath);
-                setup.UseLiveness(new RedisLiveness(redisConnectionString));
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new RedisLiveness(redisConnectionString));
         }
     }
 }

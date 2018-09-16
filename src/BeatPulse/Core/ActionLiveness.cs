@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Core
 {
-    public class ActionLiveness
-        : IBeatPulseLiveness
+    public class ActionLiveness : IHealthCheck
     {
-        private readonly Func<HttpContext, CancellationToken,Task<(string, bool)>> _check;
+        private readonly Func<CancellationToken, Task<HealthCheckResult>> _check;
 
-        public ActionLiveness(Func<HttpContext,CancellationToken,Task<(string, bool)>> check)
+        public ActionLiveness(Func<CancellationToken, Task<HealthCheckResult>> check)
         {
             _check = check ?? throw new ArgumentNullException(nameof(check));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,CancellationToken cancellationToken = default)
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            return _check(context,cancellationToken);
+            return _check(cancellationToken);
         }
     }
 }

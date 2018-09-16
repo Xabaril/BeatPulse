@@ -6,11 +6,16 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json;F:\git\aspnet\Diagnostics\artifacts\build\</RestoreSources>
+  </PropertyGroup>
+
   <PropertyGroup Label="Package Versions">
     <HostingAbstractionsVersion>2.1.0</HostingAbstractionsVersion>
     <ASPNetCoreRoutingVersion>2.1.0</ASPNetCoreRoutingVersion>
     <ASPNetCoreAllPackageVersion>2.1.0</ASPNetCoreAllPackageVersion>
     <MicrosoftExtensionsDependencyInjectionVersion>2.1.0</MicrosoftExtensionsDependencyInjectionVersion>
+    <MicrosoftExtensionsDiagnosticsHealthChecksVersion>2.2.0-*</MicrosoftExtensionsDiagnosticsHealthChecksVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>

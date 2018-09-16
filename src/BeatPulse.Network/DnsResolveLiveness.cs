@@ -1,14 +1,13 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Network
 {
-    public class DnsResolveLiveness : IBeatPulseLiveness
+    public class DnsResolveLiveness : IHealthCheck
     {
         private readonly DnsResolveOptions _options;
 
@@ -16,12 +15,13 @@ namespace BeatPulse.Network
         {
             _options = options;
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
                 foreach (var item in _options.ConfigureHosts.Values)
-                {                    
+                {
                     var ipAddresses = Dns.GetHostAddresses(item.Host)
                                          .Select(h => h.ToString());
 
@@ -29,19 +29,16 @@ namespace BeatPulse.Network
                     {
                         if (!item.Resolutions.Contains(ipAddress))
                         {
-                            return await Task.FromResult(($"Ip Address {ipAddress} was not resolved from host {item.Host}", false));
+                            return await Task.FromResult(HealthCheckResult.Failed($"Ip Address {ipAddress} was not resolved from host {item.Host}"));
                         }
-                    }                   
+                    }
                 }
 
-                return await Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                return await Task.FromResult(HealthCheckResult.Passed());
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return await Task.FromResult((message, false));
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

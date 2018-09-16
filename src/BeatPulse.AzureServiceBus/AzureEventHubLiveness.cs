@@ -1,13 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.EventHubs;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.EventHubs;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.AzureServiceBus
 {
-    public class AzureEventHubLiveness : IBeatPulseLiveness
+    public class AzureEventHubLiveness : IHealthCheck
     {
         private readonly string _connectionString;
         private readonly string _eventHubName;
@@ -18,7 +17,7 @@ namespace BeatPulse.AzureServiceBus
             _eventHubName = eventHubName ?? throw new ArgumentNullException(nameof(eventHubName));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -32,14 +31,11 @@ namespace BeatPulse.AzureServiceBus
 
                 await eventHubClient.GetRuntimeInformationAsync();
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return HealthCheckResult.Passed();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

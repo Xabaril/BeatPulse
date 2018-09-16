@@ -1,17 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.SqlServer;
+﻿using BeatPulse.SqlServer;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddSqlServer(this BeatPulseContext context, string connectionString,string name = nameof(SqlServerLiveness), string defaultPath = "sqlserver")
+        public static IHealthChecksBuilder AddSqlServer(this IHealthChecksBuilder builder, string connectionString,string name = nameof(SqlServerLiveness), string defaultPath = "sqlserver")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UsePath(defaultPath);
-                setup.UseLiveness(new SqlServerLiveness(connectionString));
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new SqlServerLiveness(connectionString));
         }
     }
 }

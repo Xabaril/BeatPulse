@@ -1,14 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using StackExchange.Redis;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using StackExchange.Redis;
 
 namespace BeatPulse.Redis
 {
-    public class RedisLiveness
-        : IBeatPulseLiveness
+    public class RedisLiveness  : IHealthCheck
     {
         private readonly string _redisConnectionString;
 
@@ -17,20 +15,17 @@ namespace BeatPulse.Redis
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
                 await ConnectionMultiplexer.ConnectAsync(_redisConnectionString);
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return HealthCheckResult.Passed();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

@@ -1,13 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Documents.Client;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.DocumentDb
 {
-    public class DocumentDbLiveness : IBeatPulseLiveness
+    public class DocumentDbLiveness : IHealthCheck
     {
 
         private readonly DocumentDbOptions _documentDbOptions = new DocumentDbOptions();
@@ -18,7 +17,8 @@ namespace BeatPulse.DocumentDb
             _documentDbOptions.PrimaryKey = documentDbOptions.PrimaryKey ?? throw new ArgumentNullException(nameof(documentDbOptions.PrimaryKey));
 
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -28,15 +28,12 @@ namespace BeatPulse.DocumentDb
                 {
                     await documentDbClient.OpenAsync();
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return HealthCheckResult.Passed();
                 }
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Core.Authentication;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BeatPulse.Core.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse
 {
@@ -24,7 +24,7 @@ namespace BeatPulse
             _cache = new ConcurrentDictionary<string, OutputLivenessMessage>();
         }
 
-        public async Task Invoke(HttpContext context, IBeatPulseService pulseService)
+        public async Task Invoke(HttpContext context, HealthCheckService healthCheckService)
         {
             var request = context.Request;
 
@@ -47,9 +47,13 @@ namespace BeatPulse
 
             output = new OutputLivenessMessage();
 
-            var responses = await pulseService.IsHealthy(beatPulsePath, _options, context);
+            var report = await healthCheckService.CheckHealthAsync((registration) => 
+            {
+                registration.Tags.Contains(beatPulsePath);
+                return true;
+            });
 
-            if (!responses.Any())
+            if (!report.Entries.Any())
             {
                 // beat pulse path is not valid across any liveness
                 // return unavailable with not found reason.
@@ -59,7 +63,7 @@ namespace BeatPulse
             {
                 // beat pulse is executed, set response
                 // messages and add to cache if is configured.
-                output.AddHealthCheckMessages(responses);
+                output.AddHealthCheckMessages(report.Entries.Values);
                 output.SetExecuted();
 
                 if (_options.CacheMode.UseServerMemory() && _options.CacheOutput)

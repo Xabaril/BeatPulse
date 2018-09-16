@@ -1,14 +1,13 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.ServiceBus;
-using System;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.AzureServiceBus
 {
-    public class AzureServiceBusTopicLiveness : IBeatPulseLiveness
+    public class AzureServiceBusTopicLiveness : IHealthCheck
     {
         private const string TEST_MESSAGE = "BeatpulseTest";
 
@@ -21,7 +20,7 @@ namespace BeatPulse.AzureServiceBus
             _topicName = topicName ?? throw new ArgumentNullException(nameof(topicName));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -33,14 +32,11 @@ namespace BeatPulse.AzureServiceBus
 
                 await topicClient.CancelScheduledMessageAsync(scheduledMessageId);
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return HealthCheckResult.Passed();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

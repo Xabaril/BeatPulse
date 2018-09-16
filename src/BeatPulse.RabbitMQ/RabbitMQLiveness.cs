@@ -1,14 +1,14 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Rmq = RabbitMQ;
 
 namespace BeatPulse.RabbitMQ
 {
-    public class RabbitMQLiveness : IBeatPulseLiveness
+    public class RabbitMQLiveness : IHealthCheck
     {
         private readonly string _rabbitMqConnectionString;
 
@@ -17,7 +17,7 @@ namespace BeatPulse.RabbitMQ
             _rabbitMqConnectionString = rabbitMqConnectionString ?? throw new ArgumentNullException(nameof(rabbitMqConnectionString));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = new CancellationToken())
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -32,18 +32,15 @@ namespace BeatPulse.RabbitMQ
                         &&
                         connection.ServerProperties.Any())
                     {
-                        return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true));
+                        return Task.FromResult(HealthCheckResult.Passed());
                     }
                 }
 
-                return Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, false));
+                return Task.FromResult(HealthCheckResult.Failed());
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return Task.FromResult((message, false));
+                return Task.FromResult(HealthCheckResult.Failed(exception: ex));
             }
         }
     }

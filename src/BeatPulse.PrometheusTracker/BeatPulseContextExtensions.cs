@@ -1,21 +1,21 @@
-﻿using BeatPulse.Core;
-using BeatPulse.PrometheusTracker;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using BeatPulse.Core;
+using BeatPulse.PrometheusTracker;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddPrometheusTracker(this BeatPulseContext context, Uri prometheusGatewayUri)
+        public static IHealthChecksBuilder AddPrometheusTracker(this IHealthChecksBuilder builder, Uri prometheusGatewayUri)
         {
-            context.AddPrometheusTracker(prometheusGatewayUri, null);
-            return context;
+            return AddPrometheusTracker(builder, prometheusGatewayUri, customLabels: null);
         }
-        public static BeatPulseContext AddPrometheusTracker(this BeatPulseContext context, Uri prometheusGatewayUri, IDictionary<string, string> customLabels)
+        public static IHealthChecksBuilder AddPrometheusTracker(this IHealthChecksBuilder builder, Uri prometheusGatewayUri, IDictionary<string, string> customLabels)
         {
-            context.AddTracker(new PrometheusGatewayTracker(prometheusGatewayUri, customLabels));
-            return context;
+            builder.Services.AddSingleton<IBeatPulseTracker>(new PrometheusGatewayTracker(prometheusGatewayUri, customLabels));
+            return builder;
         }
     }
 }

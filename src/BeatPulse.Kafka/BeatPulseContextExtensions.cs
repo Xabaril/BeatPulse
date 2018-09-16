@@ -1,18 +1,14 @@
-﻿using BeatPulse.Core;
+﻿using System.Collections.Generic;
 using BeatPulse.Kafka;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddKafka(this BeatPulseContext context, Dictionary<string, object> config, string name = nameof(KafkaLiveness), string defaultPath = "kafka")
+        public static IHealthChecksBuilder AddKafka(this IHealthChecksBuilder builder, Dictionary<string, object> config, string name = nameof(KafkaLiveness), string defaultPath = "kafka")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new KafkaLiveness(config));
-                setup.UsePath(defaultPath);
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new KafkaLiveness(config));
         }
     }
 }

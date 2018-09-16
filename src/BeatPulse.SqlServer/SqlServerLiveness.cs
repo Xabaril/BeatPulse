@@ -1,14 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.SqlServer
 {
-    public class SqlServerLiveness
-        : IBeatPulseLiveness
+    public class SqlServerLiveness : IHealthCheck
     {
         private readonly string _connectionString;
 
@@ -17,7 +15,7 @@ namespace BeatPulse.SqlServer
             _connectionString = sqlserverconnectionstring ?? throw new ArgumentNullException(nameof(sqlserverconnectionstring));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -31,14 +29,11 @@ namespace BeatPulse.SqlServer
                         await command.ExecuteScalarAsync();
                     }
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return HealthCheckResult.Passed();
                 }
                 catch (Exception ex)
                 {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                    return (message, false);
+                    return HealthCheckResult.Failed(exception: ex);
                 }
             }
         }

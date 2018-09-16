@@ -1,14 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using BeatPulse.Network;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse
 {
-    public class TcpLiveness : IBeatPulseLiveness
+    public class TcpLiveness : IHealthCheck
     {
         private readonly TcpLivenessOptions _options;
 
@@ -16,7 +15,8 @@ namespace BeatPulse
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -28,20 +28,17 @@ namespace BeatPulse
 
                         if (!tcpClient.Connected)
                         {
-                            return ($"Connection to host {item.host}:{item.port} failed", false);
+                            return HealthCheckResult.Failed($"Connection to host {item.host}:{item.port} failed");
                         }
                     }
                 }
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return HealthCheckResult.Passed();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
-            }            
+                return HealthCheckResult.Failed(exception: ex);
+            }
         }
     }
 }

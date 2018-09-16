@@ -1,13 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Sqlite
 {
-    public class SqliteLiveness : IBeatPulseLiveness
+    public class SqliteLiveness : IHealthCheck
     {
         private string _connectionString;
         private string _healthQuery;
@@ -17,7 +16,8 @@ namespace BeatPulse.Sqlite
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             _healthQuery = healthQuery ?? throw new ArgumentException(nameof(healthQuery));
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             SqliteConnection connection = null;
 
@@ -33,15 +33,12 @@ namespace BeatPulse.Sqlite
                         await reader.ReadAsync();
                     }
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    return HealthCheckResult.Passed();
                 }
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
     }

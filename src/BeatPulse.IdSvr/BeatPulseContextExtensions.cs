@@ -1,18 +1,14 @@
-﻿using BeatPulse.Core;
+﻿using System;
 using BeatPulse.IdSvr;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddIdentityServer(this BeatPulseContext context, Uri idSvrUri, string name = nameof(IdSvrLiveness),string defaultPath = "idsvr")
+        public static IHealthChecksBuilder AddIdentityServer(this IHealthChecksBuilder builder, Uri idSvrUri, string name = nameof(IdSvrLiveness),string defaultPath = "idsvr")
         {
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UsePath(defaultPath);
-                setup.UseLiveness(new IdSvrLiveness(idSvrUri));
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new IdSvrLiveness(idSvrUri));
         }
     }
 }

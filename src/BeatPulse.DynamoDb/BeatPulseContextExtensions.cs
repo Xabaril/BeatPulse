@@ -1,21 +1,20 @@
-﻿using BeatPulse.Core;
+﻿using System;
 using BeatPulse.DynamoDb;
-using System;
 
-namespace BeatPulse
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddDynamoDb(this BeatPulseContext context, Action<DynamoDBOptions> setupOptions, string name = nameof(DynamoDbLiveness), string defaultPath = "dynamodb")
+        public static IHealthChecksBuilder AddDynamoDb(
+            this IHealthChecksBuilder builder, 
+            Action<DynamoDBOptions> setupOptions, 
+            string name = nameof(DynamoDbLiveness), 
+            string path = "dynamodb")
         {
             var options = new DynamoDBOptions();
             setupOptions(options);
 
-            return context.AddLiveness(name, setup =>
-            {
-                setup.UsePath(defaultPath);
-                setup.UseLiveness(new DynamoDbLiveness(options));
-            });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { path, }, new DynamoDbLiveness(options));
         }
     }
 }

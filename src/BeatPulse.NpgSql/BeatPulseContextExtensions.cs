@@ -1,17 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.NpgSql;
+﻿using BeatPulse.NpgSql;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddNpgSql(this BeatPulseContext context, string npgsqlConnectionString, string name = nameof(NpgSqlLiveness), string defaultPath = "npgsql")
+        public static IHealthChecksBuilder AddNpgSql(this IHealthChecksBuilder builder, string npgsqlConnectionString, string name = nameof(NpgSqlLiveness), string defaultPath = "npgsql")
         {
-            return context.AddLiveness(name, setup =>
-           {
-               setup.UsePath(defaultPath);
-               setup.UseLiveness(new NpgSqlLiveness(npgsqlConnectionString));
-           });
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new NpgSqlLiveness(npgsqlConnectionString));
         }
     }
 }

@@ -1,19 +1,13 @@
-﻿using BeatPulse.Core;
-using BeatPulse.MongoDb;
+﻿using BeatPulse.MongoDb;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddMongoDb(this BeatPulseContext context, string mongodbConnectionString, string name = nameof(MongoDbLiveness),string defaultPath = "mongodb")
+        public static IHealthChecksBuilder AddMongoDb(this IHealthChecksBuilder builder, string mongodbConnectionString, string name = nameof(MongoDbLiveness),string defaultPath = "mongodb")
         {
-            context.AddLiveness(name, setup =>
-            {
-                setup.UseLiveness(new MongoDbLiveness(mongodbConnectionString));
-                setup.UsePath(defaultPath);
-            });
-
-            return context;
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new MongoDbLiveness(mongodbConnectionString));
         }
     }
 }

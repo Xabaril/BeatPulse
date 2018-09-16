@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Threading.Tasks;
 
 namespace BeatPulseLivenessPipeline
@@ -34,14 +35,7 @@ namespace BeatPulseLivenessPipeline
 
             services.AddCors();
 
-            services.AddBeatPulse(setup =>
-            {
-                setup.AddLiveness("sample", opt =>
-                 {
-                     opt.UsePath("path");
-                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
-                 });
-            });
+            services.AddBeatPulse().AddDelegateCheck("path", () => HealthCheckResult.Passed());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

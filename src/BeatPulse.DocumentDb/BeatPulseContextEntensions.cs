@@ -1,23 +1,17 @@
-﻿using BeatPulse.Core;
+﻿using System;
 using BeatPulse.DocumentDb;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextEntensions
+    public static class HealthChecksBuilderEntensions
     {
-        public static BeatPulseContext AddDocumentDb(this BeatPulseContext context, Action<DocumentDbOptions> options, string name = nameof(DocumentDbLiveness), string defaultPath = "documentdb")
+        public static IHealthChecksBuilder AddDocumentDb(this IHealthChecksBuilder builder, Action<DocumentDbOptions> options, string name = nameof(DocumentDbLiveness), string defaultPath = "documentdb")
         {
             var documentDbOptions = new DocumentDbOptions();
             options(documentDbOptions);
 
-            context.AddLiveness(name, setup =>
-            {
-                setup.UsePath(defaultPath);
-                setup.UseLiveness(new DocumentDbLiveness(documentDbOptions));
-            });
-
-            return context;
+            return builder.AddCheck(name, failureStatus: null, tags: new[] { defaultPath, }, new DocumentDbLiveness(documentDbOptions));
         }
     }
 }

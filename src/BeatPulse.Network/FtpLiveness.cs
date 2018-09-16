@@ -1,14 +1,14 @@
-﻿using BeatPulse.Core;
-using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using BeatPulse.Network;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse
 {
-    public class FtpLiveness : IBeatPulseLiveness
+    public class FtpLiveness : IHealthCheck
     {
         private readonly FtpLivenessOptions _options;
 
@@ -17,8 +17,7 @@ namespace BeatPulse
             _options = options ?? throw new ArgumentException(nameof(options));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
-            CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -31,19 +30,16 @@ namespace BeatPulse
                         if (ftpResponse.StatusCode != FtpStatusCode.PathnameCreated
                             && ftpResponse.StatusCode != FtpStatusCode.ClosingData)
                         {
-                            return ($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}", false);
+                            return HealthCheckResult.Failed($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}");
                         }
                     }
                 }
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return HealthCheckResult.Passed();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                return (message, false);
+                return HealthCheckResult.Failed(exception: ex);
             }
         }
 

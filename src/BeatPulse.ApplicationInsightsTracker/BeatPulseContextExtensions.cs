@@ -1,22 +1,21 @@
 ﻿using BeatPulse.ApplicationInsightsTracker;
 using BeatPulse.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context)
+        public static IHealthChecksBuilder AddApplicationInsightsTracker(this IHealthChecksBuilder builder)
         {
-            context.AddTracker(new AITracker());
-
-            return context;
+            builder.Services.AddSingleton<IBeatPulseTracker>(new AITracker());
+            return builder;
         }
 
-        public static BeatPulseContext AddApplicationInsightsTracker(this BeatPulseContext context,string instrumentationKey)
+        public static IHealthChecksBuilder AddApplicationInsightsTracker(this IHealthChecksBuilder builder, string instrumentationKey)
         {
-            context.AddTracker(new AITracker(instrumentationKey));
-
-            return context;
+            builder.Services.AddSingleton<IBeatPulseTracker>(new AITracker(instrumentationKey));
+            return builder;
         }
     }
 }

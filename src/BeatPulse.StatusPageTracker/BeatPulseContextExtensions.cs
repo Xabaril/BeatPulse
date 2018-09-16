@@ -1,19 +1,19 @@
-﻿using BeatPulse.Core;
+﻿using System;
+using BeatPulse.Core;
 using BeatPulse.StatusPageTracker;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeatPulse
 {
-    public static class BeatPulseContextExtensions
+    public static class HealthChecksBuilderExtensions
     {
-        public static BeatPulseContext AddStatusPageTracker(this BeatPulseContext context,Action<StatusPageComponent> setup)
+        public static IHealthChecksBuilder AddStatusPageTracker(this IHealthChecksBuilder builder,Action<StatusPageComponent> setup)
         {
             var component = new StatusPageComponent();
             setup(component);
-          
-            context.AddTracker(new StatusPageIOTracker(component));
 
-            return context;
+            builder.Services.AddSingleton<IBeatPulseTracker>(new StatusPageIOTracker(component));
+            return builder;
         }
     }
 }

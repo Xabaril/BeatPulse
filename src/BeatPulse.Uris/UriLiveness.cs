@@ -1,14 +1,12 @@
-﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BeatPulse.Uris
 {
-    public class UriLiveness
-        : IBeatPulseLiveness
+    public class UriLiveness : IHealthCheck
     {
         private readonly UriLivenessOptions _options;
 
@@ -17,7 +15,7 @@ namespace BeatPulse.Uris
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var defaultHttpMethod = _options.HttpMethod;
             var defaultCodes = _options.ExpectedHttpCodes;
@@ -28,10 +26,7 @@ namespace BeatPulse.Uris
                 var method = item.HttpMethod ?? defaultHttpMethod;
                 var expectedCodes = item.ExpectedHttpCodes ?? defaultCodes;
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, false);
-                }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 try
                 {
@@ -48,10 +43,8 @@ namespace BeatPulse.Uris
 
                         if (!((int)response.StatusCode >= expectedCodes.Min && (int)response.StatusCode <= expectedCodes.Max))
                         {
-                            var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                                : $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
-
-                            return (message, false);
+                            var message =  $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
+                            return HealthCheckResult.Failed(description: message);
                         }
 
                         ++idx;
@@ -59,14 +52,11 @@ namespace BeatPulse.Uris
                 }
                 catch (Exception ex)
                 {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
-
-                    return (message, false);
+                    return HealthCheckResult.Failed(exception: ex);
                 }
             }
 
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+            return HealthCheckResult.Passed();
         }
     }
 }
