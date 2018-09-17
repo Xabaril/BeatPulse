@@ -26,7 +26,7 @@ HTTP/1.1 503 ServiceUnavailable
 ServiceUnavailable
 ```
 
-You can configure  *DetailedOutput* property on *BeatPulseOptions* to respond with a complete json result with liveness, time and execution results.
+You can configure  *DetailedOutput* property on *BeatPulseOptions* to respond with a complete json result with liveness, time and execution results. 
 
 ``` csharp
  public static IWebHost BuildWebHost(string[] args) =>
@@ -50,6 +50,7 @@ HTTP/1.1 200 OK
         "name": "self",
         "path":"_self",
         "message": "OK",
+        "exception": null
         "milliSeconds": 0,
         "run": true,
         "isHealthy": true
@@ -58,6 +59,7 @@ HTTP/1.1 200 OK
         "name": "cat",
         "path":"catapi",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 376,
         "run": true,
         "isHealthy": true
@@ -66,6 +68,7 @@ HTTP/1.1 200 OK
         "name": "SqlServerLiveness",
         "path":"sqlserver",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 309,
         "run": true,
         "isHealthy": true
@@ -77,7 +80,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-From *BeatPulse* **3.0** *DetailedOutput* can be specified for each request using a query string parameter with the same name. This is ideal to support detailed ouput for *BeatPUlseUI* and simplified content results for liveness, readiness checks.
+From *BeatPulse* **3.0** *DetailedOutput* can be specified for each request using a query string parameter with the same name. This is ideal to support detailed ouput for *BeatPUlseUI* and simplified content results for regular liveness, readiness checks from load balancers, trackers.
 
 ``` bash
 curl http://your-domain/hc?detailedOutput=true
@@ -92,6 +95,7 @@ HTTP/1.1 200 OK
         "name": "self",
         "path":"_self",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 0,
         "run": true,
         "isHealthy": true
@@ -100,6 +104,7 @@ HTTP/1.1 200 OK
         "name": "cat",
         "path":"catapi",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 376,
         "run": true,
         "isHealthy": true
@@ -108,6 +113,7 @@ HTTP/1.1 200 OK
         "name": "SqlServerLiveness",
         "path":"sqlserver",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 309,
         "run": true,
         "isHealthy": true
@@ -122,7 +128,6 @@ HTTP/1.1 200 OK
 If you need to know the status of a particular service you can add the liveess name as a new segment into the liveness uri. In our later case, if you need a liveness uri for SqlServer  add /sqlserver to the *BeatPulse* request uri. The flag *DetailedOutput* is also working with particular checks.
 
 ``` bash
-
 curl http://your-domain/hc/sqlserver
 GET /hc HTTP/1.1
 Host: your-domain
@@ -147,6 +152,18 @@ HTTP/1.1 200 OK
 ```
  
 Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_self**.
+
+From *BeatPulse* **3.0**  you can also filter the port on which *BeatPulse* response requests. This is ideal when configure some pod with diferent listeners, one for public ingress and another one for internal use only (readiness, liveness).
+
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+               .UseBeatPulse(options=>
+                {
+                   options.ConfigurePort(port:5000)
+                }).UseStartup<Startup>().Build();
+```
 
 # Timeout
 
