@@ -1,6 +1,6 @@
 # Beat Pulse Requests
 
-By default, the global path returns the aggregated state of all liveness checkers, including the out of box *self* check added. 
+By default, the global path returns the aggregated state of all configured liveness, including the out of box *self* check added. 
 
 If all liveness are up and running, *BeatPulse* returns HTTP 200 OK.
 
@@ -26,16 +26,17 @@ HTTP/1.1 503 ServiceUnavailable
 ServiceUnavailable
 ```
 
-You can configure  *DetailedOutput* property on *BeatPulseOptions* to respond with a complete json result with liveness, time and execution results. If you use *BeatPulse UI* remember that detailed information is mandatory.
+You can configure  *DetailedOutput* property on *BeatPulseOptions* to respond with a complete json result with liveness, time and execution results.
 
 ``` csharp
  public static IWebHost BuildWebHost(string[] args) =>
         WebHost.CreateDefaultBuilder(args)
                .UseBeatPulse(options=>
                 {
-                   options.ConfigureDetailedOutput(detailedOutput:true); //default false
+                   options.ConfigureDetailedOutput(detailedOutput:true, includeExceptionMessages:false);
                 }).UseStartup<Startup>().Build();
 ```
+
 ``` bash
 curl http://your-domain/hc
 GET /hc HTTP/1.1

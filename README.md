@@ -6,7 +6,7 @@
 
 Health checking is the process where load balancers or application delivery controller does periodic checks on our applications to make sure that they are up and responding without any problems. If our applications are down for whatever reason or any of the systems that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s, should detect this and stop sending traffic its way trying to restore services manually or automatically.
 
-*BeatPulse* is a powersull liveness, readiness library for .NET Core Applications with many out of box enterprise health check services.
+*BeatPulse* is a powerfull liveness, readiness library for .NET Core Applications with many out of box enterprise health check services.
 
 ## Getting Started 
 
@@ -66,7 +66,7 @@ Install-Package BeatPulse.Oracle
                 {
                    options.ConfigurePath(path:"health") //default hc
                         .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
-                        .ConfigureDetailedOutput(detailedOutput:false); //default false
+                        .ConfigureDetailedOutput(detailedOutput:true,includeExceptionMessages:true); //default (true,false)
                 }).UseStartup<Startup>().Build();
 ```
 

@@ -43,14 +43,14 @@ namespace BeatPulseLiveness
 
                 setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es")});
 
-                //setup.AddUrlGroup(opt =>
-                //{
-                //    opt.AddUri(new Uri("http://google.com"), uri =>
-                //    {
-                //        uri.UsePost()
-                //           .AddCustomHeader("X-Method-Override", "DELETE");
-                //    });
-                //}, "uri-group2", "UriLiveness2");
+                setup.AddUrlGroup(opt =>
+                {
+                    opt.AddUri(new Uri("http://google.com"), uri =>
+                    {
+                        uri.UsePost()
+                           .AddCustomHeader("X-Method-Override", "DELETE");
+                    });
+                }, "uri-group2", "UriLiveness2");
 
                 //
                 //create simple ad-hoc liveness

@@ -8,8 +8,8 @@
     2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
     3. Added log support for all out of box liveness.
     4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
-    5. BeatPulseOptions::ConfigureDetailedOutput can configure includeExceptionMessages property to enable or disable exception messages information. On previous versions this property are related only with IHostingEnvironment.IsDevelopment.
-    6. BeatPulseOptions can configure Port property. On orchestrator scenarios you can configure multiple ports for the same application, port for the ingress or only for internal use. With this property you can set in wich port Beatpulse should work. 
+    5. BeatPulseOptions.ConfigureDetailedOutput can configure includeExceptionMessages property to enable or disable exception messages information.
+    6. BeatPulseOptions can configure Port property to specify a port filter for BeatPulse requests.
 
 - Non Functional
 
@@ -18,7 +18,8 @@
 
 - Breaking Changes
 
-    1.
+    1. IBeatPulseLiveness contract.
+    2. BeatPulse json response contract.
 
 ## Network 2.1.1
 
@@ -66,7 +67,7 @@
 
 ## Version 1.7.2 to 2.1
 
-    1. ASP.NET Core 2.1 dependency
+    1. ASP.NET Core 2.1 dependency.
     2. Refactor *BeatPulseOptions* public surface.
     3. ConfigureDetailedOutput method on *BeatPulseOptions* support flag configuration.
     4. **UseBeatPulse** as *IApplicationBuilder* extension method to support include existing middlewares on *BeatPulse* requests.
