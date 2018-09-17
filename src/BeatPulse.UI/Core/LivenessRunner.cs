@@ -50,6 +50,11 @@ namespace BeatPulse.UI.Core
 
                 var (content, isHealthy) = await EvaluateLiveness(item);
 
+                if (isHealthy && (await HasLivenessRecoveredFromFailure(item)))
+                {
+                    await _failureNotifier.NotifyLivenessRestored(item.LivenessName, content);
+                }
+
                 await SaveExecutionHistory(item, content, isHealthy);
 
                 if (!isHealthy)
@@ -64,7 +69,7 @@ namespace BeatPulse.UI.Core
         public Task<LivenessExecution> GetLatestRun(string livenessName, CancellationToken cancellationToken)
         {
             return _context.LivenessExecutions
-                .Include(le=>le.History)
+                .Include(le => le.History)
                 .Where(le => le.LivenessName.Equals(livenessName, StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefaultAsync(cancellationToken);
         }
@@ -109,14 +114,31 @@ namespace BeatPulse.UI.Core
             }
         }
 
+        private async Task<LivenessExecution> GetLivenessExecution(LivenessConfiguration liveness)
+        {
+            return await _context.LivenessExecutions
+                .Include(le => le.History)
+                .Where(le => le.LivenessName.Equals(liveness.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                .SingleOrDefaultAsync();
+        }
+
+        private async Task<bool> HasLivenessRecoveredFromFailure(LivenessConfiguration liveness)
+        {
+            var previousLivenessExecution = await GetLivenessExecution(liveness);
+            if (previousLivenessExecution != null)
+            {
+                var previousStatus = (LivenessStatus)Enum.Parse(typeof(LivenessStatus), previousLivenessExecution.Status);
+                return (previousStatus != LivenessStatus.Up);
+            }
+
+            return false;
+        }
+
         private async Task SaveExecutionHistory(LivenessConfiguration liveness, string content, bool isHealthy)
         {
             _logger.LogDebug("LivenessRuner save a new liveness execution history.");
 
-            var livenessExecution = await _context.LivenessExecutions
-                .Include(le=>le.History)
-                .Where(le => le.LivenessName.Equals(liveness.LivenessName,StringComparison.InvariantCultureIgnoreCase))
-                .SingleOrDefaultAsync();
+            var livenessExecution = await GetLivenessExecution(liveness);
 
             var currentStatus = GetDetailedStatusFromContent(isHealthy, content);
             var currentStatusName = Enum.GetName(typeof(LivenessStatus), currentStatus);
@@ -243,7 +265,7 @@ namespace BeatPulse.UI.Core
                 await _context.SaveChangesAsync();
             }
         }
-       
+
         private class OutputLivenessMessageResponse
         {
             public IEnumerable<LivenessResultResponse> Checks { get; set; }

@@ -56,32 +56,32 @@ namespace BeatPulseLiveness
                 //create simple ad-hoc liveness
                 //
 
-                setup.AddLiveness("custom-liveness", opt =>
-                {
-                    opt.UsePath("custom-liveness");
-                    opt.UseLiveness(new ActionLiveness((cancellationToken) =>
-                    {
-                        return Task.FromResult(
-                            LivenessResult.Healthy());
-                    }));
-                });
+                //setup.AddLiveness("custom-liveness", opt =>
+                //{
+                //    opt.UsePath("custom-liveness");
+                //    opt.UseLiveness(new ActionLiveness((cancellationToken) =>
+                //    {
+                //        return Task.FromResult(
+                //            LivenessResult.UnHealthy(new ArgumentNullException("param1")));
+                //    }));
+                //});
 
                 //
                 //ceate ad-hoc liveness with dependency resolution
                 //
 
-                setup.AddLiveness("custom-liveness-with-dependency", opt =>
-                {
-                    opt.UsePath("custom-liveness-with-dependency");
-                    opt.UseFactory(sp => new ActionLiveness((cancellationToken) =>
-                    {
-                        var logger = sp.GetRequiredService<ILogger<Startup>>();
-                        logger.LogInformation("Logger is a dependency for this liveness");
+                //setup.AddLiveness("custom-liveness-with-dependency", opt =>
+                //{
+                //    opt.UsePath("custom-liveness-with-dependency");
+                //    opt.UseFactory(sp => new ActionLiveness((cancellationToken) =>
+                //    {
+                //        var logger = sp.GetRequiredService<ILogger<Startup>>();
+                //        logger.LogInformation("Logger is a dependency for this liveness");
 
-                        return Task.FromResult(
-                            LivenessResult.Healthy());
-                    }));
-                });
+                //        return Task.FromResult(
+                //            LivenessResult.Healthy());
+                //    }));
+                //});
             });
 
 

@@ -8,9 +8,10 @@
     2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
     3. Added log support for all out of box liveness.
     4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
-    5. BeatPulseOptions.ConfigureDetailedOutput can configure includeExceptionMessages property to enable or disable exception messages information.
+    5. BeatPulseOptions.ConfigureDetailedOutput can configure includeExceptionMessages value to enable or disable exception messages information.
     6. BeatPulseOptions can configure Port property to specify a port filter for BeatPulse requests.
-
+    7. Json result of liveness include Exception property, the content of this property depend on includeExceptionMessages opt-in.
+    
 - Non Functional
 
     1. Improved naming on functional tests.

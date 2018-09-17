@@ -14,6 +14,11 @@ namespace BeatPulse.Core
 
         private IServiceProvider _serviceProvider;
 
+        /// <summary>
+        /// Add a new liveness into the <see cref="BeatPulseContext"/>
+        /// </summary>
+        /// <param name="registration">The liveness registration to be added.</param>
+        /// <returns><see cref="BeatPulseContext"/></returns>
         public BeatPulseContext AddLiveness(IBeatPulseLivenessRegistration registration)
         {
             if (registration == null)
@@ -42,6 +47,11 @@ namespace BeatPulse.Core
             }
         }
 
+        /// <summary>
+        /// Add a new tracker into the <see cref="BeatPulseContext"/>
+        /// </summary>
+        /// <param name="registration">The liveness tracker registration to be added.</param>
+        /// <returns><see cref="BeatPulseContext"/></returns>
         public BeatPulseContext AddTracker(IBeatPulseTrackerRegistration registration)
         {
             if (registration == null)

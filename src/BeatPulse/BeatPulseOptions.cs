@@ -2,24 +2,30 @@
 
 namespace BeatPulse
 {
+    /// <summary>
+    /// BeatPulse options 
+    /// </summary>
     public class BeatPulseOptions
     {
-        internal bool DetailedOutput { get; private set; }
+        protected internal bool DetailedOutput { get; protected set; }
 
-        internal string Path { get; private set; }
+        protected internal string Path { get; protected set; }
 
-        internal int? Port { get; private set; }
+        protected internal int? Port { get; protected set; }
 
-        internal int Timeout { get; private set; }
+        protected internal int Timeout { get; protected set; }
 
-        internal int CacheDuration { get; private set; }
+        protected internal int CacheDuration { get; protected set; }
 
-        internal bool CacheOutput { get; private set; }
+        protected internal bool CacheOutput { get; protected set; }
 
-        internal CacheMode CacheMode { get; private set; }
+        protected internal CacheMode CacheMode { get; protected set; }
 
-        internal bool DetailedErrors { get; private set; }
+        protected internal bool DetailedErrors { get; protected set; }
 
+        /// <summary>
+        /// Create a instance of <see cref="BeatPulseOptions"/>
+        /// </summary>
         public BeatPulseOptions()
         {
             DetailedOutput = false;
@@ -53,6 +59,12 @@ namespace BeatPulse
             return this;
         }
 
+        /// <summary>
+        /// Configured if check results include detailed information and exception messages.
+        /// </summary>
+        /// <param name="detailedOutput">If true check results include detailed information.</param>
+        /// <param name="includeExceptionMessages">If true exception messages are included.</param>
+        /// <returns><see cref="BeatPulseOptions"/></returns>
         public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true, bool includeExceptionMessages = false)
         {
             DetailedOutput = detailedOutput;
@@ -61,6 +73,11 @@ namespace BeatPulse
             return this;
         }
 
+        /// <summary>
+        /// Configure the BeatPulse path on wich provide BeatPulse health check results.
+        /// </summary>
+        /// <param name="path">The path to be configured.</param>
+        /// <returns><see cref="BeatPulseOptions"/></returns>
         public BeatPulseOptions ConfigurePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -73,6 +90,11 @@ namespace BeatPulse
             return this;
         }
 
+        /// <summary>
+        /// Configure a management port for BeatPulse.
+        /// </summary>
+        /// <param name="port">The port on wich BeatPulse provide health check results</param>
+        /// <returns><see cref="BeatPulseOptions"/></returns>
         public BeatPulseOptions ConfigurePort(int port)
         {
             Port = port;
@@ -80,6 +102,11 @@ namespace BeatPulse
             return this;
         }
 
+        /// <summary>
+        /// Configure the maximun duration on milliseconds of health check request. 
+        /// </summary>
+        /// <param name="milliseconds">Maximun duration on milliseconds.</param>
+        /// <returns><see cref="BeatPulseOptions"/></returns>
         public BeatPulseOptions ConfigureTimeout(int milliseconds)
         {
             Timeout = milliseconds;

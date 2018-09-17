@@ -61,7 +61,7 @@ namespace BeatPulse.Network
             {
                 _logger?.LogWarning($"The {nameof(ImapLiveness)} check fail with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
             finally
             {

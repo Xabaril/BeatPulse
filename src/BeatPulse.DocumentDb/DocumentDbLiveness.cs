@@ -40,7 +40,7 @@ namespace BeatPulse.DocumentDb
             {
                 _logger?.LogDebug($"The {nameof(DocumentDbLiveness)} check fail with the exception {ex.ToString()}.");
 
-                return LivenessResult.UnHealthy(ex, showDetailedErrors: context.ShowDetailedErrors);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }
