@@ -34,36 +34,36 @@ namespace BeatPulse.UI.Core
 
         public async Task Run(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("LivenessRuner is on run method.");
-
-            var liveness = await _context.LivenessConfigurations
-                    .ToListAsync();
-
-            foreach (var item in liveness)
+            using (_logger.BeginScope("LivenessRuner is on run method."))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    _logger.LogDebug("LivenessRunner Run is cancelled.");
+                var liveness = await _context.LivenessConfigurations
+                   .ToListAsync();
 
-                    break;
+                foreach (var item in liveness)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        _logger.LogDebug("LivenessRunner Run is cancelled.");
+
+                        break;
+                    }
+
+                    var (content, isHealthy) = await EvaluateLiveness(item);
+
+                    if (isHealthy && (await HasLivenessRecoveredFromFailure(item)))
+                    {
+                        await _failureNotifier.NotifyLivenessRestored(item.LivenessName, content);
+                    }
+                    else if (!isHealthy)
+                    {
+                        await NotifyFailureIfIsConfigured(item, content);
+                    }
+
+                    await SaveExecutionHistory(item, content, isHealthy);
                 }
 
-                var (content, isHealthy) = await EvaluateLiveness(item);
-
-                if (isHealthy && (await HasLivenessRecoveredFromFailure(item)))
-                {
-                    await _failureNotifier.NotifyLivenessRestored(item.LivenessName, content);
-                }
-
-                await SaveExecutionHistory(item, content, isHealthy);
-
-                if (!isHealthy)
-                {
-                    await NotifyFailureIfIsConfigured(item, content);
-                }
+                _logger.LogDebug("LivenessRuner run is completed.");
             }
-
-            _logger.LogDebug("LivenessRuner run is completed.");
         }
 
         public Task<LivenessExecution> GetLatestRun(string livenessName, CancellationToken cancellationToken)
@@ -80,11 +80,11 @@ namespace BeatPulse.UI.Core
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<int> AddConfiguredLiveness(LivenessConfiguration livenessConfiguration)
-        {
-            _context.LivenessConfigurations.Add(livenessConfiguration);
-            return await _context.SaveChangesAsync();
-        }
+        //public async Task<int> AddConfiguredLiveness(LivenessConfiguration livenessConfiguration)
+        //{
+        //    _context.LivenessConfigurations.Add(livenessConfiguration);
+        //    return await _context.SaveChangesAsync();
+        //}
 
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {

@@ -82,7 +82,6 @@ namespace BeatPulse.UI.Core
             {
                 _logger.LogError($"The failure notification for {webHook.Name} has not executed successfully.", exception);
             }
-
         }
     }
 }

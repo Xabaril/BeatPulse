@@ -90,8 +90,17 @@ namespace BeatPulse.UI.Discovery.Kubernetes
             }
         }
 
-        bool IsLivenessRegistered(LivenessDb livenessDb, string host) => livenessDb.LivenessConfigurations.Any(lc => lc.LivenessUri.Equals(host, StringComparison.InvariantCultureIgnoreCase));
-        bool IsValidBeatpulseStatusCode(HttpStatusCode statusCode) => statusCode == HttpStatusCode.OK || statusCode == HttpStatusCode.ServiceUnavailable;
+        bool IsLivenessRegistered(LivenessDb livenessDb, string host)
+        {
+            return livenessDb.LivenessConfigurations
+                .Any(lc => lc.LivenessUri.Equals(host, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        bool IsValidBeatpulseStatusCode(HttpStatusCode statusCode)
+        {
+            return statusCode == HttpStatusCode.OK || statusCode == HttpStatusCode.ServiceUnavailable;
+        }
+
         string ComposeBeatpulseServiceAddress(Service service)
         {
             var serviceAddress = service.Status?.LoadBalancer?.Ingress?.First().Ip ?? null;
