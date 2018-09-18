@@ -153,6 +153,8 @@ HTTP/1.1 200 OK
  
 Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_self**.
 
+# Port
+
 From *BeatPulse* **3.0**  you can also filter the port on which *BeatPulse* response requests. This is ideal when configure some pod with diferent listeners, one for public ingress and another one for internal use only (readiness, liveness).
 
 
@@ -199,6 +201,10 @@ To enable cache use the method `EnableOutputCache`:
 You can specify the cache method by using a second parameter with a `CacheMode` value (`Header`, `ServerMemory` or `HeaderAndServerMemory`) (default is `Header`).
 
 If you perform two inmediate requests (because an user-agent that does not follow the `Cache-Control` header is being used) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
+
+# Configure from Configuration
+
+[TODO]
 
 # Authentication
 
