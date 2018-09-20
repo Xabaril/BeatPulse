@@ -1,9 +1,10 @@
 ﻿using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
+using BeatPulse.UI.Core.Notifications;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace BeatPulse.UI

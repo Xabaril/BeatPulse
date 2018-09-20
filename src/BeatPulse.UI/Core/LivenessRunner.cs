@@ -221,7 +221,7 @@ namespace BeatPulse.UI.Core
 
                 return $"There is at least {failedChecks.Count} liveness ({failingLiveness}) failing.";
             }
-            catch
+            catch(Exception ex)
             {
                 return content;
             }
