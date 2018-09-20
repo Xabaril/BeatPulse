@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BeatPulse.UI.Discovery.Kubernetes
+namespace BeatPulse.UI.Core.Discovery.K8S
 {
     internal class ServiceList
     {

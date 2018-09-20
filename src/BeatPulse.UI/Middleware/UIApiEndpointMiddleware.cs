@@ -1,9 +1,10 @@
-﻿using BeatPulse.UI.Core;
-using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Core.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,40 +15,42 @@ namespace BeatPulse.UI.Middleware
     class UIApiEndpointMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly JsonSerializerSettings _jsonSerializationSettings;
 
         public UIApiEndpointMiddleware(RequestDelegate next)
         {
             _next = next;
-
-            _jsonSerializationSettings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
         }
 
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
         {
             using (var scope = serviceScopeFactory.CreateScope())
             {
-                var runner = scope.ServiceProvider.GetService<ILivenessRunner>();
+                var db = scope.ServiceProvider.GetService<LivenessDb>();
 
                 var cancellationToken = new CancellationToken();
 
-                var registeredLiveness = await runner.GetConfiguredLiveness(cancellationToken);
+                var registeredLiveness = await db.LivenessConfigurations
+                    .ToListAsync(cancellationToken);
 
-                var tasks = new List<Task<LivenessExecution>>();
+                var livenessExecutions = new List<LivenessExecution>();
 
                 foreach (var item in registeredLiveness)
                 {
-                    var livenessTask = runner.GetLatestRun(item.LivenessName, cancellationToken);
-                    tasks.Add(livenessTask);
+                    var execution = await db.LivenessExecutions
+                        .Include(le => le.History)
+                        .Where(le => le.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                        .SingleOrDefaultAsync(cancellationToken);
+
+                    if (execution != null)
+                    {
+                        livenessExecutions.Add(execution);
+                    }
                 }
 
-                await Task.WhenAll(tasks);
-
-                var livenessResult = tasks.Select(t => t.Result);
-                var responseContent = JsonConvert.SerializeObject(livenessResult, _jsonSerializationSettings);
+                var responseContent = JsonConvert.SerializeObject(livenessExecutions, new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
                 context.Response.ContentType = BeatPulseUIKeys.DEFAULT_RESPONSE_CONTENT_TYPE;
 

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace BeatPulse.UI.Discovery.Kubernetes
+namespace BeatPulse.UI.Core.Discovery.K8S
 {
     internal class KubernetesClient : IDisposable
     {

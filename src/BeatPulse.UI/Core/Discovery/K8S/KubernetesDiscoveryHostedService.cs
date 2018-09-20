@@ -1,9 +1,7 @@
-﻿using BeatPulse.UI.Configuration;
-using BeatPulse.UI.Core.Data;
+﻿using BeatPulse.UI.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Net;
@@ -11,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BeatPulse.UI.Discovery.Kubernetes
+namespace BeatPulse.UI.Core.Discovery.K8S
 {
     internal class KubernetesDiscoveryHostedService : IHostedService
     {

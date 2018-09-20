@@ -1,4 +1,4 @@
-﻿namespace BeatPulse.UI.Discovery.Kubernetes
+﻿namespace BeatPulse.UI.Core.Discovery.K8S
 {
     public class KubernetesApiEndpoints
     {

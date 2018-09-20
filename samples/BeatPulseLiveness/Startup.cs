@@ -43,28 +43,36 @@ namespace BeatPulseLiveness
 
                 setup.AddUrlGroup(new Uri[] { new Uri("http://www.google.es")});
 
-                setup.AddUrlGroup(opt =>
-                {
-                    opt.AddUri(new Uri("http://google.com"), uri =>
-                    {
-                        uri.UsePost()
-                           .AddCustomHeader("X-Method-Override", "DELETE");
-                    });
-                }, "uri-group2", "UriLiveness2");
+                //setup.AddUrlGroup(opt =>
+                //{
+                //    opt.AddUri(new Uri("http://google.com"), uri =>
+                //    {
+                //        uri.UsePost()
+                //           .AddCustomHeader("X-Method-Override", "DELETE");
+                //    });
+                //}, "uri-group2", "UriLiveness2");
 
                 //
                 //create simple ad-hoc liveness
                 //
 
-                //setup.AddLiveness("custom-liveness", opt =>
-                //{
-                //    opt.UsePath("custom-liveness");
-                //    opt.UseLiveness(new ActionLiveness((cancellationToken) =>
-                //    {
-                //        return Task.FromResult(
-                //            LivenessResult.UnHealthy(new ArgumentNullException("param1")));
-                //    }));
-                //});
+                setup.AddLiveness("custom-liveness", opt =>
+                {
+                    opt.UsePath("custom-liveness");
+                    opt.UseLiveness(new ActionLiveness((cancellationToken) =>
+                    {
+                        if (DateTime.Now.Minute % 3 == 0)
+                        {
+                            return Task.FromResult(
+                                LivenessResult.Healthy());
+                        }
+                        else
+                        {
+                            return Task.FromResult(
+                                LivenessResult.UnHealthy(new ArgumentNullException("param1")));
+                        }
+                    }));
+                });
 
                 //
                 //ceate ad-hoc liveness with dependency resolution

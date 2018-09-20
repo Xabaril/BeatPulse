@@ -1,5 +1,6 @@
 ﻿using BeatPulse.UI.Configuration;
 using BeatPulse.UI.Core.Data;
+using BeatPulse.UI.Core.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -48,50 +49,30 @@ namespace BeatPulse.UI.Core
                         break;
                     }
 
-                    var (content, isHealthy) = await EvaluateLiveness(item);
+                    var (response, isHealthy) = await EvaluateLiveness(item);
 
                     if (isHealthy && (await HasLivenessRecoveredFromFailure(item)))
                     {
-                        await _failureNotifier.NotifyLivenessRestored(item.LivenessName, content);
+                        await _failureNotifier.NotifyWakeUp(item.LivenessName);
                     }
                     else if (!isHealthy)
                     {
-                        await NotifyFailureIfIsConfigured(item, content);
+                        await _failureNotifier.NotifyWakeDown(item.LivenessName, GetFailedMessageFromContent(response));
                     }
 
-                    await SaveExecutionHistory(item, content, isHealthy);
+                    await SaveExecutionHistory(item, response, isHealthy);
                 }
 
                 _logger.LogDebug("LivenessRuner run is completed.");
             }
         }
 
-        public Task<LivenessExecution> GetLatestRun(string livenessName, CancellationToken cancellationToken)
-        {
-            return _context.LivenessExecutions
-                .Include(le => le.History)
-                .Where(le => le.LivenessName.Equals(livenessName, StringComparison.InvariantCultureIgnoreCase))
-                .SingleOrDefaultAsync(cancellationToken);
-        }
-
-        public Task<List<LivenessConfiguration>> GetConfiguredLiveness(CancellationToken cancellationToken)
-        {
-            return _context.LivenessConfigurations
-                .ToListAsync(cancellationToken);
-        }
-
-        //public async Task<int> AddConfiguredLiveness(LivenessConfiguration livenessConfiguration)
-        //{
-        //    _context.LivenessConfigurations.Add(livenessConfiguration);
-        //    return await _context.SaveChangesAsync();
-        //}
-
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {
             return new HttpClient().GetAsync(uri);
         }
 
-        private async Task<(string content, bool ishealthy)> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
+        private async Task<(string response, bool ishealthy)> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
         {
             var (uri, name) = livenessConfiguration;
 
@@ -225,44 +206,24 @@ namespace BeatPulse.UI.Core
             }
         }
 
-        private async Task NotifyFailureIfIsConfigured(LivenessConfiguration item, string content)
+        private string GetFailedMessageFromContent(string content)
         {
-            _logger.LogWarning($"LivenessRuner notify liveness failure for {item.LivenessUri}.");
-
-            var lastNotification = _context.LivenessFailuresNotifications
-                .Where(lf => lf.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
-                .OrderByDescending(lf => lf.LastNotified)
-                .Take(1)
-                .SingleOrDefault();
-
-            if (lastNotification != null
-                &&
-                (DateTime.UtcNow - lastNotification.LastNotified).TotalSeconds < _settings.MinimumSecondsBetweenFailureNotifications)
+            try
             {
-                _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
+                var message = JsonConvert.DeserializeObject<OutputLivenessMessageResponse>(content);
+
+                var failedChecks = message.Checks
+                    .Where(c => !c.IsHealthy)
+                    .ToList();
+
+                var failingLiveness = failedChecks.Select(f => f.Name)
+                    .Aggregate((current, next) => $"{current},{next}");
+
+                return $"There is at least {failedChecks.Count} liveness ({failingLiveness}) failing.";
             }
-            else
+            catch
             {
-                await _failureNotifier.NotifyFailure(item.LivenessName, content);
-
-                var notification = new LivenessFailureNotification()
-                {
-                    LivenessName = item.LivenessName,
-                    LastNotified = DateTime.UtcNow
-                };
-
-                await SaveNotification(notification);
-
-                _logger.LogWarning("A new notification failure is created and sent.");
-            }
-        }
-
-        private async Task SaveNotification(LivenessFailureNotification notification)
-        {
-            if (notification != null)
-            {
-                await _context.LivenessFailuresNotifications.AddAsync(notification);
-                await _context.SaveChangesAsync();
+                return content;
             }
         }
 
@@ -285,6 +246,8 @@ namespace BeatPulse.UI.Core
             public string Name { get; set; }
 
             public string Message { get; set; }
+
+            public string Exception { get; set; }
 
             public long MilliSeconds { get; set; }
 
