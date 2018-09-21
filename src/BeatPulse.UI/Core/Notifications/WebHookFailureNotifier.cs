@@ -25,7 +25,7 @@ namespace BeatPulse.UI.Core.Notifications
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task NotifyWakeDown(string livenessName, string message)
+        public async Task NotifyDown(string livenessName, string message)
         {
             if (!await IsNotifiedOnWindowTime(livenessName))
             {
