@@ -35,7 +35,7 @@
     <RabbitMQVersion>5.0.1</RabbitMQVersion>
     <ApplicationInsightsVersion>2.4.0</ApplicationInsightsVersion>
     <AWSSDKDynamoDBv2Version>3.3.9</AWSSDKDynamoDBv2Version>
-    <OracleManagedDataAccessCoreVersion>2.12.0-beta3</OracleManagedDataAccessCoreVersion>
+    <OracleManagedDataAccessCoreVersion>2.18.3</OracleManagedDataAccessCoreVersion>
     <SSHNetPackageVersion>2016.1.0</SSHNetPackageVersion>
   </PropertyGroup>
 
@@ -64,7 +64,7 @@
     <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
     <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
     <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
-    <BeatPulseOraclePackageVersion>2.1.0-beta3</BeatPulseOraclePackageVersion>
+    <BeatPulseOraclePackageVersion>2.1.1</BeatPulseOraclePackageVersion>
     <BeatPulseSystemPackageVersion>2.2.2</BeatPulseSystemPackageVersion>
     <BeatPulseNetworkPackageVersion>2.1.1</BeatPulseNetworkPackageVersion>
   </PropertyGroup>
