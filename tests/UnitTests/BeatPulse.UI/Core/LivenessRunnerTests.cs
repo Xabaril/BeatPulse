@@ -230,7 +230,7 @@ namespace BeatPulse.UI.Core
                 return Task.CompletedTask;
             }
 
-            public Task NotifyWakeDown(string livenessName, string message)
+            public Task NotifyDown(string livenessName, string message)
             {
                 if (!_notifications.ContainsKey(livenessName))
                 {
