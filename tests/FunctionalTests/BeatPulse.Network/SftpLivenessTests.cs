@@ -11,7 +11,6 @@ using FunctionalTests.Base;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Renci.SshNet;
 using Xunit;
 
 namespace FunctionalTests.BeatPulse.Network
