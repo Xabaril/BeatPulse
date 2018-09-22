@@ -103,6 +103,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500);
 
+                    b.Property<bool>("IsUpAndRunning")
+                        .IsRequired();
+
                     b.HasKey("Id");
 
                     b.ToTable("LivenessFailuresNotifications");

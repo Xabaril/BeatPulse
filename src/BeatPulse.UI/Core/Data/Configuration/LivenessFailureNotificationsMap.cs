@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatPulse.UI.Core.Data.Configuration
 {
@@ -16,6 +13,9 @@ namespace BeatPulse.UI.Core.Data.Configuration
                 .IsRequired();
 
             builder.Property(lf => lf.LastNotified)
+                .IsRequired();
+
+            builder.Property(lf => lf.IsUpAndRunning)
                 .IsRequired();
         }
     }

@@ -18,7 +18,7 @@ namespace BeatPulse.UI.Core.Notifications
         private readonly BeatPulseSettings _settings;
         private readonly LivenessDb _db;
 
-        public WebHookFailureNotifier(LivenessDb db,IOptions<BeatPulseSettings> settings, ILogger<WebHookFailureNotifier> logger)
+        public WebHookFailureNotifier(LivenessDb db, IOptions<BeatPulseSettings> settings, ILogger<WebHookFailureNotifier> logger)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _settings = settings.Value ?? new BeatPulseSettings();
@@ -27,28 +27,42 @@ namespace BeatPulse.UI.Core.Notifications
 
         public async Task NotifyDown(string livenessName, string message)
         {
-            if (!await IsNotifiedOnWindowTime(livenessName))
-            {
-                await Notify(livenessName, failure: message, restore: false);
-
-                await SaveNotification(new LivenessFailureNotification()
-                {
-                    LivenessName = livenessName,
-                    LastNotified = DateTime.UtcNow
-                });
-            }
-            else
-            {
-                _logger.LogInformation("Notification is not performed becaused is already notified and the elapsed time is less than configured.");
-            }
+            await Notify(livenessName, failure: message, isUp: false);
         }
 
         public async Task NotifyWakeUp(string livenessName)
         {
-            await Notify(livenessName, failure: "", restore: true);
+            await Notify(livenessName, isUp: true);
         }
 
-        private async Task<bool> IsNotifiedOnWindowTime(string livenessName)
+        private async Task Notify(string livenessName, string failure = "", bool isUp = false)
+        {
+            foreach (var webHook in _settings.Webhooks)
+            {
+                var payload = isUp ? webHook.RestoredPayload : webHook.Payload;
+
+                payload = payload.Replace(BeatPulseUIKeys.LIVENESS_BOOKMARK, livenessName);
+
+                if (!await IsNotifiedOnWindowTime(livenessName, isUp))
+                {
+                    payload = payload.Replace(BeatPulseUIKeys.FAILURE_BOOKMARK, failure);
+
+                    await SaveNotification(new LivenessFailureNotification()
+                    {
+                        LastNotified = DateTime.UtcNow,
+                        LivenessName = livenessName,
+                        IsUpAndRunning = isUp
+                    });
+
+                    await SendRequest(webHook.Uri, webHook.Name, payload);
+                }
+                else
+                {
+                    _logger.LogInformation("Notification is sent on same window time.");
+                }
+            }
+        }
+        private async Task<bool> IsNotifiedOnWindowTime(string livenessName,bool restore)
         {
             var lastNotification = await _db.LivenessFailuresNotifications
                 .Where(lf => lf.LivenessName.Equals(livenessName, StringComparison.InvariantCultureIgnoreCase))
@@ -57,6 +71,8 @@ namespace BeatPulse.UI.Core.Notifications
                 .SingleOrDefaultAsync();
 
             return lastNotification != null
+                &&
+                lastNotification.IsUpAndRunning == restore
                 &&
                 (DateTime.UtcNow - lastNotification.LastNotified).TotalSeconds < _settings.MinimumSecondsBetweenFailureNotifications;
         }
@@ -70,23 +86,6 @@ namespace BeatPulse.UI.Core.Notifications
             }
         }
 
-
-        private async Task Notify(string livenessName, string failure = "", bool restore = false)
-        {
-            foreach (var webHook in _settings.Webhooks)
-            {
-                var payload = restore ? webHook.RestoredPayload : webHook.Payload;
-
-                payload = payload.Replace(BeatPulseUIKeys.LIVENESS_BOOKMARK, livenessName);
-
-                if (!restore)
-                {
-                    payload = payload.Replace(BeatPulseUIKeys.FAILURE_BOOKMARK, failure);
-                }
-
-                await SendRequest(webHook.Uri, webHook.Name, payload);
-            }
-        }
         private async Task SendRequest(string uri, string name, string payloadContent)
         {
             if (uri == null || !Uri.TryCreate(uri, UriKind.Absolute, out Uri webHookUri))
