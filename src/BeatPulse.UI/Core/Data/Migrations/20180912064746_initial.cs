@@ -49,7 +49,8 @@ namespace BeatPulse.UI.Core.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     LivenessName = table.Column<string>(maxLength: 500, nullable: false),
-                    LastNotified = table.Column<DateTime>(nullable: false)
+                    LastNotified = table.Column<DateTime>(nullable: false),
+                    IsUpAndRunning = table.Column<bool>(nullable: false),
                 },
                 constraints: table =>
                 {

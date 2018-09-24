@@ -57,7 +57,7 @@ namespace BeatPulse.UI.Core
                     }
                     else if (!isHealthy)
                     {
-                        await _failureNotifier.NotifyWakeDown(item.LivenessName, GetFailedMessageFromContent(response));
+                        await _failureNotifier.NotifyDown(item.LivenessName, GetFailedMessageFromContent(response));
                     }
 
                     await SaveExecutionHistory(item, response, isHealthy);

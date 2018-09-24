@@ -24,7 +24,7 @@ namespace BeatPulse.Core
         public TimeSpan Elapsed()
         {
             var endTimestamp = Stopwatch.GetTimestamp();
-            var durationInTicks = (endTimestamp - _startTimestamp) / Stopwatch.Frequency * TicksMultiplier;
+            var durationInTicks = ((endTimestamp - _startTimestamp) / Stopwatch.Frequency) * TicksMultiplier;
 
             return TimeSpan.FromTicks((long)durationInTicks);
         }
