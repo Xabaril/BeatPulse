@@ -204,7 +204,17 @@ If you perform two inmediate requests (because an user-agent that does not follo
 
 # Configure from Configuration
 
-[TODO]
+From *BeatPulse* **3.0**  you can configure all *BeatPulse* options from configuration using BeatPulseOptions section:
+
+```json
+ "BeatPulseOptions": {
+    "Path": "health",
+    "DetaildOutput": true,
+    "DetailedErrors": true,
+    "Timeout": 2000,
+    "Port": 5000
+  }
+```
 
 # Authentication
 

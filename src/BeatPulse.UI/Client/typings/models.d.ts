@@ -21,6 +21,7 @@ export interface LivenessResult {
 export interface Check {
     name: string;
     message: string;
+    exception: string;
     elapsed: string;
     run: boolean;
     path: string,

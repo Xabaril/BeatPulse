@@ -30,7 +30,7 @@ namespace BeatPulse
         public new int CacheDuration
         {
             get => base.CacheDuration;
-            set => base.Timeout = value;
+            set => base.CacheDuration = value;
         }
 
         public new bool CacheOutput

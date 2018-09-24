@@ -96,7 +96,7 @@ For more information about *BeatPulse* configuration and other features ( config
 
 ## Tracking pulses
 
-With *TrackingPulses* ou can save liveness information in external services. Currently we have developed different trackers you can use:
+With *TrackingPulses* you can save liveness information in external services. Currently we have developed different trackers you can use:
 
  > [Application Insights Tracker](./doc/ai-tracker.md)
 
@@ -142,14 +142,15 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     "Liveness": [
       {
         "Name": "HTTP-Api-Basic",
-        "Uri": "http://localhost:6457/health"
+        "Uri": "http://localhost:6457/health?DetailedOutput=true"
       }
     ],
     "Webhooks": [
       {
         "Name": "",
         "Uri": "",
-        "Payload": ""
+        "Payload": "",
+        "RestoredPayload":""
       }
     ],
     "EvaluationTimeOnSeconds": 10,
