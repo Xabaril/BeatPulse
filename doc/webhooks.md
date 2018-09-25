@@ -2,7 +2,7 @@
 
 ## Microsoft Teams
 
-![BeatPulseUI](./webhook_teams.png)
+![BeatPulseUI](./images/ui-webhooks.png)
 
 If you want to send failure notifications to Microsoft Teams the payload to be used is:
 
@@ -27,7 +27,7 @@ If you want to send failure notifications to Microsoft Teams the payload to be u
 
 > BeatPulseUI replace automatically [[LIVENESS]] and [[FAILURE]] bookmarks.
 
-You must scape the json before setting the **Payload** property in the configuration file:
+You must escape the json before setting the **Payload** property in the configuration file:
 
 ```json
 {

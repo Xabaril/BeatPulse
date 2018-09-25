@@ -9,7 +9,7 @@
 *.userosscache
 *.sln.docstates
 .vscode/
-
+*chksum*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -42,6 +42,9 @@ TestResult.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
+
+# Prometheus samples volume
+samples/Prometheus-Stack-Environment/prometheus/data/wall
 
 # .NET Core
 project.lock.json
@@ -236,9 +239,6 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
-
-# Typescript v1 declaration files
-typings/
 
 # Visual Studio 6 build log
 *.plg

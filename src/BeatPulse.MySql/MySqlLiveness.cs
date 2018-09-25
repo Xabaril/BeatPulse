@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BeatPulse.MySql
 {
@@ -10,32 +11,32 @@ namespace BeatPulse.MySql
     {
         private readonly string _connectionString;
 
-        public string Name => nameof(MySqlLiveness);
-
-        public string Path { get; }
-
-        public MySqlLiveness(string connectionString, string defaultPath)
+        public MySqlLiveness(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     await connection.OpenAsync(cancellationToken);
+
                     if (await connection.PingAsync(cancellationToken))
+                    {
                         return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    }
                     else
-                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name), false);
+                    {
+                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name), false);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

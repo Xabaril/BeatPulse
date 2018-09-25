@@ -1,18 +1,22 @@
 ﻿using BeatPulse.Core;
+using BeatPulse.Sqlite;
 
-namespace BeatPulse.Sqlite
+namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string defaultPath = "sqlite")
+        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
         {
-            return AddSqlite(context, sqliteConnectionString, "select name from sqlite_master where type='table'", defaultPath);
+            return AddSqlite(context, sqliteConnectionString, "select name from sqlite_master where type='table'", name, defaultPath);
         }
 
-        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string healthQuery, string defaultPath = "sqlite")
+        public static BeatPulseContext AddSqlite(this BeatPulseContext context, string sqliteConnectionString, string healthQuery, string name = nameof(SqliteLiveness), string defaultPath = "sqlite")
         {
-            context.AddLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new SqliteLiveness(sqliteConnectionString, healthQuery));
+                setup.UsePath(defaultPath);
+            });
         }
     }
 }

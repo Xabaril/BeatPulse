@@ -26,7 +26,7 @@ namespace BeatPulse
             CacheMode = CacheMode.Header;
         }
 
-        public BeatPulseOptions EnableOutputCache(int seconds, CacheMode mode = CacheMode.Header)
+        public BeatPulseOptions ConfigureOutputCache(int seconds, CacheMode mode = CacheMode.Header)
         {
             CacheDuration = seconds;
             CacheOutput = true;
@@ -35,14 +35,14 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions EnableDetailedOutput()
+        public BeatPulseOptions ConfigureDetailedOutput(bool detailedOutput = true)
         {
-            DetailedOutput = true;
+            DetailedOutput = detailedOutput;
 
             return this;
         }
 
-        public BeatPulseOptions SetAlternatePath(string path)
+        public BeatPulseOptions ConfigurePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -54,7 +54,7 @@ namespace BeatPulse
             return this;
         }
 
-        public BeatPulseOptions SetTimeout(int milliseconds)
+        public BeatPulseOptions ConfigureTimeout(int milliseconds)
         {
             Timeout = milliseconds;
 

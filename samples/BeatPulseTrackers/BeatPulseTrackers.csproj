@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>686c64fc-ce7d-4751-b6e8-1a98315bd7be</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse\BeatPulse.csproj" />
+  </ItemGroup>
+
+</Project>

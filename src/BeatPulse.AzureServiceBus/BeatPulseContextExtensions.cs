@@ -1,29 +1,35 @@
 ﻿using BeatPulse.AzureServiceBus;
 using BeatPulse.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddAzureEventHub(this BeatPulseContext context, string connectionString, string eventHubName, string defaultPath = "azureeventhub")
+        public static BeatPulseContext AddAzureEventHub(this BeatPulseContext context, string connectionString, string eventHubName, string name = nameof(AzureEventHubLiveness), string defaultPath = "azureeventhub")
         {
-            context.AddLiveness(new AzureEventHubLiveness(connectionString, eventHubName, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureEventHubLiveness(connectionString, eventHubName));
+                setup.UsePath(defaultPath);
+            });
         }
 
-        public static BeatPulseContext AddAzureServiceBusQueue(this BeatPulseContext context, string connectionString, string queueName, string defaultPath = "azureservicebusqueue")
+        public static BeatPulseContext AddAzureServiceBusQueue(this BeatPulseContext context, string connectionString, string queueName, string name = nameof(AzureServiceBusQueueLiveness), string defaultPath = "azureservicebusqueue")
         {
-            context.AddLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName));
+                setup.UsePath(defaultPath);
+            });
         }
 
-        public static BeatPulseContext AddAzureServiceBusTopic(this BeatPulseContext context, string connectionString, string topicName, string defaultPath = "azureservicebustopic")
+        public static BeatPulseContext AddAzureServiceBusTopic(this BeatPulseContext context, string connectionString, string topicName, string name = nameof(AzureServiceBusTopicLiveness), string defaultPath = "azureservicebustopic")
         {
-            context.AddLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName, defaultPath));
-            return context;
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UseLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName));
+                setup.UsePath(defaultPath);
+            });
         }
     }
 }

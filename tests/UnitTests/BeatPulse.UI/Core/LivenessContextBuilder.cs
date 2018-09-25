@@ -43,7 +43,7 @@ namespace BeatPulse.UI.Core
 
         public LivenessDb Build()
         {
-            var contextOptionsBuilder = new DbContextOptionsBuilder();
+            var contextOptionsBuilder = new DbContextOptionsBuilder<LivenessDb>();
             contextOptionsBuilder.UseSqlite($"Data Source={_databaseName}");
 
             var context = new LivenessDb(contextOptionsBuilder.Options);

@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using UnitTests.Base;
 using Xunit;
 
@@ -26,15 +25,13 @@ namespace BeatPulse.Npgsql
                     });
                 });
 
-            var beatPulseContex = new TestServer(webHostBuilder)
+            var beatPulseContext = new TestServer(webHostBuilder)
                 .Host
                 .Services
                 .GetService<BeatPulseContext>();
 
-            beatPulseContex.AllLiveness
-                .Where(hc => hc.GetType() == typeof(NpgSqlLiveness))
-                .Should().HaveCount(1);
-
+            beatPulseContext.Should()
+                .ContainsLiveness(nameof(NpgSqlLiveness));
         }
     }
 }

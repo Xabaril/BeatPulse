@@ -10,19 +10,14 @@ namespace BeatPulse.Redis
     public class RedisLiveness
         : IBeatPulseLiveness
     {
-        private string _redisConnectionString;
+        private readonly string _redisConnectionString;
 
-        public string Name => nameof(RedisLiveness);
-
-        public string Path { get; }
-
-        public RedisLiveness(string redisConnectionString, string defaultPath)
+        public RedisLiveness(string redisConnectionString)
         {
             _redisConnectionString = redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -32,12 +27,11 @@ namespace BeatPulse.Redis
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                         : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);
             }
-
         }
     }
 }

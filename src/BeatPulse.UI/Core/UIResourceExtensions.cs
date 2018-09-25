@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BeatPulse.UI.Middleware;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,10 +24,11 @@ namespace BeatPulse.UI.Core
         /// <param name="resources"></param>
         /// <param name="apiPath"></param>
         /// <returns></returns>
-        public static UIResource GetMainUI(this IEnumerable<UIResource> resources, string apiPath)
+        public static UIResource GetMainUI(this IEnumerable<UIResource> resources, ApiOptions apiOptions)
         {
             var resource = resources.WithContentType(ContentType.HTML).FirstOrDefault(r => r.FileName == BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_RESOURCE);
-            resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_API_TARGET, apiPath);
+            resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_API_TARGET, apiOptions.BeatPulseApiPath);
+            resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_WEBHOOKS_API_TARGET, apiOptions.BeatPulseWebHooksPath);
             return resource;
         }
     }

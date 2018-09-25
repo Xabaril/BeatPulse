@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
     <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
@@ -9,27 +9,15 @@
     <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
     <Company>$(Company)</Company>
     <Authors>$(Authors)</Authors>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\beatpulse.css" />
-    <None Remove="Assets\beatpulse.js" />
-    <None Remove="Assets\index.html" />
-    <None Remove="Assets\index.js" />
-    <None Remove="Assets\moment.js" />
-    <None Remove="Assets\resources.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\beatpulse.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\beatpulse.css" />
-    <EmbeddedResource Include="Assets\index.html" />
-    <EmbeddedResource Include="Assets\index.js" />
-    <EmbeddedResource Include="Assets\moment.js" />
-    <EmbeddedResource Include="Assets\resources.js" />
+    <EmbeddedResource Include="assets\index.html" />
+    <EmbeddedResource Include="assets\beatpulse.css" />
+    <EmbeddedResource Include="assets\bootstrap-min.css" />
+    <EmbeddedResource Include="assets\vendors-dll.js" />
+    <EmbeddedResource Include="assets\beatpulse-bundle.js" />    
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +30,19 @@
     <PackageReference Include="Newtonsoft.Json" Version="$(NewtonSoftJsonVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(EntityFrameworkCoreToolsVersion)" />
-  </ItemGroup>
+  <Target Name="InstallPackages" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="*** Installing npm packages ***" />
+    <Exec Command="npm install" ContinueOnError="false" />  
+  </Target>
+
+  <Target Name="BuildClient" BeforeTargets="BeforeBuild" DependsOnTargets="InstallPackages">
+    <Message Importance="high" Text="*** Bundling client files ***" />
+    <Exec Command="npm run build" ContinueOnError="false" />
+  </Target>
+
+  <Target Name="UglifyCss" BeforeTargets="BeforeBuild" DependsOnTargets="BuildClient">
+    <Message Importance="high" Text="*** Uglifying css files *** " />
+    <Exec Command="npm run buildcss:prod" ContinueOnError="false" />
+  </Target>
+  
 </Project>

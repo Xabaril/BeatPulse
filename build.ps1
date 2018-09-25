@@ -49,8 +49,7 @@ echo "running tests"
 try {
 
 	Push-Location -Path .\tests\UnitTests
-
-	exec { & dotnet xunit -configuration Release --fx-version 2.0.7 }
+	exec { & dotnet test }
 } finally {
 	Pop-Location
 }
@@ -58,8 +57,7 @@ try {
 try {
     
         Push-Location -Path .\tests\FunctionalTests
-    
-        exec { & dotnet xunit -configuration Release --fx-version 2.0.7 }
+        exec { & dotnet test }
     } finally {
         Pop-Location
     }
@@ -81,6 +79,13 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.AzureServiceBus\BeatPulse.AzureServiceBus.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 	exec { & dotnet pack .\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+	exec { & dotnet pack .\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.Uris\BeatPulse.Uris.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.Oracle\BeatPulse.Oracle.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.System\BeatPulse.System.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
+    exec { & dotnet pack .\src\BeatPulse.Network\BeatPulse.Network.csproj -c Release -o ..\..\artifacts --include-symbols --no-build }
 } else {
     exec { & dotnet pack .\src\BeatPulse\BeatPulse.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
     exec { & dotnet pack .\src\BeatPulse.SqlServer\BeatPulse.SqlServer.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
@@ -97,5 +102,12 @@ if ($suffix -eq "") {
 	exec { & dotnet pack .\src\BeatPulse.RabbitMQ\BeatPulse.RabbitMQ.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 	exec { & dotnet pack .\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.PrometheusTracker\BeatPulse.PrometheusTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+	exec { & dotnet pack .\src\BeatPulse.StatusPageTracker\BeatPulse.StatusPageTracker.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.Uris\BeatPulse.Uris.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.Oracle\BeatPulse.Oracle.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.System\BeatPulse.System.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
+    exec { & dotnet pack .\src\BeatPulse.Network\BeatPulse.Network.csproj -c Release -o ..\..\artifacts --include-symbols --no-build --version-suffix=$suffix }
 }
 

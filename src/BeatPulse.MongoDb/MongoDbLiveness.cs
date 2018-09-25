@@ -10,19 +10,14 @@ namespace BeatPulse.MongoDb
     public class MongoDbLiveness
         : IBeatPulseLiveness
     {
-        public string Name => nameof(MongoDbLiveness);
-
-        public string Path { get; }
-
         private readonly string _mongoDbConnectionString;
 
-        public MongoDbLiveness(string mongoDbConnectionString, string defaultPath)
+        public MongoDbLiveness(string mongoDbConnectionString)
         {
             _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -33,11 +28,10 @@ namespace BeatPulse.MongoDb
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);
-
             }
         }
     }

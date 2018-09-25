@@ -12,12 +12,14 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddBeatPulse(this IServiceCollection services, Action<BeatPulseContext> setup = null)
         {
             var context = new BeatPulseContext();
+            context.AddLiveness(BeatPulseKeys.BEATPULSE_SELF_NAME, opt =>
+            {
+                var selfLiveness = new ActionLiveness(
+                    (httpContext, cancellationToken) => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true)));
 
-            //add default self segment out of box
-            context.AddLiveness(new ActionLiveness(
-                BeatPulseKeys.BEATPULSE_SELF_NAME,
-                BeatPulseKeys.BEATPULSE_SELF_SEGMENT,
-                (httpContext, cancellationToken) => Task.FromResult((BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true))));
+                opt.UsePath(BeatPulseKeys.BEATPULSE_SELF_SEGMENT);
+                opt.UseLiveness(selfLiveness);
+            });
 
             setup?.Invoke(context);
 

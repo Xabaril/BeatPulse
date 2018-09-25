@@ -1,19 +1,25 @@
-﻿using System;
+﻿using BeatPulse.Core;
+using System;
 
-namespace BeatPulse.Core
+namespace BeatPulse
 {
     public static class BulsePulseContextExtensions
     {
-        public static BeatPulseContext AddLiveness(this BeatPulseContext ctx, IBeatPulseLiveness liveness)
-            => ctx.AddLiveness(new BeatPulseLivenessInstanceRegistration(liveness));
+        public static BeatPulseContext AddLiveness(this BeatPulseContext beatPulseContext, string name, Action<BeatPulseLivenessRegistrationOptions> setup)
+        {
+            var options = new BeatPulseLivenessRegistrationOptions(name);
+            setup(options);
 
-        public static BeatPulseContext AddLiveness(this BeatPulseContext ctx, string path, Func<IServiceProvider, IBeatPulseLiveness> creator)
-            => ctx.AddLiveness(new BeatPulseLivenessFactoryRegistration(path, creator));
+            beatPulseContext.AddLiveness(options.CreateRegistration());
 
-        public static BeatPulseContext AddTracker(this BeatPulseContext ctx, IBeatPulseTracker tracker)
-            => ctx.AddTracker(new BeatPulseTrackerInstanceRegistration(tracker));
+            return beatPulseContext;
+        }
 
-        public static BeatPulseContext AddTracker(this BeatPulseContext ctx, string name, Func<IServiceProvider, IBeatPulseTracker> creator)
-            => ctx.AddTracker(new BeatPulseTrackerFactoryRegistration(name, creator));
+
+        public static BeatPulseContext AddTracker(this BeatPulseContext beatPulseContext, IBeatPulseTracker tracker)
+            => beatPulseContext.AddTracker(new BeatPulseTrackerInstanceRegistration(tracker));
+
+        public static BeatPulseContext AddTracker(this BeatPulseContext beatPulseContext, Func<IServiceProvider, IBeatPulseTracker> creator)
+            => beatPulseContext.AddTracker(new BeatPulseTrackerFactoryRegistration(creator));
     }
 }

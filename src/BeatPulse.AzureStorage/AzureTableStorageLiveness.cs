@@ -1,37 +1,38 @@
 ﻿using BeatPulse.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BeatPulse.AzureStorage
 {
     public class AzureTableStorageLiveness : IBeatPulseLiveness
     {
-        CloudStorageAccount storageAccount;
-        public string Name => nameof(AzureTableStorageLiveness);
+        private readonly CloudStorageAccount _storageAccount;
 
-        public string Path { get; }
-
-        public AzureTableStorageLiveness(string connectionString, string defaultPath)
+        public AzureTableStorageLiveness(string connectionString)
         {
-            storageAccount = CloudStorageAccount.Parse(connectionString);
-            Path = defaultPath ?? throw new ArgumentNullException(nameof(defaultPath));
+            _storageAccount = CloudStorageAccount.Parse(connectionString);
         }
 
-        public async System.Threading.Tasks.Task<(string, bool)> IsHealthy(HttpContext context, bool isDevelopment, CancellationToken cancellationToken = default)
+        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
         {
             try
             {
-                var blobClient = storageAccount.CreateCloudTableClient();
-                var serviceProperties = await blobClient.GetServicePropertiesAsync(new TableRequestOptions(), null, cancellationToken);
+                var blobClient = _storageAccount.CreateCloudTableClient();
+
+                var serviceProperties = await blobClient.GetServicePropertiesAsync(
+                    new TableRequestOptions(), 
+                    operationContext:null,
+                    cancellationToken:cancellationToken);
+
                 return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
             }
             catch (Exception ex)
             {
-                var message = !isDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, Name)
+                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
                     : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
                 return (message, false);

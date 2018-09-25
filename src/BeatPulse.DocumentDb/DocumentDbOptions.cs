@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BeatPulse.DocumentDb
+﻿namespace BeatPulse.DocumentDb
 {
     public class DocumentDbOptions
     {

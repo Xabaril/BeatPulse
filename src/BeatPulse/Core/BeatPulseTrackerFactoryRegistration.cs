@@ -7,11 +7,8 @@ namespace BeatPulse.Core
     {
         private readonly Func<IServiceProvider, IBeatPulseTracker> _creator;
 
-        public string Name { get; }
-
-        public BeatPulseTrackerFactoryRegistration(string name, Func<IServiceProvider, IBeatPulseTracker> creator)
+        public BeatPulseTrackerFactoryRegistration(Func<IServiceProvider, IBeatPulseTracker> creator)
         {
-            Name = name;
             _creator = creator ?? throw new ArgumentNullException(nameof(creator));
         }
 

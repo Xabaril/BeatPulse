@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetStandardTargetVersion)</TargetFramework>
+    <PackageLicenseUrl>$(PackageLicenseUrl)</PackageLicenseUrl>
+    <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>
+    <PackageTags>BeatPulse;HealthCheck;Beat;Health;StatusPage;StatusPage IO;statuspage.ioTracker;Trackers;</PackageTags>
+    <Description>BeatPulse.StatusPage is a BeatPulseTracker for StatusPage.IO component status system.</Description>
+    <Version>$(BeatPulseStatusPageTracker)</Version>
+    <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+    <Company>$(Company)</Company>
+    <Authors>$(Authors)</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeatPulse\BeatPulse.csproj" />
+  </ItemGroup>
+
+</Project>

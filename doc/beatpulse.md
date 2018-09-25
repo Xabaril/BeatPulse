@@ -2,7 +2,7 @@
 
 By default, the global path returns the aggregated state of all liveness checkers, including the out of box *self* check added. 
 
-If all liveness are up and running, *BeatPulse* return HTTP 200 OK.
+If all liveness are up and running, *BeatPulse* returns HTTP 200 OK.
 
 ``` bash
 curl http://your-domain/hc 
@@ -14,7 +14,7 @@ HTTP/1.1 200 OK
 OK
 ```
 
-If some liveness is not working, *BeatPulse* return HTTP 503 ServiceUnavailable.
+If some liveness is not working, *BeatPulse* returns HTTP 503 ServiceUnavailable.
 
 ``` bash
 curl http://your-domain/hc 
@@ -37,35 +37,35 @@ User-Agent: curl/7.49.0
 Accept: */*
 HTTP/1.1 200 OK
 {
-    "Checks": [
+    "checks": [
     {
-        "Name": "self",
-        "Path":"_self",
-        "Message": "OK",
-        "MilliSeconds": 0,
-        "Run": true,
-        "IsHealthy": true
+        "name": "self",
+        "path":"_self",
+        "message": "OK",
+        "milliSeconds": 0,
+        "run": true,
+        "isHealthy": true
     },
     {
-        "Name": "cat",
-        "Path":"catapi",
-        "Message": "OK",
-        "MilliSeconds": 376,
-        "Run": true,
-        "IsHealthy": true
+        "name": "cat",
+        "path":"catapi",
+        "message": "OK",
+        "milliSeconds": 376,
+        "run": true,
+        "isHealthy": true
     },
     {
-        "Name": "SqlServerLiveness",
-        "Path":"sqlserver",
-        "Message": "OK",
-        "MilliSeconds": 309,
-        "Run": true,
-        "IsHealthy": true
+        "name": "SqlServerLiveness",
+        "path":"sqlserver",
+        "message": "OK",
+        "milliSeconds": 309,
+        "run": true,
+        "isHealthy": true
     }],
-    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
-    "Code": "200",
-    "Reason":""
+    "startedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "endAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "code": "200",
+    "reason":""
 }
 ```
 
@@ -80,23 +80,23 @@ User-Agent: curl/7.49.0
 Accept: */*
 HTTP/1.1 200 OK
 {
-    "Checks": [
+    "checks": [
     {
-        "Name": "SqlServerLiveness",
-        "Path":"sqlserver",
-        "Message": "OK",
-        "MilliSeconds": 309,
-        "Run": true,
-        "IsHealthy": true
+        "name": "SqlServerLiveness",
+        "path":"sqlserver",
+        "message": "OK",
+        "milliSeconds": 309,
+        "run": true,
+        "isHealthy": true
     }],
-    "StartedAtUtc": "2018-02-26T19:30:05.4058955Z",
-    "EndAtUtc": "2018-02-26T19:30:06.0978236Z",
-    "Code": "200",
-    "Reason":""
+    "startedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "endAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "code": "200",
+    "reason":""
 }
 ```
  
-Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_sef**.
+Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_self**.
 
 # Cache responses
 
@@ -110,10 +110,10 @@ To enable cache use the method `EnableOutputCache`:
 ``` csharp
     .UseBeatPulse(options=>
     {
-        options.SetAlternatePath("health") //default hc
-            .EnableOutputCache(10)      // Can use CacheMode as second parameter
-            .SetTimeout(milliseconds:1500) // default -1 infinitely
-            .EnableDetailedOutput(); //default false
+        options.ConfigurePath(path:"health") //default hc
+            .ConfigureOutputCache(seconds:10)      // Can use CacheMode as second parameter
+            .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
+            .ConfigureDetailedOutput(detailedOutput:true); //default false
     })
 ```
 
@@ -141,6 +141,8 @@ Out-of-box you can authenticate requests using an **api-key** query string param
 With this filter, only requests with the **api-key** query string parameter can get results, http://your-server/health?api-key=api-key-secret.
 
 You can create your custom **IBeatPulseAuthenticationFilter** filters by creating a new implementation and registering it in the service collection.
+
+Below you have a custom authentication filter that verifies a header to authenticate the request:
 
 ```csharp
     public class HeaderValueAuthenticationFilter : IBeatPulseAuthenticationFilter
@@ -170,4 +172,89 @@ You can create your custom **IBeatPulseAuthenticationFilter** filters by creatin
 ```csharp
     services.AddSingleton<IBeatPulseAuthenticationFilter>(
         new HeaderValueAuthenticationFilter("header1", "value1"));
+```
+
+## Enabling CORS (and other existing middlewares) on BeatPulse pipeline.
+
+If you need to include other existing pipelines, like CORS, on **BeatPulse** you can configure the *BeatPulseMiddleware* using a *IApplicationBuilder* extension method instead a *StartupFilter*.
+
+Next sample show a *Startup.cs* with **CORS** support.
+
+```csharp
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddCors();
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddLiveness("sample", opt =>
+                 {
+                     opt.UsePath("path");
+                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
+                 });
+            });
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseCors(setup =>
+            {
+                setup.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            });
+
+            app.UseBeatPulse(setup =>
+            {
+                setup.ConfigureDetailedOutput(true)
+                    .ConfigurePath("hc");
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+```
+
+You can also add specific middlewares only for *BeatPulse*. Next sample show howto add *CORS* support only for our *BeatPulse* requests.
+
+```csharp
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddCors();
+            services.AddBeatPulse(setup =>
+            {
+                setup.AddLiveness("sample", opt =>
+                 {
+                     opt.UsePath("path");
+                     opt.UseLiveness(new ActionLiveness((_, __) => Task.FromResult(("Ok", true))));
+                 });
+            });
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseBeatPulse(setup => { }, builder =>
+            {
+                builder.UseCors(setup =>
+                {
+                    setup.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                        .AllowCredentials();
+                });
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
 ```

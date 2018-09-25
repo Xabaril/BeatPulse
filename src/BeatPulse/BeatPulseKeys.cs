@@ -9,8 +9,8 @@
         internal const string BEATPULSE_SELF_SEGMENT = "_self";
         internal const string BEATPULSE_SELF_NAME = "self";
         internal const string BEATPULSE_PATH_SEGMENT_NAME = "segment";
-        internal const string BEATPULSE_INVALIDPATH_REASON = "Invalid BeatPulse path";
+        internal const string BEATPULSE_INVALIDPATH_REASON = "Invalid BeatPulse path.";
         internal const string BEATPULSE_TIMEOUT_MESSAGE = "Timeout";
-        internal const string BEATPULSE_SERVICEUNAVAILABLE_REASON = "One or more liveness return a service unavailable";
+        internal const string BEATPULSE_SERVICEUNAVAILABLE_REASON = "One or more liveness return a service unavailable result.";
     }
 }

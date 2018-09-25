@@ -1,8 +1,10 @@
 ﻿using BeatPulse.Core;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BeatPulse.ApplicationInsightsTracker
@@ -11,15 +13,16 @@ namespace BeatPulse.ApplicationInsightsTracker
         : IBeatPulseTracker
     {
         const string EVENT_NAME = "BeatPulse";
-        const string METRIC_NAME = "BeatPulse:ResponseTime";
+        const string RESPONSE_TIME_METRIC_NAME = "BeatPulse:ResponseTime";
+        const string AVAILABILITY_METRIC_NAME = "BeatPulse:Availability";
 
         public string Name => nameof(AITracker);
 
-        private TelemetryClient _telemetryClient;
+        private readonly string _instrumentationKey;
 
-        public AITracker()
+        public AITracker(string instrumentationKey = null)
         {
-            _telemetryClient = new TelemetryClient(TelemetryConfiguration.Active);
+            _instrumentationKey = instrumentationKey;
         }
 
         public Task Track(LivenessResult livenessResult)
@@ -29,16 +32,21 @@ namespace BeatPulse.ApplicationInsightsTracker
                 {nameof(livenessResult.IsHealthy),livenessResult.IsHealthy.ToString(CultureInfo.InvariantCulture)},
                 {nameof(livenessResult.Run),livenessResult.Run.ToString(CultureInfo.InvariantCulture)},
                 {nameof(livenessResult.Path),livenessResult.Path},
-                {nameof(livenessResult.Name),livenessResult.Name}
+                {nameof(livenessResult.Name),livenessResult.Name},
+                {nameof(Environment.MachineName),Environment.MachineName},
+                {nameof(Assembly),Assembly.GetEntryAssembly().GetName().Name }
             };
 
             var metrics = new Dictionary<string, double>()
             {
-                {METRIC_NAME,livenessResult.MilliSeconds }
+                {RESPONSE_TIME_METRIC_NAME,livenessResult.Elapsed.TotalMilliseconds },
+                {AVAILABILITY_METRIC_NAME,livenessResult.IsHealthy ? 1 : 0 }
             };
 
+            var configuration = String.IsNullOrWhiteSpace(_instrumentationKey) ? TelemetryConfiguration.Active : new TelemetryConfiguration(_instrumentationKey);
 
-            _telemetryClient.TrackEvent(EVENT_NAME, properties, metrics);
+            new TelemetryClient(configuration)
+                .TrackEvent(EVENT_NAME, properties, metrics);
 
             return Task.CompletedTask;
         }
