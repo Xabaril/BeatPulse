@@ -2,8 +2,6 @@
 {
     public class LivenessExecutionContext
     {
-        //public bool ShowDetailedErrors { get; private set; }
-
         public string Name { get; private set; }
 
         public string Path { get; private set; }
@@ -13,7 +11,6 @@
         {
             return new LivenessExecutionContext()
             {
-                //ShowDetailedErrors = showDetailedErrors,
                 Name = registration.Name,
                 Path = registration.Path
             };
