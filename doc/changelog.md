@@ -11,6 +11,7 @@
     5. BeatPulseOptions.ConfigureDetailedOutput can configure includeExceptionMessages value to enable or disable exception messages information.
     6. BeatPulseOptions can configure Port property to specify a port filter for BeatPulse requests.
     7. Json result of liveness include Exception property, the content of this property depend on includeExceptionMessages opt-in.
+    8. BeatPulseOptions can be configured from configuration settings.
     
 - Non Functional
 
