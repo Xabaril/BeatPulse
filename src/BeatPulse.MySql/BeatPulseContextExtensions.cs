@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.MySql;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -9,8 +11,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new MySqlLiveness(connectionString));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new MySqlLiveness(connectionString, sp.GetService<ILogger<MySqlLiveness>>()));
             });
         }
     }

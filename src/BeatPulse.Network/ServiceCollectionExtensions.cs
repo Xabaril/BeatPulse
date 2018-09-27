@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace BeatPulse
@@ -15,7 +17,7 @@ namespace BeatPulse
                 var pingLivenessOptions = new PingLivenessOptions();
                 options?.Invoke(pingLivenessOptions);
 
-                setup.UseLiveness(new PingLiveness(pingLivenessOptions));
+                setup.UseFactory(sp => new PingLiveness(pingLivenessOptions, sp.GetService<ILogger<PingLiveness>>()));
             });
         }
         public static BeatPulseContext AddSftpLiveness(this BeatPulseContext context, Action<SftpLivenessOptions> options,
@@ -28,7 +30,7 @@ namespace BeatPulse
                 var sftpLivenessOptions = new SftpLivenessOptions();
                 options?.Invoke(sftpLivenessOptions);
 
-                setup.UseLiveness(new SftpLiveness(sftpLivenessOptions));
+                setup.UseFactory(sp => new SftpLiveness(sftpLivenessOptions, sp.GetService<ILogger<SftpLiveness>>()));
             });
         }
 
@@ -42,7 +44,7 @@ namespace BeatPulse
                 var ftpLivenessOptions = new FtpLivenessOptions();
                 options?.Invoke(ftpLivenessOptions);
 
-                setup.UseLiveness(new FtpLiveness(ftpLivenessOptions));
+                setup.UseFactory(sp => new FtpLiveness(ftpLivenessOptions, sp.GetService<ILogger<FtpLiveness>>()));
             });
         }
 
@@ -56,7 +58,7 @@ namespace BeatPulse
                 var dnsResolveOptions = new DnsResolveOptions();
                 options?.Invoke(dnsResolveOptions);
 
-                setup.UseLiveness(new DnsResolveLiveness(dnsResolveOptions));
+                setup.UseFactory(sp => new DnsResolveLiveness(dnsResolveOptions, sp.GetService<ILogger<DnsResolveLiveness>>()));
             });
         }
 
@@ -69,8 +71,8 @@ namespace BeatPulse
 
                 var imapOptions = new ImapLivenessOptions();
                 options?.Invoke(imapOptions);
-                
-                setup.UseLiveness(new ImapLiveness(imapOptions));
+
+                setup.UseFactory(sp => new ImapLiveness(imapOptions, sp.GetService<ILogger<ImapLiveness>>()));
             });
         }
 
@@ -84,7 +86,7 @@ namespace BeatPulse
                 var smtpOptions = new SmtpLivenessOptions();
                 options?.Invoke(smtpOptions);
 
-                setup.UseLiveness(new SmtpLiveness(smtpOptions));
+                setup.UseFactory(sp=>new SmtpLiveness(smtpOptions, sp.GetService<ILogger<SmtpLiveness>>()));
             });
         }
     }

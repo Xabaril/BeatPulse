@@ -66,8 +66,6 @@ namespace BeatPulse
                 setup.UsePath(defaultPath);
                 setup.UseLiveness(new UriLiveness(options));
             });
-
         }
-
     }
 }

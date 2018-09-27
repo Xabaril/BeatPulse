@@ -1,5 +1,5 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using System;
 using System.Threading;
@@ -10,36 +10,41 @@ namespace BeatPulse.MySql
     public class MySqlLiveness : IBeatPulseLiveness
     {
         private readonly string _connectionString;
+        private readonly ILogger<MySqlLiveness> _logger;
 
-        public MySqlLiveness(string connectionString)
+        public MySqlLiveness(string connectionString, ILogger<MySqlLiveness> logger = null)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger?.LogInformation($"{nameof(MySqlLiveness)} is checking the MySql.");
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     await connection.OpenAsync(cancellationToken);
 
-                    if (await connection.PingAsync(cancellationToken))
+                    if (!await connection.PingAsync(cancellationToken))
                     {
-                        return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                        _logger?.LogWarning($"The {nameof(MySqlLiveness)} check fail for {_connectionString}.");
+
+                        return LivenessResult.UnHealthy($"The {nameof(MySqlLiveness)} check fail.");
                     }
-                    else
-                    {
-                        return (string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name), false);
-                    }
+
+                    _logger?.LogInformation($"The {nameof(MySqlLiveness)} check success for {_connectionString}");
+
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(MySqlLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

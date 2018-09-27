@@ -64,7 +64,7 @@ namespace BeatPulse.Core
             var beatPulseService = _serviceProvider.GetService<IBeatPulseService>();
             var beatPulseContext = _serviceProvider.GetService<BeatPulseContext>();
 
-          
+
             beatPulseContext.GetAllTrackers()
                 .Where(tracker => tracker.GetType() == (typeof(TestTracker)))
                 .SingleOrDefault()
@@ -101,7 +101,8 @@ namespace BeatPulse.Core
                 string path;
                 string path2;
 
-                var taskResult = Task.FromResult((string.Empty, true));
+                var taskResult = Task.FromResult(
+                    LivenessResult.Healthy());
 
                 services.AddBeatPulse(context =>
                 {
@@ -110,7 +111,7 @@ namespace BeatPulse.Core
                     context.AddLiveness(nameof(name), opt =>
                     {
                         opt.UsePath(nameof(path));
-                        opt.UseLiveness(new ActionLiveness((httpcontext, cancellationToken) => taskResult));
+                        opt.UseLiveness(new ActionLiveness((cancellationToken) => taskResult));
                     });
 
                     context.AddLiveness(nameof(path2), opt =>
@@ -118,7 +119,7 @@ namespace BeatPulse.Core
                         opt.UseFactory(sp =>
                         {
                             var service = sp.GetRequiredService<FooService>();
-                            return new ActionLiveness((httpcontext, cancellationToken) => taskResult);
+                            return new ActionLiveness((cancellationToken) => taskResult);
                         });
                         opt.UsePath(nameof(path2));
                     });

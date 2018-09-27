@@ -1,5 +1,5 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Threading;
@@ -10,28 +10,33 @@ namespace BeatPulse.MongoDb
     public class MongoDbLiveness
         : IBeatPulseLiveness
     {
-        private readonly string _mongoDbConnectionString;
+        private readonly string _connectionString;
+        private readonly ILogger<MongoDbLiveness> _logger;
 
-        public MongoDbLiveness(string mongoDbConnectionString)
+        public MongoDbLiveness(string connectionString,ILogger<MongoDbLiveness> logger = null)
         {
-            _mongoDbConnectionString = mongoDbConnectionString ?? throw new ArgumentNullException(nameof(mongoDbConnectionString));
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
-                await new MongoClient(_mongoDbConnectionString)
+                _logger?.LogInformation($"{nameof(MongoDbLiveness)} is checking the MongoDb database.");
+
+                await new MongoClient(_connectionString)
                     .ListDatabasesAsync(cancellationToken);
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                _logger?.LogInformation($"The {nameof(MongoDbLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(MongoDbLiveness)} check fail for {_connectionString} with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

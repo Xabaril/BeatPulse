@@ -1,6 +1,6 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Threading;
@@ -11,17 +11,20 @@ namespace BeatPulse
     public class FtpLiveness : IBeatPulseLiveness
     {
         private readonly FtpLivenessOptions _options;
+        private readonly ILogger<FtpLiveness> _logger;
 
-        public FtpLiveness(FtpLivenessOptions options)
+        public FtpLiveness(FtpLivenessOptions options, ILogger<FtpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentException(nameof(options));
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,
-            CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger?.LogInformation($"{nameof(FtpLiveness)} is checking FTP connections.");
+
                 foreach (var item in _options.Hosts.Values)
                 {
                     var ftpRequest = CreateFtpWebRequest(item.host, item.createFile, item.credentials);
@@ -31,19 +34,22 @@ namespace BeatPulse
                         if (ftpResponse.StatusCode != FtpStatusCode.PathnameCreated
                             && ftpResponse.StatusCode != FtpStatusCode.ClosingData)
                         {
-                            return ($"Error connecting to ftp host {item.host} the exit code eas {ftpResponse.StatusCode}", false);
+                            _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail for ftp host {item.host} with exit code {ftpResponse.StatusCode}.");
+
+                            LivenessResult.UnHealthy($"Error connecting to ftp host {item.host} with exit code {ftpResponse.StatusCode}");
                         }
                     }
                 }
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                _logger?.LogInformation($"The {nameof(FtpLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(FtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
 

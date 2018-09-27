@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BeatPulseTrackers
@@ -33,21 +32,22 @@ namespace BeatPulseTrackers
 
             services.AddBeatPulse(setup =>
             {
-                    //
-                    //configure a sample ad-hoc liveness
-                    //
+                //
+                //configure a sample ad-hoc liveness
+                //
 
                 setup.AddLiveness("catapi", opt =>
                 {
                     opt.UsePath("catapi");
-                    opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
+                    opt.UseLiveness(new ActionLiveness((_) =>
                     {
-                        if (DateTime.Now.Minute == 20)
+                        if ((DateTime.Now.Second & 1) == 1)
                         {
-                            return Task.FromResult(("Service is down!", false));
+                            return Task.FromResult(LivenessResult.UnHealthy("liveness is not working"));
                         }
 
-                        return Task.FromResult(("OK", true));
+                        return Task.FromResult(LivenessResult.Healthy());
+
                     }));
                 });
 

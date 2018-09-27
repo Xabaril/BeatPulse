@@ -64,7 +64,7 @@ namespace FunctionalTests.BeatPulse.IdSvr
                 .GetAsync();
 
             response.StatusCode
-                .Should().Be(HttpStatusCode.ServiceUnavailable);
+                .Should().Be(HttpStatusCode.OK);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -11,30 +11,34 @@ namespace BeatPulse.Uris
         : IBeatPulseLiveness
     {
         private readonly UriLivenessOptions _options;
+        private readonly ILogger<UriLiveness> _logger;
 
-        public UriLiveness(UriLivenessOptions options)
+        public UriLiveness(UriLivenessOptions options, ILogger<UriLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             var defaultHttpMethod = _options.HttpMethod;
             var defaultCodes = _options.ExpectedHttpCodes;
             var idx = 0;
 
-            foreach (var item in _options.UrisOptions)
+            try
             {
-                var method = item.HttpMethod ?? defaultHttpMethod;
-                var expectedCodes = item.ExpectedHttpCodes ?? defaultCodes;
+                _logger?.LogInformation($"{nameof(UriLiveness)} is checking configured uri's.");
 
-                if (cancellationToken.IsCancellationRequested)
+                foreach (var item in _options.UrisOptions)
                 {
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, false);
-                }
+                    var method = item.HttpMethod ?? defaultHttpMethod;
+                    var expectedCodes = item.ExpectedHttpCodes ?? defaultCodes;
 
-                try
-                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return LivenessResult.UnHealthy($"Liveness execution is cancelled.");
+                    }
+
                     using (var httpClient = new HttpClient())
                     {
                         var requestMessage = new HttpRequestMessage(method, item.Uri);
@@ -48,25 +52,25 @@ namespace BeatPulse.Uris
 
                         if (!((int)response.StatusCode >= expectedCodes.Min && (int)response.StatusCode <= expectedCodes.Max))
                         {
-                            var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                                : $"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.";
+                            _logger?.LogWarning($"The {nameof(UriLiveness)} check fail for uri {item.Uri}.");
 
-                            return (message, false);
+                            return LivenessResult.UnHealthy($"Discover endpoint #{idx} is not responding with code in {expectedCodes.Min}...{expectedCodes.Max} range, the current status is {response.StatusCode}.");
                         }
 
                         ++idx;
                     }
                 }
-                catch (Exception ex)
-                {
-                    var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                        : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
 
-                    return (message, false);
-                }
+                _logger?.LogDebug($"The {nameof(UriLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
+            catch (Exception ex)
+            {
+                _logger?.LogWarning($"The {nameof(UriLiveness)} check fail with the exception {ex.ToString()}.");
 
-            return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                return LivenessResult.UnHealthy(ex);
+            }
         }
     }
 }

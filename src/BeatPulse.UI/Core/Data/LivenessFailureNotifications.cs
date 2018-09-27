@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatPulse.UI.Core.Data
 {
@@ -11,5 +9,7 @@ namespace BeatPulse.UI.Core.Data
         public string LivenessName { get; set; }
 
         public DateTime LastNotified { get; set; }
+
+        public bool IsUpAndRunning { get; set; }
     }
 }

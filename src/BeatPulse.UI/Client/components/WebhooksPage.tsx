@@ -38,27 +38,35 @@ export class WebhooksPage extends React.Component<WebhooksPageProps, WebHooksPag
                 {chunkWebhooks.map((webhook, index) => {
                     return <div className="col-md-6">
                         <div className="webhook">
-                            <span className="block"><b>Name</b> : {webhook.name}</span>
-                            <span className="block"><b>Uri</b> : {webhook.uri}</span>
-                            <span className="block"><b>Payload</b> :</span>
-                            <ReactJson src={webhook.payload as Object} />
+                            <div className="content">
+                                <div>
+                                    <span className="block "><b>Name</b> : {webhook.name}</span>
+                                </div>
+                                <div>
+                                    <span className="block break-word"><b>Uri</b> : {webhook.uri}</span>
+                                </div>
+                                <div>
+                                    <span className="block"><b>Payload</b> :</span>
+                                    <ReactJson src={webhook.payload as Object} />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 })}
-             </div>
-             components.push(component);
+            </div>
+            components.push(component);
         }
         return components;
     }
     render() {
         return <div id="wrapper" style={{ height: '100%', overflow: 'auto' }}>
             <div className="container webhook-container">
-                <div className="webhooks">                    
+                <div className="webhooks">
                     <h2 className="title" style={{ marginLeft: '1.35%', marginTop: '5%' }}>
-                    <img className="gear-icon" src={GearIcon}/>
-                    {this.state.webhooks.length} Configured Webhooks
+                        <img className="gear-icon" src={GearIcon} />
+                        {this.state.webhooks.length} Configured Webhooks
                     </h2>
-                    {this.renderWebhooks(this.state.webhooks)}                    
+                    {this.renderWebhooks(this.state.webhooks)}
                 </div>
             </div>
         </div>

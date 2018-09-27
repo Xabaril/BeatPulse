@@ -11,13 +11,14 @@ namespace BeatPulseLiveness
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-            .UseBeatPulse(options =>
-            {
-                options.ConfigurePath("health") //default hc
-                    .ConfigureOutputCache(10)      // Can use CacheMode as second parameter
-                    .ConfigureTimeout(milliseconds: 1500) // default -1 infinitely
-                    .ConfigureDetailedOutput(); //default false
-            }).UseStartup<Startup>();
+             WebHost.CreateDefaultBuilder(args)
+                .UseBeatPulse(options =>
+                {
+                    options.ConfigurePath("health") //default hc
+                        //.ConfigurePort(65400)  //use only with this sample is executed on commandname Project not on IIS
+                        .ConfigureOutputCache(10)      // Can use CacheMode as second parameter
+                        .ConfigureTimeout(milliseconds: 1500) // default -1 infinitely
+                        .ConfigureDetailedOutput(includeExceptionMessages: true); //default false
+                }).UseStartup<Startup>();
     }
 }

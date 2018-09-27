@@ -6,15 +6,11 @@
 
 Health checking is the process where load balancers or application delivery controller does periodic checks on our applications to make sure that they are up and responding without any problems. If our applications are down for whatever reason or any of the systems that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s, should detect this and stop sending traffic its way trying to restore services manually or automatically.
 
-*BeatPulse* is a simple liveness, readiness library for .NET Core Applications. 
-
-## What is the motivation behind it
-
-The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks) library is not an active project right now and is not included in ASP.NET Core 2.1.
+*BeatPulse* is a powerfull liveness, readiness library for .NET Core Applications with many out of box enterprise health check services.
 
 ## Getting Started 
 
-> This documentation is for BeatPulse latest version, you can check  changes and package compatibility on [ChangeLog](/doc/changelog.md).
+> This documentation is for BeatPulse latest version, you can check changes and package compatibility on [ChangeLog](/doc/changelog.md).
 
 1. Install the Nuget Package into your ASP.NET Core application.
 
@@ -22,7 +18,7 @@ The [Microsoft HealthCheck](https://github.com/dotnet-architecture/HealthChecks)
 Install-Package BeatPulse
 ```
 
-2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains libraries for:
+2. Install the liveness libraries that you need on your project. At this moment *BeatPulse* contains NuGet libraries for:
 
  - System (Disk Storage, Memory)
  - Network (Tcp, Ftp, Sftp, Imap, Smtp, Dns resolve)
@@ -41,8 +37,6 @@ Install-Package BeatPulse
  - Identity Server
  - AWS DynamoDB
  - Custom lambda liveness.
-
- Install different livenesses by using Install-Package command:
 
 ``` PowerShell
 Install-Package BeatPulse.System
@@ -72,7 +66,7 @@ Install-Package BeatPulse.Oracle
                 {
                    options.ConfigurePath(path:"health") //default hc
                         .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
-                        .ConfigureDetailedOutput(detailedOutput:true); //default false
+                        .ConfigureDetailedOutput(detailedOutput:true,includeExceptionMessages:true); //default (true,false)
                 }).UseStartup<Startup>().Build();
 ```
 
@@ -98,7 +92,18 @@ HTTP/1.1 200 OK
 OK
 ```
 
-For more information about *BeatPulse* configuration and other features ( cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
+For more information about *BeatPulse* configuration and other features ( configuration, cache, authentication, etc ) see the [specific documentation section](./doc/beatpulse.md).
+
+## Tracking pulses
+
+With *TrackingPulses* you can save liveness information in external services. Currently we have developed different trackers you can use:
+
+ > [Application Insights Tracker](./doc/ai-tracker.md)
+
+ > [Prometheus Tracker](./doc/prometheus_tracker.md)
+
+ > [StatusPage Tracker](./doc/statuspage_tracker.md)
+
 
 ## UI
 
@@ -137,14 +142,15 @@ The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI*
     "Liveness": [
       {
         "Name": "HTTP-Api-Basic",
-        "Uri": "http://localhost:6457/health"
+        "Uri": "http://localhost:6457/health?DetailedOutput=true"
       }
     ],
     "Webhooks": [
       {
         "Name": "",
         "Uri": "",
-        "Payload": ""
+        "Payload": "",
+        "RestoredPayload":""
       }
     ],
     "EvaluationTimeOnSeconds": 10,
@@ -169,16 +175,6 @@ If the **WebHooks** section is configured, BeatPulse-UI automatically posts a ne
 [[FAILURE]] A detail message with the failure.
 
 The [web hooks section](./doc/webhooks.md) contains more information and webhooks samples for Microsoft Teams, Azure Functions, Slack and more.
-
-## Tracking pulses
-
-Additionally, you can save liveness information in external services. Currently we have developed different trackers you can use:
-
- > [Application Insights Tracker](./doc/ai-tracker.md)
-
- > [Prometheus Tracker](./doc/prometheus_tracker.md)
-
- > [StatusPage Tracker](./doc/statuspage_tracker.md)
 
 ## Contributing
 

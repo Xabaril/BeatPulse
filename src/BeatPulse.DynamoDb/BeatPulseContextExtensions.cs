@@ -1,5 +1,7 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.DynamoDb;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace BeatPulse
@@ -14,7 +16,7 @@ namespace BeatPulse
             return context.AddLiveness(name, setup =>
             {
                 setup.UsePath(defaultPath);
-                setup.UseLiveness(new DynamoDbLiveness(options));
+                setup.UseFactory(sp => new DynamoDbLiveness(options, sp.GetService<ILogger<DynamoDbLiveness>>()));
             });
         }
     }

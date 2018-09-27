@@ -1,6 +1,6 @@
 # Beat Pulse Requests
 
-By default, the global path returns the aggregated state of all liveness checkers, including the out of box *self* check added. 
+By default, the global path returns the aggregated state of all configured liveness, including the out of box *self* check added. 
 
 If all liveness are up and running, *BeatPulse* returns HTTP 200 OK.
 
@@ -26,10 +26,18 @@ HTTP/1.1 503 ServiceUnavailable
 ServiceUnavailable
 ```
 
-When *DetailedOutput* is true the information is a complete json result with liveness, time, and execution results. If you use *BeatPulse UI* detailed information is mandatory.
+You can configure  *DetailedOutput* property on *BeatPulseOptions* to respond with a complete json result with liveness, time and execution results. 
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+               .UseBeatPulse(options=>
+                {
+                   options.ConfigureDetailedOutput(detailedOutput:true, includeExceptionMessages:false);
+                }).UseStartup<Startup>().Build();
+```
 
 ``` bash
-
 curl http://your-domain/hc
 GET /hc HTTP/1.1
 Host: your-domain
@@ -42,6 +50,7 @@ HTTP/1.1 200 OK
         "name": "self",
         "path":"_self",
         "message": "OK",
+        "exception": null
         "milliSeconds": 0,
         "run": true,
         "isHealthy": true
@@ -50,6 +59,7 @@ HTTP/1.1 200 OK
         "name": "cat",
         "path":"catapi",
         "message": "OK",
+        "exception": null,
         "milliSeconds": 376,
         "run": true,
         "isHealthy": true
@@ -58,6 +68,52 @@ HTTP/1.1 200 OK
         "name": "SqlServerLiveness",
         "path":"sqlserver",
         "message": "OK",
+        "exception": null,
+        "milliSeconds": 309,
+        "run": true,
+        "isHealthy": true
+    }],
+    "startedAtUtc": "2018-02-26T19:30:05.4058955Z",
+    "endAtUtc": "2018-02-26T19:30:06.0978236Z",
+    "code": "200",
+    "reason":""
+}
+```
+
+From *BeatPulse* **3.0** *DetailedOutput* can be specified for each request using a query string parameter with the same name. This is ideal to support detailed ouput for *BeatPUlseUI* and simplified content results for regular liveness, readiness checks from load balancers, trackers.
+
+``` bash
+curl http://your-domain/hc?detailedOutput=true
+GET /hc HTTP/1.1
+Host: your-domain
+User-Agent: curl/7.49.0
+Accept: */*
+HTTP/1.1 200 OK
+{
+    "checks": [
+    {
+        "name": "self",
+        "path":"_self",
+        "message": "OK",
+        "exception": null,
+        "milliSeconds": 0,
+        "run": true,
+        "isHealthy": true
+    },
+    {
+        "name": "cat",
+        "path":"catapi",
+        "message": "OK",
+        "exception": null,
+        "milliSeconds": 376,
+        "run": true,
+        "isHealthy": true
+    },
+    {
+        "name": "SqlServerLiveness",
+        "path":"sqlserver",
+        "message": "OK",
+        "exception": null,
         "milliSeconds": 309,
         "run": true,
         "isHealthy": true
@@ -72,7 +128,6 @@ HTTP/1.1 200 OK
 If you need to know the status of a particular service you can add the liveess name as a new segment into the liveness uri. In our later case, if you need a liveness uri for SqlServer  add /sqlserver to the *BeatPulse* request uri. The flag *DetailedOutput* is also working with particular checks.
 
 ``` bash
-
 curl http://your-domain/hc/sqlserver
 GET /hc HTTP/1.1
 Host: your-domain
@@ -98,6 +153,33 @@ HTTP/1.1 200 OK
  
 Out-of-box *BeatPulse* add a **Self** liveness in order to check only the web app and not the configured liveness. This is usefull on K8S to set the pod liveness for web app. The path for this liveness is **_self**.
 
+# Port
+
+From *BeatPulse* **3.0**  you can also filter the port on which *BeatPulse* response requests. This is ideal when configure some pod with diferent listeners, one for public ingress and another one for internal use only (readiness, liveness).
+
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+               .UseBeatPulse(options=>
+                {
+                   options.ConfigurePort(port:5000)
+                }).UseStartup<Startup>().Build();
+```
+
+# Timeout
+
+*BeatPulseOptions* allow to set a *timeout* property to restrict the amount of time the liveness check can be running. By default timeout is Infinity.
+
+``` csharp
+ public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+               .UseBeatPulse(options=>
+                {
+                   options.ConfigureTimeout(milliseconds:1500); //default Infinity
+                }).UseStartup<Startup>().Build();
+```
+
 # Cache responses
 
 BeatPulse can cache its responses. There are two cache modes:
@@ -112,7 +194,6 @@ To enable cache use the method `EnableOutputCache`:
     {
         options.ConfigurePath(path:"health") //default hc
             .ConfigureOutputCache(seconds:10)      // Can use CacheMode as second parameter
-            .ConfigureTimeout(milliseconds:1500) // default -1 infinitely
             .ConfigureDetailedOutput(detailedOutput:true); //default false
     })
 ```
@@ -120,6 +201,20 @@ To enable cache use the method `EnableOutputCache`:
 You can specify the cache method by using a second parameter with a `CacheMode` value (`Header`, `ServerMemory` or `HeaderAndServerMemory`) (default is `Header`).
 
 If you perform two inmediate requests (because an user-agent that does not follow the `Cache-Control` header is being used) and in-memory cache is enabled you will receive the same response both times and all checks will be performed only once. If in-memory cache is not enabled all checks will be performed again.
+
+# Configure from Configuration
+
+From *BeatPulse* **3.0**  you can configure all *BeatPulse* options from configuration using BeatPulseOptions section:
+
+```json
+ "BeatPulseOptions": {
+    "Path": "health",
+    "DetaildOutput": true,
+    "DetailedErrors": true,
+    "Timeout": 2000,
+    "Port": 5000
+  }
+```
 
 # Authentication
 

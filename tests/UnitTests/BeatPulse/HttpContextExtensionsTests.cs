@@ -8,9 +8,10 @@ namespace UnitTests.BeatPulse
     public class httpcontext_extensions_should
     {
         [Fact]
-        public void return_true_if_request_is_beaptulse_request()
+        public void evaluate_if_some_request_is_beatpulse_request()
         {
-            var options = new BeatPulseOptions();
+            var options = new BeatPulseOptions()
+                .ConfigurePath("hc");
             
             var httpContext = new DefaultHttpContext();
 
@@ -28,9 +29,30 @@ namespace UnitTests.BeatPulse
             httpContext.IsBeatPulseRequest(options)
                 .Should().BeTrue();
         }
+        [Fact]
+        public void evaluate_if_some_request_is_beatpulse_request_when_port_is_configured()
+        {
+            var options = new BeatPulseOptions()
+                .ConfigurePath("hc")
+                .ConfigurePort(5000);
+
+            var httpContext = new DefaultHttpContext();
+
+            httpContext.Request.Method = "GET";
+            httpContext.Request.Path = "/hc";
+            httpContext.Connection.LocalPort = 5000;
+
+            httpContext.IsBeatPulseRequest(options)
+                .Should().BeTrue();
+
+            httpContext.Connection.LocalPort = 6000;
+
+            httpContext.IsBeatPulseRequest(options)
+                .Should().BeFalse();
+        }
 
         [Fact]
-        public void return_the_beatpulse_path()
+        public void evaluate_the_beatpulse_path()
         {
             var options = new BeatPulseOptions();
 

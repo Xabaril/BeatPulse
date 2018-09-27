@@ -2,23 +2,23 @@
   <PropertyGroup Label="SDK Versions">
     <NetStandardTargetVersion>netstandard2.0</NetStandardTargetVersion>
     <NetCoreTargetVersion>netcoreapp2.1</NetCoreTargetVersion>
-    <MicrosoftNETTestSdkPackageVersion>15.7.2</MicrosoftNETTestSdkPackageVersion>
+    <MicrosoftNETTestSdkPackageVersion>15.8.0</MicrosoftNETTestSdkPackageVersion>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package Versions">
-    <HostingAbstractionsVersion>2.1.0</HostingAbstractionsVersion>
-    <ASPNetCoreRoutingVersion>2.1.0</ASPNetCoreRoutingVersion>
-    <ASPNetCoreAllPackageVersion>2.1.0</ASPNetCoreAllPackageVersion>
-    <MicrosoftExtensionsDependencyInjectionVersion>2.1.0</MicrosoftExtensionsDependencyInjectionVersion>
+    <HostingAbstractionsVersion>2.1.1</HostingAbstractionsVersion>
+    <ASPNetCoreRoutingVersion>2.1.1</ASPNetCoreRoutingVersion>
+    <ASPNetCoreAllPackageVersion>2.1.3</ASPNetCoreAllPackageVersion>
+    <MicrosoftExtensionsDependencyInjectionVersion>2.1.1</MicrosoftExtensionsDependencyInjectionVersion>
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>
     <SqlClientVersion>4.4.2</SqlClientVersion>
-    <FluentAssertionsVersion>5.3.2</FluentAssertionsVersion>
-    <ASPNetCoreTestHostVersion>2.1.0</ASPNetCoreTestHostVersion>
-    <XUnitPackageVersion>2.3.1</XUnitPackageVersion>
-    <XUnitRunnerVisualstudio>2.3.1</XUnitRunnerVisualstudio>
+    <FluentAssertionsVersion>5.4.1</FluentAssertionsVersion>
+    <ASPNetCoreTestHostVersion>2.1.1</ASPNetCoreTestHostVersion>
+    <XUnitPackageVersion>2.4.0</XUnitPackageVersion>
+    <XUnitRunnerVisualstudio>2.4.0</XUnitRunnerVisualstudio>
     <WindowsAzureStorageVersion>9.1.0</WindowsAzureStorageVersion>
     <MySqlConnectorVersion>0.40.4</MySqlConnectorVersion>
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
@@ -28,7 +28,7 @@
     <MicrosoftEntityFrameworkCoreDesignVersion>2.1.0</MicrosoftEntityFrameworkCoreDesignVersion>
     <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.0</MicrosoftEntityFrameworkCoreSqlLiteVersion>
     <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
-    <MicrosoftExtensionConfigurationBinderVersion>2.1.0</MicrosoftExtensionConfigurationBinderVersion>
+    <MicrosoftExtensionConfigurationBinderVersion>2.1.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
     <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
     <MicrosoftAzureServiceBusVersion>2.0.0</MicrosoftAzureServiceBusVersion>
@@ -40,33 +40,33 @@
   </PropertyGroup>
 
   <PropertyGroup Label="CLI Tools Versions">
-    <DotnetXUnitPackageVersion>2.3.1</DotnetXUnitPackageVersion>
+    <DotnetXUnitPackageVersion>2.4.0</DotnetXUnitPackageVersion>
     <DotnetWatcherToolPackageVersion>2.0.0</DotnetWatcherToolPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="BeatPulse Package Versions">
-    <BeatPulsePackageVersion>2.2.0</BeatPulsePackageVersion>
-    <BeatPulseAzureStoragePackageVersion>2.1.0</BeatPulseAzureStoragePackageVersion>
-    <BeatPulseDocumentDbPackageVersion>2.1.1</BeatPulseDocumentDbPackageVersion>
-    <BeatPulseMongoDbPackageVersion>2.1.0</BeatPulseMongoDbPackageVersion>
-    <BeatPulseMySqlPackageVersion>2.1.0</BeatPulseMySqlPackageVersion>
-    <BeatpulseNpgSqlPackageVersion>2.1.0</BeatpulseNpgSqlPackageVersion>
-    <BeatpulseRedisPackageVersion>2.1.0</BeatpulseRedisPackageVersion>
-    <BeatPulseSqlitePackageVersion>2.1.1</BeatPulseSqlitePackageVersion>
-    <BeatPulseSqlServerPackageVersion>2.1.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>2.1.2</BeatPulseUIPackageVersion>
-    <BeatPulseKafkaVersion>2.1.0</BeatPulseKafkaVersion>
-    <BeatPulseRabbitMQPackageVersion>2.1.0</BeatPulseRabbitMQPackageVersion>
-    <BeatPulseIdSvrVersion>2.1.0</BeatPulseIdSvrVersion>
-    <BeatPulseAzureServiceBusVersion>2.1.0</BeatPulseAzureServiceBusVersion>
-    <BeatPulseAITrackerVersion>2.1.12</BeatPulseAITrackerVersion>
-    <BeatPulsePrometheusTrackerVersion>2.1.0</BeatPulsePrometheusTrackerVersion>
-    <BeatPulseAWSDynamoDBPackageVersion>2.1.0</BeatPulseAWSDynamoDBPackageVersion>
-    <BeatPulseStatusPageTracker>2.1.0</BeatPulseStatusPageTracker>
-    <BeatPulseUrisVersion>2.1.2</BeatPulseUrisVersion>
-    <BeatPulseOraclePackageVersion>2.1.1</BeatPulseOraclePackageVersion>
-    <BeatPulseSystemPackageVersion>2.2.2</BeatPulseSystemPackageVersion>
-    <BeatPulseNetworkPackageVersion>2.1.1</BeatPulseNetworkPackageVersion>
+    <BeatPulsePackageVersion>3.0.0</BeatPulsePackageVersion>
+    <BeatPulseAzureStoragePackageVersion>3.0.0</BeatPulseAzureStoragePackageVersion>
+    <BeatPulseDocumentDbPackageVersion>3.0.0</BeatPulseDocumentDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>3.0.0</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMySqlPackageVersion>3.0.0</BeatPulseMySqlPackageVersion>
+    <BeatpulseNpgSqlPackageVersion>3.0.0</BeatpulseNpgSqlPackageVersion>
+    <BeatpulseRedisPackageVersion>3.0.0</BeatpulseRedisPackageVersion>
+    <BeatPulseSqlitePackageVersion>3.0.0</BeatPulseSqlitePackageVersion>
+    <BeatPulseSqlServerPackageVersion>3.0.0</BeatPulseSqlServerPackageVersion>
+    <BeatPulseUIPackageVersion>3.0.0</BeatPulseUIPackageVersion>
+    <BeatPulseKafkaVersion>3.0.0</BeatPulseKafkaVersion>
+    <BeatPulseRabbitMQPackageVersion>3.0.0</BeatPulseRabbitMQPackageVersion>
+    <BeatPulseIdSvrVersion>3.0.0</BeatPulseIdSvrVersion>
+    <BeatPulseAzureServiceBusVersion>3.0.0</BeatPulseAzureServiceBusVersion>
+    <BeatPulseAITrackerVersion>3.0.0</BeatPulseAITrackerVersion>
+    <BeatPulsePrometheusTrackerVersion>3.0.0</BeatPulsePrometheusTrackerVersion>
+    <BeatPulseAWSDynamoDBPackageVersion>3.0.0</BeatPulseAWSDynamoDBPackageVersion>
+    <BeatPulseStatusPageTracker>3.0.0</BeatPulseStatusPageTracker>
+    <BeatPulseUrisVersion>3.0.0</BeatPulseUrisVersion>
+    <BeatPulseOraclePackageVersion>3.0.0-beta3</BeatPulseOraclePackageVersion>
+    <BeatPulseSystemPackageVersion>3.0.0</BeatPulseSystemPackageVersion>
+    <BeatPulseNetworkPackageVersion>3.0.0</BeatPulseNetworkPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Package information">

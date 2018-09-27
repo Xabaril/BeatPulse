@@ -17,6 +17,9 @@ namespace BeatPulse.UI.Core.Data.Configuration
             builder.Property(lc => lc.LivenessName)
                 .IsRequired(true)
                 .HasMaxLength(500);
+
+            builder.Property(lc => lc.DiscoveryService)
+                .HasMaxLength(100);
         }
     }
 }

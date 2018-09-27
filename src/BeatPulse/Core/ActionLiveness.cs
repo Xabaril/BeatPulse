@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,16 +7,16 @@ namespace BeatPulse.Core
     public class ActionLiveness
         : IBeatPulseLiveness
     {
-        private readonly Func<HttpContext, CancellationToken,Task<(string, bool)>> _check;
+        private readonly Func<CancellationToken,Task<LivenessResult>> _check;
 
-        public ActionLiveness(Func<HttpContext,CancellationToken,Task<(string, bool)>> check)
+        public ActionLiveness(Func<CancellationToken,Task<LivenessResult>> check)
         {
             _check = check ?? throw new ArgumentNullException(nameof(check));
         }
 
-        public Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext,CancellationToken cancellationToken = default)
+        public Task<LivenessResult> IsHealthy(LivenessExecutionContext context,CancellationToken cancellationToken = default)
         {
-            return _check(context,cancellationToken);
+            return _check(cancellationToken);
         }
     }
 }

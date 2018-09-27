@@ -2,18 +2,15 @@
 {
     public class LivenessExecutionContext
     {
-        public bool IsDevelopment { get; private set; }
-
         public string Name { get; private set; }
 
         public string Path { get; private set; }
 
-      
-        internal static LivenessExecutionContext FromRegistration(IBeatPulseLivenessRegistration registration,bool isDevelopment)
+
+        internal static LivenessExecutionContext FromRegistration(IBeatPulseLivenessRegistration registration, bool showDetailedErrors)
         {
             return new LivenessExecutionContext()
             {
-                IsDevelopment = isDevelopment,
                 Name = registration.Name,
                 Path = registration.Path
             };

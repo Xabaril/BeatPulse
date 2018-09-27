@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using UnitTests.Base;
 using Xunit;
@@ -51,8 +52,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("custom check is working", true)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.Healthy()));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -90,8 +90,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("Some message when service is not available", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.UnHealthy("Some message when service is not available")));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse()
@@ -128,8 +127,7 @@ namespace BeatPulse
             string defaultName;
             string defaultPath;
 
-            var healthCheck = new ActionLiveness(
-                (httpcontext, cancellationToken) => Task.FromResult(("custom check is not working", false)));
+            var healthCheck = new ActionLiveness((cancellationToken) => Task.FromResult(LivenessResult.UnHealthy("custom check is not working")));
 
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -168,11 +166,11 @@ namespace BeatPulse
             string defaultPath;
 
             var healthCheck = new ActionLiveness(
-                async (httpcontext, cancellationToken) =>
+                async (cancellationToken) =>
                 {
                     await Task.Delay(100);
 
-                    return ("custom check is  working", true);
+                    return LivenessResult.Healthy();
                 });
 
             var webHostBuilder = new WebHostBuilder()
@@ -298,8 +296,6 @@ namespace BeatPulse
             response.EnsureSuccessStatusCode();
         }
 
-
-
         [Fact]
         public async Task response_content_type_is_text_plain_if_detailed_output_is_disabled()
         {
@@ -326,17 +322,17 @@ namespace BeatPulse
             var check2IsExecuted = false;
 
             var healthCheck1 = new ActionLiveness(
-               (httpcontext, cancellationToken) =>
+               (cancellationToken) =>
                {
                    check1IsExecuted = true;
-                   return Task.FromResult(("custom check1 is not working", false));
+                   return Task.FromResult(LivenessResult.UnHealthy("custom check1 is not working"));
                });
 
             var healthCheck2 = new ActionLiveness(
-              (httpcontext, cancellationToken) =>
+              (cancellationToken) =>
               {
                   check2IsExecuted = false;
-                  return Task.FromResult(("custom check2 is  working", true));
+                  return Task.FromResult(LivenessResult.Healthy());
               });
 
             var webHostBuilder = new WebHostBuilder()
@@ -365,13 +361,15 @@ namespace BeatPulse
             var response = await server.CreateClient()
                 .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
 
-            response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
+            response.StatusCode
+                .Should().Be(StatusCodes.Status503ServiceUnavailable);
+
             check1IsExecuted.Should().BeTrue();
             check2IsExecuted.Should().BeFalse();
         }
 
         [Fact]
-        public async Task response_content_type_is_application_json__if_detailed_output_is_enabled()
+        public async Task response_content_type_is_application_json_if_detailed_output_is_enabled()
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseBeatPulse(options => options.ConfigureDetailedOutput())
@@ -388,7 +386,6 @@ namespace BeatPulse
 
             response.Content.Headers.ContentType.MediaType.Should().Be("application/json");
         }
-
 
         [Fact]
         public async Task response_is_not_cached_out_of_box()
@@ -477,7 +474,6 @@ namespace BeatPulse
 
         }
 
-
         [Fact]
         public async Task use_in_memory_cache_if_specified_in_options()
         {
@@ -541,7 +537,6 @@ namespace BeatPulse
 
             firstJson.Equals(secondJson).Should().BeFalse();
         }
-
 
         [Fact]
         public async Task response_http_status_not_found_if_beatpulse_path_is_not_registered()
@@ -619,16 +614,16 @@ namespace BeatPulse
                    svc.AddMvc();
                }).Configure(app =>
                {
-                   app.UseBeatPulse(setup => { },builder=>
-                   {
-                       builder.UseCors(setup =>
-                       {
-                           setup.AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader()
-                                .AllowCredentials();
-                       });
-                   });
+                   app.UseBeatPulse(setup => { }, builder =>
+                    {
+                        builder.UseCors(setup =>
+                        {
+                            setup.AllowAnyOrigin()
+                                 .AllowAnyMethod()
+                                 .AllowAnyHeader()
+                                 .AllowCredentials();
+                        });
+                    });
                    app.UseMvc();
                });
 
@@ -654,7 +649,7 @@ namespace BeatPulse
                    svc.AddCors();
                    svc.AddBeatPulse();
                    svc.AddMvc();
-               }).Configure(app=>
+               }).Configure(app =>
                {
                    app.UseCors(setup =>
                    {
@@ -663,7 +658,7 @@ namespace BeatPulse
                             .AllowAnyHeader()
                             .AllowCredentials();
                    });
-                   app.UseBeatPulse(setup=> { });
+                   app.UseBeatPulse(setup => { });
                    app.UseMvc();
                });
 
@@ -713,6 +708,159 @@ namespace BeatPulse
                 .Value.Should().BeEquivalentTo(null);
         }
 
+        [Fact]
+        public async Task use_detailed_errors_configuration_property_on_liveness_exection_context()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options =>
+                {
+                    options.ConfigureDetailedOutput(detailedOutput: true, includeExceptionMessages: true);
+                })
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(ctx =>
+                    {
+                        ctx.AddLiveness("test", setup =>
+                         {
+                             setup.UsePath("test");
+                             setup.UseLiveness(new LivenessThatThrow(() => new ArgumentException("detail")));
+                         });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync(BeatPulseKeys.BEATPULSE_DEFAULT_PATH);
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+
+            var responseContent = await response.Content
+                .ReadAsStringAsync();
+
+            var exception = (string)JsonConvert.DeserializeObject<dynamic>(responseContent)
+                .checks[1].exception;
+
+            var message = (string)JsonConvert.DeserializeObject<dynamic>(responseContent)
+                .checks[1].message;
+
+            exception.Should()
+                .BeEquivalentTo(new ArgumentException("detail").Message);
+
+            message.Should()
+                .BeEquivalentTo(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE);
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_querystring_parameter()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+        }
+
+        [Fact]
+        public async Task default_timeout_option_can_be_override_with_querystring_parameter()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureTimeout(milliseconds: 100))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse(setup =>
+                    {
+                        setup.AddLiveness("test", opt =>
+                         {
+                             opt.UsePath("test");
+                             opt.UseLiveness(new ActionLiveness(async ct =>
+                             {
+                                 await Task.Delay(200);
+
+                                 return LivenessResult.Healthy();
+                             }));
+                         });
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true");
+
+            response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
+
+            response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true&Timeout=300");
+
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_querystring_parameters_without_same_case()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DeTaIlEdOuTpUt=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+        }
+
+        [Fact]
+        public async Task default_detailedOutput_option_can_be_override_with_latest_querystring_parameter_entry_if_multiple_entries_are_sent()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseBeatPulse(options => options.ConfigureDetailedOutput(detailedOutput: false))
+                .UseStartup<DefaultStartup>()
+                .ConfigureServices(svc =>
+                {
+                    svc.AddBeatPulse();
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateClient()
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=false&DetailedOutput=false&DetailedOutput=true");
+
+            response.Content.Headers
+                .ContentType
+                .MediaType
+                .Should()
+                .Be("application/json");
+        }
+
         class OutputMessage
         {
             public List<dynamic> Checks { get; set; }
@@ -720,6 +868,30 @@ namespace BeatPulse
             public DateTime StartedAtUtc { get; set; }
 
             public DateTime EndAtUtc { get; set; }
+        }
+
+        class LivenessThatThrow
+            : IBeatPulseLiveness
+        {
+            Func<Exception> _throwException;
+
+            public LivenessThatThrow(Func<Exception> thowException)
+            {
+                _throwException = thowException;
+            }
+
+            public Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
+            {
+                try
+                {
+                    throw _throwException();
+                }
+                catch (Exception ex)
+                {
+                    return Task.FromResult(
+                        LivenessResult.UnHealthy(ex));
+                }
+            }
         }
     }
 }

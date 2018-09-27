@@ -63,7 +63,6 @@ namespace BeatPulse.UI.Core.HostedService
                     }
                     catch (Exception ex)
                     {
-                        //prevent hosted service exited 
                         _logger.LogError("LivenessHostedService throw a error:", ex);
                     }  
                 }

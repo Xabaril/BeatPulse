@@ -1,6 +1,6 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Sockets;
 using System.Threading;
@@ -11,37 +11,44 @@ namespace BeatPulse
     public class TcpLiveness : IBeatPulseLiveness
     {
         private readonly TcpLivenessOptions _options;
+        private readonly ILogger<TcpLiveness> _logger;
 
-        public TcpLiveness(TcpLivenessOptions options)
+        public TcpLiveness(TcpLivenessOptions options, ILogger<TcpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger = logger;
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
-                foreach (var item in _options.ConfiguredHosts)
+                _logger?.LogInformation($"{nameof(TcpLiveness)} is checking hosts.");
+
+                foreach (var (host, port) in _options.ConfiguredHosts)
                 {
                     using (var tcpClient = new TcpClient())
                     {
-                        await tcpClient.ConnectAsync(item.host, item.port);
+                        await tcpClient.ConnectAsync(host, port);
 
                         if (!tcpClient.Connected)
                         {
-                            return ($"Connection to host {item.host}:{item.port} failed", false);
+                            _logger?.LogWarning($"The {nameof(TcpLiveness)} check failed for host {host} and port {port}.");
+
+                            return LivenessResult.UnHealthy($"Connection to host {host}:{port} failed");
                         }
                     }
                 }
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                _logger?.LogInformation($"The {nameof(TcpLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(TcpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                return (message, false);
-            }            
+                return LivenessResult.UnHealthy(ex);
+            }
         }
     }
 }

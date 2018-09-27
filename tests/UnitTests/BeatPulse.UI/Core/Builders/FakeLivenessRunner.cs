@@ -1,6 +1,6 @@
 ﻿using BeatPulse.UI.Configuration;
-using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
+using BeatPulse.UI.Core.Notifications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;

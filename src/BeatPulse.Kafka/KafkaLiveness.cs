@@ -1,7 +1,7 @@
 ﻿using BeatPulse.Core;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,38 +12,42 @@ namespace BeatPulse.Kafka
 {
     public class KafkaLiveness : IBeatPulseLiveness
     {
-        private readonly Dictionary<string, object> _config;
+        private readonly Dictionary<string, object> _configuration;
+        private readonly ILogger<KafkaLiveness> _logger;
 
-        public KafkaLiveness(Dictionary<string, object> config)
+        public KafkaLiveness(Dictionary<string, object> configuration,ILogger<KafkaLiveness> logger = null)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
-                using (var producer = new Producer<Null, string>(_config, null, new StringSerializer(Encoding.UTF8)))
+                _logger?.LogInformation($"{nameof(KafkaLiveness)} is checking the Kafka broker.");
+
+                using (var producer = new Producer<Null, string>(_configuration, null, new StringSerializer(Encoding.UTF8)))
                 {
                     var result = await producer.ProduceAsync("beatpulse-topic",null, $"Check Kafka healthy on {DateTime.UtcNow}");
 
                     if (result.Error.Code != ErrorCode.NoError)
                     {
-                        var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                            : $"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')";
+                        _logger?.LogWarning($"The {nameof(KafkaLiveness)} check failed.");
 
-                        return (message, false);
+                        return LivenessResult.UnHealthy($"ErrorCode {result.Error.Code} with reason ('{result.Error.Reason}')");
                     }
 
-                    return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                    _logger?.LogInformation($"The {nameof(KafkaLiveness)} check success.");
+
+                    return LivenessResult.Healthy();
                 }
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(KafkaLiveness)} check fail for Kafka broker with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

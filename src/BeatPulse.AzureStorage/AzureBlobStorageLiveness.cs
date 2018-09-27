@@ -1,5 +1,5 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
@@ -11,16 +11,20 @@ namespace BeatPulse.AzureStorage
     public class AzureBlobStorageLiveness : IBeatPulseLiveness
     {
         private readonly CloudStorageAccount _storageAccount;
+        private readonly ILogger<AzureBlobStorageLiveness> _logger;
 
-        public AzureBlobStorageLiveness(string connectionString)
+        public AzureBlobStorageLiveness(string connectionString,ILogger<AzureBlobStorageLiveness> logger = null)
         {
             _storageAccount = CloudStorageAccount.Parse(connectionString);
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger?.LogInformation($"{nameof(AzureBlobStorageLiveness)} is checking the Azure Blob.");
+
                 var blobClient = _storageAccount.CreateCloudBlobClient();
 
                 var serviceProperties = await blobClient.GetServicePropertiesAsync(
@@ -28,14 +32,15 @@ namespace BeatPulse.AzureStorage
                     operationContext: null,
                     cancellationToken: cancellationToken);
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                _logger?.LogInformation($"The {nameof(AzureBlobStorageLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(AzureBlobStorageLiveness)} check fail for {_storageAccount.BlobStorageUri} with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

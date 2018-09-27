@@ -1,5 +1,5 @@
 ﻿using BeatPulse.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
@@ -11,16 +11,20 @@ namespace BeatPulse.AzureStorage
     public class AzureTableStorageLiveness : IBeatPulseLiveness
     {
         private readonly CloudStorageAccount _storageAccount;
+        private readonly ILogger<AzureTableStorageLiveness> _logger;
 
-        public AzureTableStorageLiveness(string connectionString)
+        public AzureTableStorageLiveness(string connectionString,ILogger<AzureTableStorageLiveness> logger = null)
         {
             _storageAccount = CloudStorageAccount.Parse(connectionString);
+            _logger = logger;
         }
 
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
+                _logger?.LogInformation($"{nameof(AzureTableStorageLiveness)} is checking the Azure Table.");
+
                 var blobClient = _storageAccount.CreateCloudTableClient();
 
                 var serviceProperties = await blobClient.GetServicePropertiesAsync(
@@ -28,14 +32,15 @@ namespace BeatPulse.AzureStorage
                     operationContext:null,
                     cancellationToken:cancellationToken);
 
-                return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                _logger?.LogInformation($"The {nameof(AzureTableStorageLiveness)} check success.");
+
+                return LivenessResult.Healthy();
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                    : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(AzureTableStorageLiveness)} check fail for {_storageAccount.TableStorageUri} with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

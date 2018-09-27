@@ -1,5 +1,7 @@
 ﻿using BeatPulse.AzureStorage;
 using BeatPulse.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -9,8 +11,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureBlobStorageLiveness(connectionString));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new AzureBlobStorageLiveness(connectionString, sp.GetService<ILogger<AzureBlobStorageLiveness>>()));
             });
         }
 
@@ -18,17 +20,18 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureTableStorageLiveness(connectionString));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new AzureTableStorageLiveness(connectionString, sp.GetService<ILogger<AzureTableStorageLiveness>>()));
+
             });
         }
 
-        public static BeatPulseContext AddAzureQueueStorage(this BeatPulseContext context, string connectionString,string name = nameof(AzureQueueStorageLiveness), string defaultPath = "azurequeuestorage")
+        public static BeatPulseContext AddAzureQueueStorage(this BeatPulseContext context, string connectionString, string name = nameof(AzureQueueStorageLiveness), string defaultPath = "azurequeuestorage")
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureQueueStorageLiveness(connectionString));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new AzureQueueStorageLiveness(connectionString, sp.GetService<ILogger<AzureQueueStorageLiveness>>()));
             });
         }
     }

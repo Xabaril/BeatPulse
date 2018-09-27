@@ -63,7 +63,33 @@ namespace FunctionalTests.BeatPulse.Oracle
             var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
                 .GetAsync();
 
-            response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.ServiceUnavailable);
         }
+
+        [SkipOnAppVeyor]
+        public async Task be_unhealthy_when_sql_query_is_not_valid()
+        {
+            var connectionString = "Data Source=localhost:1521/xe;User Id=system;Password=oracle";
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context.AddOracle(connectionString,"SELECT 1 FROM InvalidDb");
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest(BeatPulseKeys.BEATPULSE_DEFAULT_PATH)
+                .GetAsync();
+
+            response.StatusCode.Should()
+                .Be(HttpStatusCode.ServiceUnavailable);
+        }
+
     }
 }

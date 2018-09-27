@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,15 +9,14 @@ namespace BeatPulse.Core
         [Fact]
         public async Task execute_definded_action_for_health_check()
         {
-            var taskResult = Task.FromResult((string.Empty, false));
+            var taskResult = Task.FromResult(LivenessResult.UnHealthy("action liveness is not working"));
 
             var livenessContext = new LivenessExecutionContext();
 
-            var liveness = new ActionLiveness((context, cancellationToken) => taskResult);
+            var liveness = new ActionLiveness((cancellationToken) => taskResult);
 
-            (await liveness.IsHealthy(new DefaultHttpContext(), livenessContext))
+            (await liveness.IsHealthy(livenessContext))
                     .Should().Be(taskResult.Result);
         }
-
     }
 }

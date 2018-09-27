@@ -1,5 +1,28 @@
 # Change Log
 
+## BeatPulse 3.0 Version
+
+- Functional changes
+
+    1. Removed ASP.NET Core HttpContext dependency from all liveness and IBeatPulseLiveness contract.
+    2. Added support on SqlLiveness,Sqlite, PostgreSql,Oracle to specify the sql query to be executed.
+    3. Added log support for all out of box liveness.
+    4. Default BeatPulseOptions (DetailedOutput, Timeout) can be override with request query string parameters.
+    5. BeatPulseOptions.ConfigureDetailedOutput can configure includeExceptionMessages value to enable or disable exception messages information.
+    6. BeatPulseOptions can configure Port property to specify a port filter for BeatPulse requests.
+    7. Json result of liveness include Exception property, the content of this property depend on includeExceptionMessages opt-in.
+    8. BeatPulseOptions can be configured from configuration settings.
+    
+- Non Functional
+
+    1. Improved naming on functional tests.
+    2. Improve code quality.
+
+- Breaking Changes
+
+    1. IBeatPulseLiveness contract.
+    2. BeatPulse json response contract.
+
 ## Network 2.1.1
 
     1. Added IMAP connection liveness, supporting SSL/TLS and STARTTLS handshake.
@@ -46,7 +69,7 @@
 
 ## Version 1.7.2 to 2.1
 
-    1. ASP.NET Core 2.1 dependency
+    1. ASP.NET Core 2.1 dependency.
     2. Refactor *BeatPulseOptions* public surface.
     3. ConfigureDetailedOutput method on *BeatPulseOptions* support flag configuration.
     4. **UseBeatPulse** as *IApplicationBuilder* extension method to support include existing middlewares on *BeatPulse* requests.

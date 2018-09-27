@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BeatPulse.UI.Core.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +13,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
                     LivenessName = table.Column<string>(maxLength: 500, nullable: false),
-                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false)
+                    DiscoveryService = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,13 +28,14 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Status = table.Column<string>(maxLength: 50, nullable: false),
                     IsHealthy = table.Column<bool>(nullable: false),
+                    OnStateFrom = table.Column<DateTime>(nullable: false),
                     LastExecuted = table.Column<DateTime>(nullable: false),
+                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
                     LivenessName = table.Column<string>(maxLength: 500, nullable: false),
                     LivenessResult = table.Column<string>(maxLength: 2000, nullable: false),
-                    LivenessUri = table.Column<string>(maxLength: 500, nullable: false),
-                    OnStateFrom = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<string>(maxLength: 50, nullable: false)
+                    DiscoveryService = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,8 +48,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    LivenessName = table.Column<string>(maxLength: 500, nullable: false),
                     LastNotified = table.Column<DateTime>(nullable: false),
-                    LivenessName = table.Column<string>(maxLength: 500, nullable: false)
+                    IsUpAndRunning = table.Column<bool>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -61,9 +63,9 @@ namespace BeatPulse.UI.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LivenessExecutionId = table.Column<int>(nullable: true),
+                    Status = table.Column<string>(maxLength: 50, nullable: false),
                     On = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<string>(maxLength: 50, nullable: false)
+                    LivenessExecutionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

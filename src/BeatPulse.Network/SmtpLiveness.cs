@@ -1,6 +1,6 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Network.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,43 +10,53 @@ namespace BeatPulse.Network
     public class SmtpLiveness : IBeatPulseLiveness
     {
         private readonly SmtpLivenessOptions _options;
+        private readonly ILogger<SmtpLiveness> _logger;
 
-        public SmtpLiveness(SmtpLivenessOptions options)
+        public SmtpLiveness(SmtpLivenessOptions options, ILogger<SmtpLiveness> logger = null)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger = logger;
         }
-        public async Task<(string, bool)> IsHealthy(HttpContext context, LivenessExecutionContext livenessContext, CancellationToken cancellationToken = default)
+
+        public async Task<LivenessResult> IsHealthy(LivenessExecutionContext context, CancellationToken cancellationToken = default)
         {
             try
             {
-                using(var smtpConnection = new SmtpConnection(_options))
-                {
-                    if(await smtpConnection.ConnectAsync())
-                    {
-                        if (_options.AccountOptions.login)
-                        {
-                            var (user, password) = _options.AccountOptions.account;
+                _logger?.LogInformation($"{nameof(SmtpLiveness)} is checking SMTP connections.");
 
-                            if(! await smtpConnection.AuthenticateAsync(user, password))
-                            { 
-                                return ($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials", false);
+                using (var smtpConnection = new SmtpConnection(_options))
+                {
+                    if (await smtpConnection.ConnectAsync())
+                    {
+                        if (_options.AccountOptions.Login)
+                        {
+                            var (user, password) = _options.AccountOptions.Account;
+
+                            if (!await smtpConnection.AuthenticateAsync(user, password))
+                            {
+                                _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with invalid login to smtp server {_options.Host}:{_options.Port} with configured credentials.");
+
+                                return LivenessResult.UnHealthy($"Error login to smtp server{_options.Host}:{_options.Port} with configured credentials");
                             }
                         }
 
-                        return (BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_OK_MESSAGE, true);
+                        _logger?.LogInformation($"The {nameof(SmtpLiveness)} check success.");
+
+                        return LivenessResult.Healthy();
                     }
                     else
                     {
-                        return ($"Could not connect to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}", false);
+                        _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail for connecting to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}.");
+
+                        return LivenessResult.UnHealthy($"Could not connect to smtp server {_options.Host}:{_options.Port} - SSL : {_options.ConnectionType}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                var message = !livenessContext.IsDevelopment ? string.Format(BeatPulseKeys.BEATPULSE_HEALTHCHECK_DEFAULT_ERROR_MESSAGE, livenessContext.Name)
-                  : $"Exception {ex.GetType().Name} with message ('{ex.Message}')";
+                _logger?.LogWarning($"The {nameof(SmtpLiveness)} check fail with the exception {ex.ToString()}.");
 
-                return (message, false);
+                return LivenessResult.UnHealthy(ex);
             }
         }
     }

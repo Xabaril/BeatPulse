@@ -1,5 +1,7 @@
 ﻿using BeatPulse.AzureServiceBus;
 using BeatPulse.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
@@ -9,8 +11,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureEventHubLiveness(connectionString, eventHubName));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp=>new AzureEventHubLiveness(connectionString, eventHubName,sp.GetService<ILogger<AzureEventHubLiveness>>()));
             });
         }
 
@@ -18,8 +20,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureServiceBusQueueLiveness(connectionString, queueName));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new AzureServiceBusQueueLiveness(connectionString, queueName, sp.GetService<ILogger<AzureServiceBusQueueLiveness>>()));
             });
         }
 
@@ -27,8 +29,8 @@ namespace BeatPulse
         {
             return context.AddLiveness(name, setup =>
             {
-                setup.UseLiveness(new AzureServiceBusTopicLiveness(connectionString, topicName));
                 setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new AzureServiceBusTopicLiveness(connectionString, topicName, sp.GetService<ILogger<AzureServiceBusTopicLiveness>>()));
             });
         }
     }

@@ -1,7 +1,9 @@
 ﻿using BeatPulse.UI.Configuration;
 using BeatPulse.UI.Core;
 using BeatPulse.UI.Core.Data;
+using BeatPulse.UI.Core.Discovery.K8S;
 using BeatPulse.UI.Core.HostedService;
+using BeatPulse.UI.Core.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,12 +29,22 @@ namespace BeatPulse.UI
             });
 
             services.AddSingleton<IHostedService, LivenessHostedService>();
-            services.AddSingleton<ILivenessFailureNotifier, LivenessFailureNotifier>();
+
+            services.AddScoped<ILivenessFailureNotifier, WebHookFailureNotifier>();
             services.AddScoped<ILivenessRunner, LivenessRunner>();
             services.AddDbContext<LivenessDb>(db =>
             {
                 db.UseSqlite("Data Source=livenessdb");
             });
+
+            var kubernetesDiscoveryOptions = new KubernetesDiscoveryOptions();
+            configuration.Bind(BeatPulseUIKeys.BEATPULSEUI_KUBERNETES_DISCOVERY_SETTING_KEY, kubernetesDiscoveryOptions);
+
+            if (kubernetesDiscoveryOptions.Enabled)
+            {
+                services.AddSingleton(kubernetesDiscoveryOptions);
+                services.AddHostedService<KubernetesDiscoveryHostedService>();
+            }
 
             var serviceProvider = services.BuildServiceProvider();
 

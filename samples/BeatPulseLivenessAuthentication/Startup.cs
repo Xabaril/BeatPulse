@@ -57,9 +57,10 @@ namespace BeatPulseLivenessAuthentication
                 setup.AddLiveness("catapi", opt =>
                 {
                     opt.UsePath("catapi");
-                    opt.UseLiveness(new ActionLiveness((httpContext, cancellationToken) =>
+                    opt.UseLiveness(new ActionLiveness((cancellationToken) =>
                     {
-                        return Task.FromResult(("OK", true));
+                        return Task.FromResult(
+                            LivenessResult.Healthy());
                     }));
                 });
             });

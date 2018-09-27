@@ -9,7 +9,8 @@ namespace Microsoft.AspNetCore.Http
         public static bool IsBeatPulseRequest(this HttpContext context, BeatPulseOptions options)
         {
             return context.Request.Method == HttpMethods.Get
-                && context.MatchesBeatPulseRequestPath(options);
+                && context.MatchesBeatPulseRequestPath(options)
+                && context.MatchesBeatPulsePort(options);
         }
 
         public static string GetBeatPulseRequestPath(this HttpContext context, BeatPulseOptions options)
@@ -29,9 +30,14 @@ namespace Microsoft.AspNetCore.Http
             return templateMatcher.TryMatch(context.Request.Path, routeValues);
         }
 
+        private static bool MatchesBeatPulsePort(this HttpContext context, BeatPulseOptions options)
+        {
+            return options.Port.HasValue ? context.Connection.LocalPort == options.Port : true;
+        }
+
         private static TemplateMatcher GetTemplateMatcher(BeatPulseOptions options)
         {
-            var templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.BeatPulsePath}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
+            var templateMatcher = new TemplateMatcher(TemplateParser.Parse($"{options.Path}/{{{BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME}}}"),
             new RouteValueDictionary() { { BeatPulseKeys.BEATPULSE_PATH_SEGMENT_NAME, string.Empty } });
 
             return templateMatcher;

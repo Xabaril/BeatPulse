@@ -10,6 +10,7 @@ export interface Liveness {
     lastExecuted: string;
     status: string;
     livenessResult: string;
+    discoveryService: string;
     checks : Array<Check>;
 }
 
@@ -20,6 +21,7 @@ export interface LivenessResult {
 export interface Check {
     name: string;
     message: string;
+    exception: string;
     elapsed: string;
     run: boolean;
     path: string,

@@ -1,18 +1,18 @@
 ﻿using BeatPulse.Core;
 using BeatPulse.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BeatPulse
 {
     public static class BeatPulseContextExtensions
     {
-        public static BeatPulseContext AddOracle(this BeatPulseContext context, string connectionString, string name = nameof(OracleLiveness), string defaultPath = "oracle")
+        public static BeatPulseContext AddOracle(this BeatPulseContext context, string connectionString, string healthQuery = "select * from v$version", string name = nameof(OracleLiveness), string defaultPath = "oracle")
         {
-            return context.AddLiveness(name, setup => {
-                setup.UsePath(defaultPath);                
-                setup.UseLiveness(new OracleLiveness(connectionString));
+            return context.AddLiveness(name, setup =>
+            {
+                setup.UsePath(defaultPath);
+                setup.UseFactory(sp => new OracleLiveness(connectionString, healthQuery, sp.GetService<ILogger<OracleLiveness>>()));
             });
         }
     }

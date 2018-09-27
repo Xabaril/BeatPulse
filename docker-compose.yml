@@ -33,7 +33,6 @@ services:
         image: confluent/zookeeper
         ports:
             - ${ZOOKEEPER_PORT}:2181
-
     kafka:
         image: confluent/kafka
         environment:
@@ -51,7 +50,7 @@ services:
     idsvr:
         image: nakah/identityserver4
         ports:
-          - ${IDSVR_PORT}:8888
+          - ${IDSVR_PORT}:80
     oracle:
         image: wnameless/oracle-xe-11g
         ports: 
@@ -74,7 +73,6 @@ services:
         volumes:
             - ./docker-services/certificate/id_rsa.pub:/home/foo/.ssh/keys/id_rsa.pub:ro
         command: foo:pass:::upload
-    
     mail:
         image: tvial/docker-mailserver:latest
         hostname: mail
