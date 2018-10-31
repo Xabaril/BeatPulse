@@ -4,6 +4,23 @@
 
 # Beat Pulse
 
+> IMPORTANT UPDATE
+
+Beatpulse project was created to fill a gap in Asp.Net Core ecosystem when no health checks libraries were available.
+
+Now that Microsoft is rolling out their own [health checks integration](https://github.com/aspnet/Diagnostics)  ,the Beatpulse project will be focused in contributing towards this library.
+
+All liveness, UI and Beatpulse features are already available as extensions for the new Microsoft health checks package in this repository:
+
+[Xabaril - AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
+
+**Support**
+
+The team will continue to provide support to Beatpulse until version 3.0 with .Net Core version 2.1 but no new features will be added in this repository.
+
+
+> What is Health Checking?
+
 Health checking is the process where load balancers or application delivery controller does periodic checks on our applications to make sure that they are up and responding without any problems. If our applications are down for whatever reason or any of the systems that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s, should detect this and stop sending traffic its way trying to restore services manually or automatically.
 
 *BeatPulse* is a powerfull liveness, readiness library for .NET Core Applications with many out of box enterprise health check services.
