@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BeatPulse.Elasticsearch\BeatPulse.Elasticsearch.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.IdSvr\BeatPulse.IdSvr.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Kafka\BeatPulse.Kafka.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
