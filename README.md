@@ -44,6 +44,7 @@ Install-Package BeatPulse
  - SqlServer
  - MongoDb
  - Postgress Sql
+ - EventStore
  - Oracle
  - Azure Storage (Blobs, Tables and Queues)
  - Azure Service Bus (Event Hub, Service Bus queues and topics)
@@ -62,6 +63,7 @@ Install-Package BeatPulse.Network
 Install-Package BeatPulse.SqlServer
 Install-Package BeatPulse.MongoDb
 Install-Package BeatPulse.Npgsql
+Install-Package BeatPulse.EventStore
 Install-Package BeatPulse.Redis
 Install-Package BeatPulse.AzureStorage
 Install-Package BeatPulse.AzureServiceBus
