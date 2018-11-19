@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BeatPulse.ApplicationInsightsTracker\BeatPulse.ApplicationInsightsTracker.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.DynamoDb\BeatPulse.DynamoDb.csproj" />
+    <ProjectReference Include="..\..\src\BeatPulse.EventStore\BeatPulse.EventStore.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.MongoDb\BeatPulse.MongoDb.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.Network\BeatPulse.Network.csproj" />
     <ProjectReference Include="..\..\src\BeatPulse.NpgSql\BeatPulse.NpgSql.csproj" />
