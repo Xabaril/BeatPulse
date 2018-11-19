@@ -41,6 +41,7 @@ Install-Package BeatPulse
  - System (Disk Storage, Memory)
  - Network (Tcp, Ftp, Sftp, Imap, Smtp, Dns resolve)
  - Redis
+ - Elasticsearch
  - SqlServer
  - MongoDb
  - Postgress Sql
@@ -62,6 +63,7 @@ Install-Package BeatPulse.Network
 Install-Package BeatPulse.SqlServer
 Install-Package BeatPulse.MongoDb
 Install-Package BeatPulse.Npgsql
+Install-Package BeatPulse.Elasticsearch
 Install-Package BeatPulse.Redis
 Install-Package BeatPulse.AzureStorage
 Install-Package BeatPulse.AzureServiceBus
