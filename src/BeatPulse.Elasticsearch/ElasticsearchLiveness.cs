@@ -1,4 +1,5 @@
 ﻿using BeatPulse.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Nest;
 using System;
@@ -24,13 +25,13 @@ namespace BeatPulse.Elasticsearch
             {
                 _logger?.LogInformation($"{nameof(ElasticsearchLiveness)} is checking the Elasticsearch host.");
 
-                var lowlevelClient = new ElasticClient(new Uri(_elasticsearchConnectionString));
-                var pingResult = await lowlevelClient.PingAsync(cancellationToken:cancellationToken);
-                var isSuccess = pingResult.ApiCall.HttpStatusCode == 200;
+                var client = new ElasticClient(new Uri(_elasticsearchConnectionString));
+                var result = await client.PingAsync(cancellationToken:cancellationToken);
+                var success = result.ApiCall.HttpStatusCode == StatusCodes.Status200OK;
 
-                return isSuccess
+                return success
                     ? LivenessResult.Healthy()
-                    : LivenessResult.UnHealthy(pingResult.ApiCall.OriginalException);
+                    : LivenessResult.UnHealthy(result.ApiCall.OriginalException);
 
             }
             catch (Exception ex)
