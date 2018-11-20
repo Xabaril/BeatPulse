@@ -15,6 +15,7 @@
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>
     <NestVersion>6.1.0</NestVersion>
+    <EventStoreVersion>4.1.0.23</EventStoreVersion>
     <SqlClientVersion>4.4.2</SqlClientVersion>
     <FluentAssertionsVersion>5.4.1</FluentAssertionsVersion>
     <ASPNetCoreTestHostVersion>2.1.1</ASPNetCoreTestHostVersion>
@@ -57,6 +58,7 @@
     <BeatPulseSqlServerPackageVersion>3.0.0</BeatPulseSqlServerPackageVersion>
     <BeatPulseUIPackageVersion>3.0.0</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>3.0.0</BeatPulseKafkaVersion>
+    <BeatPulseEventStoreVersion>3.0.0</BeatPulseEventStoreVersion>
     <BeatPulseRabbitMQPackageVersion>3.0.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>3.0.0</BeatPulseIdSvrVersion>
     <BeatPulseAzureServiceBusVersion>3.0.0</BeatPulseAzureServiceBusVersion>

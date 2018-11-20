@@ -89,6 +89,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Network", "src\Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.Elasticsearch", "src\BeatPulse.Elasticsearch\BeatPulse.Elasticsearch.csproj", "{40FB18BD-1579-42E4-BB3F-8890FE3D892A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatPulse.EventStore", "src\BeatPulse.EventStore\BeatPulse.EventStore.csproj", "{63A67A35-9383-42EB-B2A2-3AA5A06EE44C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,10 +217,17 @@ Global
 		{9B11E60F-D148-4578-B543-01384799734B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B11E60F-D148-4578-B543-01384799734B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B11E60F-D148-4578-B543-01384799734B}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{40FB18BD-1579-42E4-BB3F-8890FE3D892A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40FB18BD-1579-42E4-BB3F-8890FE3D892A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40FB18BD-1579-42E4-BB3F-8890FE3D892A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40FB18BD-1579-42E4-BB3F-8890FE3D892A}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{63A67A35-9383-42EB-B2A2-3AA5A06EE44C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A67A35-9383-42EB-B2A2-3AA5A06EE44C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63A67A35-9383-42EB-B2A2-3AA5A06EE44C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63A67A35-9383-42EB-B2A2-3AA5A06EE44C}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> cc1dfcce8a7121a4c9351ef2959888dc2bd702ce
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,7 +263,11 @@ Global
 		{FA1DA30C-0D54-4DB6-8EF6-CFCE124AB0C6} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{B3129148-8212-4ACC-A29A-8823D018F0F2} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
 		{9B11E60F-D148-4578-B543-01384799734B} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+<<<<<<< HEAD
 		{40FB18BD-1579-42E4-BB3F-8890FE3D892A} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+=======
+		{63A67A35-9383-42EB-B2A2-3AA5A06EE44C} = {1C706B20-C9D9-40ED-A6A8-5007DF1FD2BA}
+>>>>>>> cc1dfcce8a7121a4c9351ef2959888dc2bd702ce
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B397864-402E-48A9-A8DC-0B98151CA4BE}
