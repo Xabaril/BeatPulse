@@ -15,8 +15,8 @@ interface AppState {
     menuOpen: boolean;
 }
 
-const WhiteGearIcon = require("../assets/svg/white-gear.svg");
-const WhiteHeartIcon = require("../assets/svg/white-heart.svg");
+const WhiteGearIcon = require("../Assets/svg/white-gear.svg");
+const WhiteHeartIcon = require("../Assets/svg/white-heart.svg");
 
 export class App extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
