@@ -8,7 +8,7 @@ module.exports = {
         extensions: [".tsx",".ts", ".json"]
     },
     output: {
-        path: path.join(__dirname, "../assets"),
+        path: path.join(__dirname, "../Assets"),
         filename: 'beatpulse-bundle.js'
     },
     module: {
