@@ -13,11 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="assets\index.html" />
-    <EmbeddedResource Include="assets\beatpulse.css" />
-    <EmbeddedResource Include="assets\bootstrap-min.css" />
-    <EmbeddedResource Include="assets\vendors-dll.js" />
-    <EmbeddedResource Include="assets\beatpulse-bundle.js" />    
+    <EmbeddedResource Include="Assets\index.html" />
+    <EmbeddedResource Include="Assets\beatpulse.css" />
+    <EmbeddedResource Include="Assets\bootstrap-min.css" />
+    <EmbeddedResource Include="Assets\vendors-dll.js" />
+    <EmbeddedResource Include="Assets\beatpulse-bundle.js" />    
   </ItemGroup>
 
   <ItemGroup>
