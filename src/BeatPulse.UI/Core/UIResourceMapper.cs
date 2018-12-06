@@ -23,7 +23,7 @@ namespace BeatPulse.UI.Core
 
             foreach (var resource in resources)
             {
-                app.Map($"{BeatPulseUIKeys.BEATPULSEUI_RESOURCES_PATH}/{resource.FileName}", appBuilder =>
+                app.Map($"{apiOptions.BeatPulseResourcePath}/{resource.FileName}", appBuilder =>
                 {
                     appBuilder.Run(async context =>
                     {
