@@ -29,6 +29,7 @@ namespace BeatPulse.UI.Core
             var resource = resources.WithContentType(ContentType.HTML).FirstOrDefault(r => r.FileName == BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_RESOURCE);
             resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_API_TARGET, apiOptions.BeatPulseApiPath);
             resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_WEBHOOKS_API_TARGET, apiOptions.BeatPulseWebHooksPath);
+            resource.Content = resource.Content.Replace(BeatPulseUIKeys.BEATPULSEUI_MAIN_UI_RESOURCE_TARGET, apiOptions.BeatPulseResourcePath);
             return resource;
         }
     }
