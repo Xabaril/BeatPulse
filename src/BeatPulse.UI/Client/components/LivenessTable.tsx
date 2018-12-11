@@ -7,8 +7,8 @@ interface LivenessTableProps {
     livenessData: Array<Liveness>
 }
 
-const PlusIcon = require("../../assets/svg/plus.svg");
-const MinusIcon = require("../../assets/svg/minus.svg");
+const PlusIcon = require("../../Assets/svg/plus.svg");
+const MinusIcon = require("../../Assets/svg/minus.svg");
 
 export class LivenessTable extends React.Component<LivenessTableProps> {
 

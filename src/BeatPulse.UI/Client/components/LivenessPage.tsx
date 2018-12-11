@@ -3,11 +3,11 @@ import { BeatPulseClient } from "../beatpulseClient";
 import moment from "moment";
 import { Liveness } from "../typings/models";
 import { LivenessTable } from "./LivenessTable";
-const DarkHeartIcon = require("../../assets/svg/dark-heart.svg");
-const ExpandIcon = require('../../assets/svg/expand.svg');
-const CollapseIcon = require('../../assets/svg/collapse.svg');
-const PlusIcon = require("../../assets/svg/plus.svg");
-const MinusIcon = require('../../assets/svg/minus.svg');
+const DarkHeartIcon = require("../../Assets/svg/dark-heart.svg");
+const ExpandIcon = require('../../Assets/svg/expand.svg');
+const CollapseIcon = require('../../Assets/svg/collapse.svg');
+const PlusIcon = require("../../Assets/svg/plus.svg");
+const MinusIcon = require('../../Assets/svg/minus.svg');
 
 
 const beatPulseIntervalStorageKey = "beatpulse-ui-polling";

@@ -3,10 +3,10 @@ export const
     statusDown: string = "Down",
     statusDegraded: string = "Degraded";
 
-const okImage = require("../assets/images/ok.png");
-const downImage = require("../assets/images/down.png");
-const degradedImage = require("../assets/images/degraded.png");
-const kubernetesIcon = require('../assets/images/kubernetes-icon.png');
+const okImage = require("../Assets/images/ok.png");
+const downImage = require("../Assets/images/down.png");
+const degradedImage = require("../Assets/images/degraded.png");
+const kubernetesIcon = require('../Assets/images/kubernetes-icon.png');
 
 const imageResources = [
     { state: statusUp, image: okImage },

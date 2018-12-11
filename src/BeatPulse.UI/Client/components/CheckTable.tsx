@@ -18,7 +18,7 @@ const renderTable = (props: CheckTableProps) => {
                 {item.name}
             </td>
             <td>
-                {item.message}
+                {item.exception !== null ? item.exception : item.message}
             </td>
             <td>
                 {item.elapsed}

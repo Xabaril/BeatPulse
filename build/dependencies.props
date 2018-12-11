@@ -53,10 +53,10 @@
     <BeatPulseMongoDbPackageVersion>3.0.0</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>3.0.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>3.0.0</BeatpulseNpgSqlPackageVersion>
-    <BeatpulseRedisPackageVersion>3.0.0</BeatpulseRedisPackageVersion>
+    <BeatpulseRedisPackageVersion>3.0.1</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>3.0.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>3.0.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>3.0.0</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>3.0.2</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>3.0.0</BeatPulseKafkaVersion>
     <BeatPulseEventStoreVersion>3.0.0</BeatPulseEventStoreVersion>
     <BeatPulseRabbitMQPackageVersion>3.0.0</BeatPulseRabbitMQPackageVersion>
