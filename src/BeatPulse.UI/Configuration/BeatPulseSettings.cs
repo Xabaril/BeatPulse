@@ -32,8 +32,8 @@ namespace BeatPulse.UI.Configuration
 
     class DatabaseConfiguration
     {
-        public string ConnectionString { get; set; } = "Data Source=livenessdb";
+        public string ConnectionString { get; set; }
 
-        public bool EnsureHistory { get; set; } = false;
+        public bool EnsureHistory { get; set; }
     }
 }
