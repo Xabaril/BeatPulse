@@ -74,7 +74,7 @@ namespace BeatPulse.UI
                 var settings = scope.ServiceProvider
                     .GetService<IOptions<BeatPulseSettings>>();
 
-                if (Convert.ToBoolean(configuration["BeatPulse-UI:DatabaseConfiguration:EnsureHistory"]) == false){
+                if (Convert.ToBoolean(settings.Value?.DatabaseConfiguration?.EnsureHistory) == false){
                     await db.Database.EnsureDeletedAsync();
                 }
                
