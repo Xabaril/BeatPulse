@@ -11,6 +11,8 @@ namespace BeatPulse.UI.Configuration
         public int EvaluationTimeOnSeconds { get; set; } = 10;
 
         public int MinimumSecondsBetweenFailureNotifications { get; set; } = 60 * 10;
+
+        public DatabaseConfiguration DatabaseConfiguration { get; set; }
     }
 
     class LivenessConfigurationSetting
@@ -26,5 +28,12 @@ namespace BeatPulse.UI.Configuration
         public string Uri { get; set; }
         public string Payload { get; set; }
         public string RestoredPayload { get; set; }
+    }
+
+    class DatabaseConfiguration
+    {
+        public string ConnectionString { get; set; } = "Data Source=livenessdb";
+
+        public bool EnsureHistory { get; set; } = false;
     }
 }

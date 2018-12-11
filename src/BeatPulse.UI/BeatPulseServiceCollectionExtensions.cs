@@ -34,7 +34,13 @@ namespace BeatPulse.UI
             services.AddScoped<ILivenessRunner, LivenessRunner>();
             services.AddDbContext<LivenessDb>(db =>
             {
-                db.UseSqlite("Data Source=livenessdb");
+                var connectionString = configuration["BeatPulse-UI:DatabaseConfiguration:ConnectionString"];
+                if (string.IsNullOrWhiteSpace(connectionString) == false) {
+                    db.UseSqlServer(connectionString);
+                }
+                else {
+                    db.UseSqlite("Data Source=livenessdb");
+                } 
             });
 
             var kubernetesDiscoveryOptions = new KubernetesDiscoveryOptions();
@@ -68,8 +74,10 @@ namespace BeatPulse.UI
                 var settings = scope.ServiceProvider
                     .GetService<IOptions<BeatPulseSettings>>();
 
-                await db.Database.EnsureDeletedAsync();
-
+                if (Convert.ToBoolean(configuration["BeatPulse-UI:DatabaseConfiguration:EnsureHistory"]) == false){
+                    await db.Database.EnsureDeletedAsync();
+                }
+               
                 await db.Database.MigrateAsync();
 
                 var liveness = settings.Value?
