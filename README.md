@@ -4,7 +4,7 @@
 
 # Beat Pulse
 
-> IMPORTANT UPDATE
+> **IMPORTANT UPDATE**
 
 Beatpulse project was created to fill a gap in Asp.Net Core ecosystem when no health checks libraries were available.
 
