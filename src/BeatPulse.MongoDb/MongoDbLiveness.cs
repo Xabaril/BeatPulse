@@ -24,9 +24,13 @@ namespace BeatPulse.MongoDb
             try
             {
                 _logger?.LogInformation($"{nameof(MongoDbLiveness)} is checking the MongoDb database.");
-
-                await new MongoClient(_connectionString)
-                    .ListDatabasesAsync(cancellationToken);
+                
+                var client = new MongoClient(_connectionString);
+                var url = new MongoUrl(_connectionString);
+                if (string.IsNullOrWhiteSpace(url.DatabaseName))
+                    await client.ListDatabasesAsync(cancellationToken);
+                else
+                    await client.GetDatabase(url.DatabaseName).ListCollectionsAsync(cancellationToken: cancellationToken);
 
                 _logger?.LogInformation($"The {nameof(MongoDbLiveness)} check success.");
 
