@@ -66,5 +66,52 @@ namespace BeatPulse.MongoDb
             response.StatusCode
                 .Should().Be(HttpStatusCode.ServiceUnavailable);
         }
+        
+        [Fact]
+        public async Task return_true_if_mongodb_is_available_and_database_is_defined()
+        {
+            var connectionString = @"mongodb://localhost:27017/database";
+
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context.AddMongoDb(connectionString);
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}")
+                .GetAsync();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task return_false_if_mongodb_is_not_available_and_database_is_defined()
+        {
+            var webHostBuilder = new WebHostBuilder()
+                .UseStartup<DefaultStartup>()
+                .UseBeatPulse()
+                .ConfigureServices(services =>
+                {
+                    services.AddBeatPulse(context =>
+                    {
+                        context.AddMongoDb("mongodb://nonexistingdomain:27017/database");
+                    });
+                });
+
+            var server = new TestServer(webHostBuilder);
+
+            var response = await server.CreateRequest($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}")
+                .GetAsync();
+
+            response.StatusCode
+                .Should().Be(HttpStatusCode.ServiceUnavailable);
+        }
     }
 }
