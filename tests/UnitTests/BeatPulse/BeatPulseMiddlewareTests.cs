@@ -810,7 +810,7 @@ namespace BeatPulse
             response.StatusCode.Should().Be(StatusCodes.Status503ServiceUnavailable);
 
             response = await server.CreateClient()
-                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true&Timeout=300");
+                .GetAsync($"{BeatPulseKeys.BEATPULSE_DEFAULT_PATH}?DetailedOutput=true&Timeout=900");
 
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
         }
