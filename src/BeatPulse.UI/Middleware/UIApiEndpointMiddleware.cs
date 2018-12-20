@@ -24,8 +24,8 @@ namespace BeatPulse.UI.Middleware
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
         {
             using (var scope = serviceScopeFactory.CreateScope())
+            using (var db = scope.ServiceProvider.GetService<LivenessDb>())
             {
-                var db = scope.ServiceProvider.GetService<LivenessDb>();
 
                 var cancellationToken = new CancellationToken();
 
@@ -39,6 +39,7 @@ namespace BeatPulse.UI.Middleware
                     var execution = await db.LivenessExecutions
                         .Include(le => le.History)
                         .Where(le => le.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                        .AsNoTracking()
                         .SingleOrDefaultAsync(cancellationToken);
 
                     if (execution != null)

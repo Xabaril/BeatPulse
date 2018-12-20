@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core.Notifications
 {
-    interface ILivenessFailureNotifier
+    interface ILivenessFailureNotifier : IDisposable
     {
         Task NotifyDown(string livenessName, string message);
 

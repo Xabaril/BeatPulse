@@ -18,7 +18,7 @@ namespace BeatPulse.UI.Core.HostedService
 
         private Task _executingTask;
 
-        public LivenessHostedService(IServiceProvider provider,IOptions<BeatPulseSettings> settings, ILogger<LivenessHostedService> logger)
+        public LivenessHostedService(IServiceProvider provider, IOptions<BeatPulseSettings> settings, ILogger<LivenessHostedService> logger)
         {
             _serviceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
             _logger = logger ?? throw new ArgumentNullException(nameof(provider));
@@ -51,10 +51,8 @@ namespace BeatPulse.UI.Core.HostedService
                 _logger.LogDebug("Executing LivenessHostedService.");
 
                 using (var scope = scopeFactory.CreateScope())
+                using (var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>())
                 {
-                    var runner = scope.ServiceProvider
-                        .GetRequiredService<ILivenessRunner>();
-
                     try
                     {
                         await runner.Run(cancellationToken);
@@ -64,7 +62,7 @@ namespace BeatPulse.UI.Core.HostedService
                     catch (Exception ex)
                     {
                         _logger.LogError("LivenessHostedService throw a error:", ex);
-                    }  
+                    }
                 }
 
                 await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000);

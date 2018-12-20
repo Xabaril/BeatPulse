@@ -261,6 +261,10 @@ namespace BeatPulse.UI.Core
 
                 return Task.CompletedTask;
             }
+
+            public void Dispose()
+            {
+            }
         }
     }
 

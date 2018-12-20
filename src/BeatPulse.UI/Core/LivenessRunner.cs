@@ -227,6 +227,19 @@ namespace BeatPulse.UI.Core
             }
         }
 
+        public void Dispose()
+        {
+            if (_context != null)
+            {
+                _context.Dispose();
+            }
+
+            if (_failureNotifier != null)
+            {
+                _failureNotifier.Dispose();
+            }
+        }
+
         private class OutputLivenessMessageResponse
         {
             public IEnumerable<LivenessResultResponse> Checks { get; set; }
