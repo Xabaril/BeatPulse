@@ -29,7 +29,7 @@ namespace FunctionalTests.Base
                 return Enumerable.Empty<IXunitTestCase>();
             }
 
-            return new[] { new XunitTestCase(_diagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(), testMethod) };
+            return new[] { new XunitTestCase(_diagnosticMessageSink, discoveryOptions.MethodDisplayOrDefault(), discoveryOptions.MethodDisplayOptionsOrDefault(), testMethod) };
         }
     }
 
