@@ -17,11 +17,13 @@ namespace BeatPulse.UI.Core
     class LivenessRunner
         : ILivenessRunner
     {
+        private static HttpClient _httpClient;
+
         private readonly LivenessDb _context;
         private readonly ILivenessFailureNotifier _failureNotifier;
         private readonly BeatPulseSettings _settings;
         private readonly ILogger<LivenessRunner> _logger;
-
+        
         public LivenessRunner(LivenessDb context,
             ILivenessFailureNotifier failureNotifier,
             IOptions<BeatPulseSettings> settings,
@@ -31,6 +33,7 @@ namespace BeatPulse.UI.Core
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
             _settings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = new HttpClient();
         }
 
         public async Task Run(CancellationToken cancellationToken)
@@ -38,6 +41,7 @@ namespace BeatPulse.UI.Core
             using (_logger.BeginScope("LivenessRuner is on run method."))
             {
                 var liveness = await _context.LivenessConfigurations
+                    .AsNoTracking()
                    .ToListAsync();
 
                 foreach (var item in liveness)
@@ -69,7 +73,7 @@ namespace BeatPulse.UI.Core
 
         protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
         {
-            return new HttpClient().GetAsync(uri);
+            return _httpClient.GetAsync(uri);
         }
 
         private async Task<(string response, bool ishealthy)> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
@@ -78,14 +82,15 @@ namespace BeatPulse.UI.Core
 
             try
             {
-                var response = await PerformRequest(uri);
+                using (var response = await PerformRequest(uri))
+                {
+                    var success = response.IsSuccessStatusCode;
 
-                var success = response.IsSuccessStatusCode;
+                    var content = await response.Content
+                        .ReadAsStringAsync();
 
-                var content = await response.Content
-                    .ReadAsStringAsync();
-
-                return (content, success);
+                    return (content, success);
+                }
             }
             catch (Exception exception)
             {

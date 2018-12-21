@@ -13,15 +13,15 @@ namespace BeatPulse.UI.Core.HostedService
         : IHostedService
     {
         private readonly ILogger<LivenessHostedService> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly BeatPulseSettings _settings;
 
         private Task _executingTask;
 
-        public LivenessHostedService(IServiceProvider provider, IOptions<BeatPulseSettings> settings, ILogger<LivenessHostedService> logger)
+        public LivenessHostedService(IServiceScopeFactory serviceScopeFactory, IOptions<BeatPulseSettings> settings, ILogger<LivenessHostedService> logger)
         {
-            _serviceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
-            _logger = logger ?? throw new ArgumentNullException(nameof(provider));
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _logger = logger ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _settings = settings.Value ?? new BeatPulseSettings();
         }
 
@@ -44,13 +44,11 @@ namespace BeatPulse.UI.Core.HostedService
 
         private async Task ExecuteASync(CancellationToken cancellationToken)
         {
-            var scopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
-
             while (!cancellationToken.IsCancellationRequested)
             {
                 _logger.LogDebug("Executing LivenessHostedService.");
 
-                using (var scope = scopeFactory.CreateScope())
+                using (var scope = _serviceScopeFactory.CreateScope())
                 using (var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>())
                 {
                     try
