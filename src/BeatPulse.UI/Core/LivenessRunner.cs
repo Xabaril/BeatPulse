@@ -24,6 +24,10 @@ namespace BeatPulse.UI.Core
         private readonly BeatPulseSettings _settings;
         private readonly ILogger<LivenessRunner> _logger;
         
+        static LivenessRunner() {
+            _httpClient = new HttpClient();
+        }
+
         public LivenessRunner(LivenessDb context,
             ILivenessFailureNotifier failureNotifier,
             IOptions<BeatPulseSettings> settings,
@@ -33,7 +37,6 @@ namespace BeatPulse.UI.Core
             _failureNotifier = failureNotifier ?? throw new ArgumentNullException(nameof(failureNotifier));
             _settings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpClient = new HttpClient();
         }
 
         public async Task Run(CancellationToken cancellationToken)
