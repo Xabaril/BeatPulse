@@ -29,9 +29,13 @@ namespace BeatPulse.MongoDb
                 
                 var url = new MongoUrl(_connectionString);
                 if (string.IsNullOrWhiteSpace(url.DatabaseName))
+                {
                     await client.ListDatabasesAsync(cancellationToken);
+                }
                 else
+                {
                     await client.GetDatabase(url.DatabaseName).ListCollectionsAsync(cancellationToken: cancellationToken);
+                }
 
                 _logger?.LogInformation($"The {nameof(MongoDbLiveness)} check success.");
 
