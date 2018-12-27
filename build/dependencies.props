@@ -25,11 +25,11 @@
     <MySqlConnectorVersion>0.40.4</MySqlConnectorVersion>
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
     <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
-    <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
-    <MicrosoftEntityFrameworkCoreVersion>2.1.0</MicrosoftEntityFrameworkCoreVersion>
-    <MicrosoftEntityFrameworkCoreDesignVersion>2.1.0</MicrosoftEntityFrameworkCoreDesignVersion>
-    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.0</MicrosoftEntityFrameworkCoreSqlLiteVersion>
-    <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
+    <NewtonSoftJsonVersion>12.0.1</NewtonSoftJsonVersion>
+    <MicrosoftEntityFrameworkCoreVersion>2.1.4</MicrosoftEntityFrameworkCoreVersion>
+    <MicrosoftEntityFrameworkCoreDesignVersion>2.1.4</MicrosoftEntityFrameworkCoreDesignVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.4</MicrosoftEntityFrameworkCoreSqlLiteVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.6</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
     <MicrosoftExtensionConfigurationBinderVersion>2.1.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
     <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
