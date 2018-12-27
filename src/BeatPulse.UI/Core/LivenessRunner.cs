@@ -45,7 +45,7 @@ namespace BeatPulse.UI.Core
             {
                 var liveness = await _context.LivenessConfigurations
                     .AsNoTracking()
-                   .ToListAsync();
+                   .ToListAsync(cancellationToken);
 
                 foreach (var item in liveness)
                 {
@@ -237,15 +237,6 @@ namespace BeatPulse.UI.Core
 
         public void Dispose()
         {
-            if (_context != null)
-            {
-                _context.Dispose();
-            }
-
-            if (_failureNotifier != null)
-            {
-                _failureNotifier.Dispose();
-            }
         }
 
         private class OutputLivenessMessageResponse
