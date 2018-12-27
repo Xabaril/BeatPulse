@@ -114,13 +114,5 @@ namespace BeatPulse.UI.Core.Notifications
                 _logger.LogError($"The failure notification for {name} has not executed successfully.", exception);
             }
         }
-
-        public void Dispose()
-        {
-            if (_db != null)
-            {
-                _db.Dispose();
-            }
-        }
     }
 }

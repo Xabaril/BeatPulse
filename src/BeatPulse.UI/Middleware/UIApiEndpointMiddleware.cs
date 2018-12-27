@@ -24,8 +24,8 @@ namespace BeatPulse.UI.Middleware
         public async Task InvokeAsync(HttpContext context, IServiceScopeFactory serviceScopeFactory)
         {
             using (var scope = serviceScopeFactory.CreateScope())
-            using (var db = scope.ServiceProvider.GetService<LivenessDb>())
             {
+                var db = scope.ServiceProvider.GetService<LivenessDb>();
 
                 var cancellationToken = new CancellationToken();
 
