@@ -45,9 +45,11 @@ namespace BeatPulse.UI.Core
             {
                 var liveness = await _context.LivenessConfigurations
                     .AsNoTracking()
-                   .ToListAsync(cancellationToken);
+                    .ToListAsync(cancellationToken);
 
-                foreach (var item in liveness)
+                var evaulatedLiveness = await Task.WhenAll(liveness.ConvertAll(o => EvaluateLiveness(o, cancellationToken)));
+
+                foreach (var (response, isHealthy, item) in evaulatedLiveness)
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
@@ -55,9 +57,7 @@ namespace BeatPulse.UI.Core
 
                         break;
                     }
-
-                    var (response, isHealthy) = await EvaluateLiveness(item, cancellationToken);
-
+                    
                     if (isHealthy && (await HasLivenessRecoveredFromFailure(item, cancellationToken)))
                     {
                         await _failureNotifier.NotifyWakeUp(item.LivenessName);
@@ -70,6 +70,8 @@ namespace BeatPulse.UI.Core
                     await SaveExecutionHistory(item, response, isHealthy, cancellationToken);
                 }
 
+                await _context.SaveChangesAsync(cancellationToken);
+
                 _logger.LogDebug("LivenessRuner run is completed.");
             }
         }
@@ -79,7 +81,7 @@ namespace BeatPulse.UI.Core
             return _httpClient.GetAsync(uri, cancellationToken);
         }
 
-        private async Task<(string response, bool ishealthy)> EvaluateLiveness(
+        private async Task<(string response, bool ishealthy, LivenessConfiguration livenessConfiguration)> EvaluateLiveness(
             LivenessConfiguration livenessConfiguration,
             CancellationToken cancellationToken)
         {
@@ -94,14 +96,14 @@ namespace BeatPulse.UI.Core
                     var content = await response.Content
                         .ReadAsStringAsync();
 
-                    return (content, success);
+                    return (content, success, livenessConfiguration);
                 }
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception, "LivenessRunner EvaluateLiveness throw the exception.");
 
-                return (exception.Message, false);
+                return (exception.Message, false, livenessConfiguration);
             }
         }
 
@@ -180,8 +182,6 @@ namespace BeatPulse.UI.Core
                 await _context.LivenessExecutions
                     .AddAsync(livenessExecution, cancellationToken);
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private LivenessStatus GetDetailedStatusFromContent(bool isHealthy, string content)
