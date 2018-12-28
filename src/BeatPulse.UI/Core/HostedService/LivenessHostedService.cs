@@ -63,7 +63,7 @@ namespace BeatPulse.UI.Core.HostedService
                     }
                 }
 
-                await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000);
+                await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000, cancellationToken);
             }
         }
     }

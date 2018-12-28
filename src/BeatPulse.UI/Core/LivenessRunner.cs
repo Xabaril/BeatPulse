@@ -56,9 +56,9 @@ namespace BeatPulse.UI.Core
                         break;
                     }
 
-                    var (response, isHealthy) = await EvaluateLiveness(item);
+                    var (response, isHealthy) = await EvaluateLiveness(item, cancellationToken);
 
-                    if (isHealthy && (await HasLivenessRecoveredFromFailure(item)))
+                    if (isHealthy && (await HasLivenessRecoveredFromFailure(item, cancellationToken)))
                     {
                         await _failureNotifier.NotifyWakeUp(item.LivenessName);
                     }
@@ -67,25 +67,27 @@ namespace BeatPulse.UI.Core
                         await _failureNotifier.NotifyDown(item.LivenessName, GetFailedMessageFromContent(response));
                     }
 
-                    await SaveExecutionHistory(item, response, isHealthy);
+                    await SaveExecutionHistory(item, response, isHealthy, cancellationToken);
                 }
 
                 _logger.LogDebug("LivenessRuner run is completed.");
             }
         }
 
-        protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri)
+        protected internal virtual Task<HttpResponseMessage> PerformRequest(string uri, CancellationToken cancellationToken)
         {
-            return _httpClient.GetAsync(uri);
+            return _httpClient.GetAsync(uri, cancellationToken);
         }
 
-        private async Task<(string response, bool ishealthy)> EvaluateLiveness(LivenessConfiguration livenessConfiguration)
+        private async Task<(string response, bool ishealthy)> EvaluateLiveness(
+            LivenessConfiguration livenessConfiguration,
+            CancellationToken cancellationToken)
         {
             var (uri, name) = livenessConfiguration;
 
             try
             {
-                using (var response = await PerformRequest(uri))
+                using (var response = await PerformRequest(uri, cancellationToken))
                 {
                     var success = response.IsSuccessStatusCode;
 
@@ -103,17 +105,17 @@ namespace BeatPulse.UI.Core
             }
         }
 
-        private async Task<LivenessExecution> GetLivenessExecution(LivenessConfiguration liveness)
+        private async Task<LivenessExecution> GetLivenessExecution(LivenessConfiguration liveness, CancellationToken cancellationToken)
         {
             return await _context.LivenessExecutions
                 .Include(le => le.History)
                 .Where(le => le.LivenessName.Equals(liveness.LivenessName, StringComparison.InvariantCultureIgnoreCase))
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(cancellationToken);
         }
 
-        private async Task<bool> HasLivenessRecoveredFromFailure(LivenessConfiguration liveness)
+        private async Task<bool> HasLivenessRecoveredFromFailure(LivenessConfiguration liveness, CancellationToken cancellationToken)
         {
-            var previousLivenessExecution = await GetLivenessExecution(liveness);
+            var previousLivenessExecution = await GetLivenessExecution(liveness, cancellationToken);
             if (previousLivenessExecution != null)
             {
                 var previousStatus = (LivenessStatus)Enum.Parse(typeof(LivenessStatus), previousLivenessExecution.Status);
@@ -123,11 +125,11 @@ namespace BeatPulse.UI.Core
             return false;
         }
 
-        private async Task SaveExecutionHistory(LivenessConfiguration liveness, string content, bool isHealthy)
+        private async Task SaveExecutionHistory(LivenessConfiguration liveness, string content, bool isHealthy, CancellationToken cancellationToken)
         {
             _logger.LogDebug("LivenessRuner save a new liveness execution history.");
 
-            var livenessExecution = await GetLivenessExecution(liveness);
+            var livenessExecution = await GetLivenessExecution(liveness, cancellationToken);
 
             var currentStatus = GetDetailedStatusFromContent(isHealthy, content);
             var currentStatusName = Enum.GetName(typeof(LivenessStatus), currentStatus);
@@ -176,10 +178,10 @@ namespace BeatPulse.UI.Core
                 };
 
                 await _context.LivenessExecutions
-                    .AddAsync(livenessExecution);
+                    .AddAsync(livenessExecution, cancellationToken);
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private LivenessStatus GetDetailedStatusFromContent(bool isHealthy, string content)
