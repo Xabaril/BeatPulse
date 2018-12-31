@@ -47,9 +47,9 @@ namespace BeatPulse.UI.Core
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
 
-                var evaulatedLiveness = await Task.WhenAll(liveness.ConvertAll(o => EvaluateLiveness(o, cancellationToken)));
+                var evaluatedLiveness = await Task.WhenAll(liveness.ConvertAll(o => EvaluateLiveness(o, cancellationToken)));
 
-                foreach (var (response, isHealthy, item) in evaulatedLiveness)
+                foreach (var (response, isHealthy, item) in evaluatedLiveness)
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
