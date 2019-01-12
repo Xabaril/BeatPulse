@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core.Builders
@@ -26,11 +27,11 @@ namespace BeatPulse.UI.Core.Builders
             _content = content;
         }
 
-        protected internal override Task<HttpResponseMessage> PerformRequest(string uri)
+        protected internal override Task<HttpResponseMessage> PerformRequest(string uri, CancellationToken cancellationToken)
         {
-            var message  =  new HttpResponseMessage(_status)
+            var message = new HttpResponseMessage(_status)
             {
-                Content = new StringContent(_content,Encoding.UTF8,"application/json")
+                Content = new StringContent(_content, Encoding.UTF8, "application/json")
             };
 
             return Task.FromResult(message);

@@ -49,8 +49,8 @@ namespace BeatPulse.UI.Core.HostedService
                 _logger.LogDebug("Executing LivenessHostedService.");
 
                 using (var scope = _serviceScopeFactory.CreateScope())
-                using (var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>())
                 {
+                    var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>();
                     try
                     {
                         await runner.Run(cancellationToken);
@@ -63,7 +63,7 @@ namespace BeatPulse.UI.Core.HostedService
                     }
                 }
 
-                await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000);
+                await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000, cancellationToken);
             }
         }
     }

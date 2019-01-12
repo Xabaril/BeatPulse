@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace BeatPulse.UI.Core.Notifications
 {
-    interface ILivenessFailureNotifier : IDisposable
+    interface ILivenessFailureNotifier
     {
         Task NotifyDown(string livenessName, string message);
 
