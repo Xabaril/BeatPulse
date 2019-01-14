@@ -56,7 +56,7 @@
     <BeatpulseRedisPackageVersion>3.0.1</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>3.0.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>3.0.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>3.0.6</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>3.0.7</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>3.0.0</BeatPulseKafkaVersion>
     <BeatPulseEventStoreVersion>3.0.0</BeatPulseEventStoreVersion>
     <BeatPulseRabbitMQPackageVersion>3.0.0</BeatPulseRabbitMQPackageVersion>
