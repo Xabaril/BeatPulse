@@ -14,6 +14,8 @@
     <MongoDBDriverVersion>2.5.0</MongoDBDriverVersion>
     <NpgsqlVersion>3.2.6</NpgsqlVersion>
     <RedisVersion>1.2.6</RedisVersion>
+    <NestVersion>6.1.0</NestVersion>
+    <EventStoreVersion>4.1.0.23</EventStoreVersion>
     <SqlClientVersion>4.4.2</SqlClientVersion>
     <FluentAssertionsVersion>5.4.1</FluentAssertionsVersion>
     <ASPNetCoreTestHostVersion>2.1.1</ASPNetCoreTestHostVersion>
@@ -24,10 +26,10 @@
     <MicrosoftAzureDocumentDbCoreVersion>1.9.1</MicrosoftAzureDocumentDbCoreVersion>
     <MicrosoftDataSqliteVersion>2.0.1</MicrosoftDataSqliteVersion>
     <NewtonSoftJsonVersion>11.0.2</NewtonSoftJsonVersion>
-    <MicrosoftEntityFrameworkCoreVersion>2.1.0</MicrosoftEntityFrameworkCoreVersion>
-    <MicrosoftEntityFrameworkCoreDesignVersion>2.1.0</MicrosoftEntityFrameworkCoreDesignVersion>
-    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.0</MicrosoftEntityFrameworkCoreSqlLiteVersion>
-    <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.5</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
+    <MicrosoftEntityFrameworkCoreVersion>2.1.4</MicrosoftEntityFrameworkCoreVersion>
+    <MicrosoftEntityFrameworkCoreDesignVersion>2.1.4</MicrosoftEntityFrameworkCoreDesignVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteVersion>2.1.4</MicrosoftEntityFrameworkCoreSqlLiteVersion>
+    <MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>1.1.6</MicrosoftEntityFrameworkCoreSqlLiteDesignVersion>
     <MicrosoftExtensionConfigurationBinderVersion>2.1.1</MicrosoftExtensionConfigurationBinderVersion>
     <ConfluentKafkaVersion>0.11.4</ConfluentKafkaVersion>
     <MicrosoftAzureEventHubsVersion>2.0.0</MicrosoftAzureEventHubsVersion>
@@ -51,11 +53,12 @@
     <BeatPulseMongoDbPackageVersion>3.0.0</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>3.0.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>3.0.0</BeatpulseNpgSqlPackageVersion>
-    <BeatpulseRedisPackageVersion>3.0.0</BeatpulseRedisPackageVersion>
+    <BeatpulseRedisPackageVersion>3.0.1</BeatpulseRedisPackageVersion>
     <BeatPulseSqlitePackageVersion>3.0.0</BeatPulseSqlitePackageVersion>
     <BeatPulseSqlServerPackageVersion>3.0.0</BeatPulseSqlServerPackageVersion>
-    <BeatPulseUIPackageVersion>3.0.0</BeatPulseUIPackageVersion>
+    <BeatPulseUIPackageVersion>3.0.7</BeatPulseUIPackageVersion>
     <BeatPulseKafkaVersion>3.0.0</BeatPulseKafkaVersion>
+    <BeatPulseEventStoreVersion>3.0.0</BeatPulseEventStoreVersion>
     <BeatPulseRabbitMQPackageVersion>3.0.0</BeatPulseRabbitMQPackageVersion>
     <BeatPulseIdSvrVersion>3.0.0</BeatPulseIdSvrVersion>
     <BeatPulseAzureServiceBusVersion>3.0.0</BeatPulseAzureServiceBusVersion>

@@ -39,6 +39,7 @@ namespace BeatPulse.UI.Middleware
                     var execution = await db.LivenessExecutions
                         .Include(le => le.History)
                         .Where(le => le.LivenessName.Equals(item.LivenessName, StringComparison.InvariantCultureIgnoreCase))
+                        .AsNoTracking()
                         .SingleOrDefaultAsync(cancellationToken);
 
                     if (execution != null)

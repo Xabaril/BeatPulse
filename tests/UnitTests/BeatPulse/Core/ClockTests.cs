@@ -18,7 +18,7 @@ namespace UnitTests.BeatPulse.Core
             var elapsed = clock.Elapsed();
 
             elapsed.Should()
-                .BeCloseTo(TimeSpan.FromSeconds(1));            
+                .BeCloseTo(TimeSpan.FromSeconds(1),1000);            
         }
     }
 }

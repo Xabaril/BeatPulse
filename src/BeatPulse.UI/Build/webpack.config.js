@@ -3,12 +3,12 @@ const path = require('path');
 
 module.exports = {
     devtool: 'none',
-    entry: path.resolve(__dirname, "../client/index.tsx"),
+    entry: path.resolve(__dirname, "../Client/index.tsx"),
     resolve: {
         extensions: [".tsx",".ts", ".json"]
     },
     output: {
-        path: path.join(__dirname, "../assets"),
+        path: path.join(__dirname, "../Assets"),
         filename: 'beatpulse-bundle.js'
     },
     module: {
@@ -27,7 +27,7 @@ module.exports = {
     plugins: [
         new webpack.DllReferencePlugin({
             context: ".",
-            manifest: require("../assets/vendors-manifest.json")
+            manifest: require("../Assets/vendors-manifest.json")
         })
     ]
 };

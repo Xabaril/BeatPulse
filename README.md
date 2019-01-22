@@ -4,6 +4,24 @@
 
 # Beat Pulse
 
+> **IMPORTANT UPDATE**
+
+Beatpulse project was created to fill a gap in Asp.Net Core ecosystem when no health checks libraries were available.
+
+Now that Microsoft is rolling out their own [health checks integration](https://github.com/aspnet/Diagnostics),  the Beatpulse project will be focused in contributing towards this library.
+
+All liveness, UI and Beatpulse features are already available as extensions for the new Microsoft health checks package in this repository:
+
+[Xabaril - AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
+
+**Support**
+
+The team will continue to provide support to Beatpulse until version 3.0 with .Net Core version 2.1 but no new features will be added in this repository.
+
+
+
+> What is Health Checking?
+
 Health checking is the process where load balancers or application delivery controller does periodic checks on our applications to make sure that they are up and responding without any problems. If our applications are down for whatever reason or any of the systems that our applications depends on (A database, a distributed cache, web service, ect) are down, the load balancer, k8s, should detect this and stop sending traffic its way trying to restore services manually or automatically.
 
 *BeatPulse* is a powerfull liveness, readiness library for .NET Core Applications with many out of box enterprise health check services.
@@ -23,9 +41,11 @@ Install-Package BeatPulse
  - System (Disk Storage, Memory)
  - Network (Tcp, Ftp, Sftp, Imap, Smtp, Dns resolve)
  - Redis
+ - Elasticsearch
  - SqlServer
  - MongoDb
  - Postgress Sql
+ - EventStore
  - Oracle
  - Azure Storage (Blobs, Tables and Queues)
  - Azure Service Bus (Event Hub, Service Bus queues and topics)
@@ -44,6 +64,8 @@ Install-Package BeatPulse.Network
 Install-Package BeatPulse.SqlServer
 Install-Package BeatPulse.MongoDb
 Install-Package BeatPulse.Npgsql
+Install-Package BeatPulse.Elasticsearch
+Install-Package BeatPulse.EventStore
 Install-Package BeatPulse.Redis
 Install-Package BeatPulse.AzureStorage
 Install-Package BeatPulse.AzureServiceBus
@@ -180,7 +202,7 @@ The [web hooks section](./doc/webhooks.md) contains more information and webhook
 
 BeatPulse wouldn't be possible without the time and effort of its contributors. The team is made up of Unai Zorrilla Castro @unaizorrilla, Luis Ruiz Pavón @lurumad, Carlos Landeras @carloslanderas and Eduard Tomás @eiximenis.
 
-*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner, Luis Fraile @lfraile, Bradley Grainger @bgrainger.
+*Our valued committers are*: Hugo Biarge @hbiarge, Matt Channer @mattchanner, Luis Fraile @lfraile, Bradley Grainger @bgrainger,Mahamadou Camara @poumup.
 
 If you want to contribute to a project and make it better, your help is very welcome. You can contribute with helpful bug reports, feature request and also new features with pull requests.
 
