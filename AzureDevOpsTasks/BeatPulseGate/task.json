@@ -15,9 +15,9 @@
 		"ServerGate"
 	],
 	"version": {
-		"Major": 0,
-		"Minor": 1,
-		"Patch": 2
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 0
 	},
 	"instanceNameFormat": "BeatPulse Deployment Gate",
 	"groups": [
