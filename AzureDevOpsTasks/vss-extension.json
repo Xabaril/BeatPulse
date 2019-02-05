@@ -3,7 +3,7 @@
 	"id": "vss-services-beatpulse-gate",
 	"name": "Xabaril BeatPulse Release Gate",
 	"publisher": "luisfraile",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"public": true,
     "description": "VSTS BeatPulse extensions.",    
 	"categories": ["Build and release"],
