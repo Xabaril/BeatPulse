@@ -1,0 +1,59 @@
+{
+	"manifestVersion": 1.0,
+	"id": "vss-services-beatpulse-gate",
+	"name": "Xabaril BeatPulse Release Gate",
+	"publisher": "luisfraile",
+	"version": "1.0.1",
+	"public": true,
+    "description": "VSTS BeatPulse extensions.",    
+	"categories": ["Build and release"],
+	"Tags": ["BeatPulse",
+	"Liveness",
+	"Release",
+	"ReleaseGates",
+	"DevOps"],
+	"targets": [{
+		"id": "Microsoft.VisualStudio.Services.Cloud"
+	}],
+	"demands": [],
+	"icons": {
+		"default": "images/xabaril.png"
+	},
+	"branding": {
+		"color": "#3B3E43",
+		"theme": "dark"
+	},
+	"screenshots": [{
+		"path": "images/XabarilSample.png"
+	}],
+	"files": [
+	{
+		"path": "BeatPulseGate"
+	},
+	{
+		"path": "images/xabaril.png",
+		"addressable": true
+	},
+	{
+		"path": "images/XabarilSample.png",
+		"addressable": true
+	}],
+	"content": {
+		"details": {
+			"path": "readme.md"
+		}
+	},
+	"links": {
+		"license": {
+			"uri": "https://github.com/Xabaril/Xabaril/blob/master/LICENSE"
+		}
+	},
+	"contributions": [{
+		"id": "xabaril-beatpulse-gate-task",
+		"type": "ms.vss-distributed-task.task",
+		"targets": ["ms.vss-distributed-task.tasks"],
+		"properties": {
+			"name": "BeatPulseGate"
+		}
+	}]
+}

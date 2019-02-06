@@ -1,0 +1,75 @@
+{
+	"id": "1DFDBF5F-A3FC-4846-BD61-98003F1A5AEF",
+	"name": "BeatPulseReleaseGate",
+	"friendlyName": "BeatPulse Deployment Gate",
+	"description": "VSTS Deployment gate based on BeatPulse liveness signals..",
+	"author": "Xabaril",
+	"helpMarkDown": "[More Information](readme.md)",
+	"category": "Utility",
+	"preview": "true",
+	"visibility": [
+		"Release"
+	],
+	"runsOn": [
+		"Server",
+		"ServerGate"
+	],
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 1
+	},
+	"instanceNameFormat": "BeatPulse Deployment Gate",
+	"groups": [
+		{
+			"name": "beatPulseEndpoint",
+			"displayName": "BeatPulse endpoint information",
+			"isExpanded": true
+		},
+		{
+			"name": "beatPulseLiveness",
+			"displayName": "BeatPulse liveness information",
+			"isExpanded": true
+		}
+	],
+	"inputs": [{
+			"name": "beatPulseUri",
+			"type": "string",
+			"label": "Url configured for BeatPulse Liveness",
+			"defaultValue": "",
+			"required": true,
+			"groupName":"beatPulseEndpoint",
+			"helpMarkDown": "Url configured in BeatPulse to get general liveness"
+		}, {
+			"name": "beatPulseApiKey",
+			"type": "string",
+			"label": "Api key",
+			"defaultValue": "",
+			"required": false,
+			"groupName":"beatPulseEndpoint",
+			"helpMarkDown": "Configured API Key in BeatPulse. Leave empty if no API Key configured"
+		}, {
+			"name": "beatPulseLivenessPath",
+			"type": "string",
+			"label": "Liveness path",
+			"required": true,
+			"defaultValue": "",
+			"groupName":"beatPulseLiveness",
+			"helpMarkDown": "Path of the configured liveness in BeatPulse to check."
+		}
+	],
+
+	"execution": {
+		"HttpRequest": {
+			"Execute": {
+				"EndpointId": "",
+				"EndpointUrl": "$(beatPulseUri)/$(beatPulseLivenessPath)?api-key=$(beatPulseApiKey)",
+				"Method": "GET",
+				"Body": "",
+				"Headers": "{\"Content-Type\":\"application/json\"}",
+				"WaitForCompletion": "false",
+				"Expression": "eq(count(jsonpath('$.checks[?(@.path==''$(beatPulseLivenessPath)''&& @.isHealthy)]')),1)"
+			}
+		}
+	}
+}
