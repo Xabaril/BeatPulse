@@ -13,7 +13,7 @@ Once installed and deployed, you can start use this extenstion to use liveness p
 
 ### Configuration
 
- ![Gate snapshot](Images/XabarilSample.png)
+ ![Gate snapshot](images/XabarilSample.png)
 
  To configure the extension you need to provide following parameters:
  - *Display name*: Name for the Release Gate.
