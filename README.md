@@ -2,7 +2,7 @@
 
 [![Build history](https://buildstats.info/appveyor/chart/xabaril/beatpulse)](https://ci.appveyor.com/project/xabaril/beatpulse/history)
 
-# Beat Pulse
+# [DEPRECATED] Beat Pulse
 
 > **IMPORTANT UPDATE**
 
