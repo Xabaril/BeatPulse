@@ -50,7 +50,7 @@
     <BeatPulsePackageVersion>3.0.0</BeatPulsePackageVersion>
     <BeatPulseAzureStoragePackageVersion>3.0.0</BeatPulseAzureStoragePackageVersion>
     <BeatPulseDocumentDbPackageVersion>3.0.0</BeatPulseDocumentDbPackageVersion>
-    <BeatPulseMongoDbPackageVersion>3.0.0</BeatPulseMongoDbPackageVersion>
+    <BeatPulseMongoDbPackageVersion>3.0.1</BeatPulseMongoDbPackageVersion>
     <BeatPulseMySqlPackageVersion>3.0.0</BeatPulseMySqlPackageVersion>
     <BeatpulseNpgSqlPackageVersion>3.0.0</BeatpulseNpgSqlPackageVersion>
     <BeatpulseRedisPackageVersion>3.0.1</BeatpulseRedisPackageVersion>
