@@ -46,24 +46,32 @@ namespace BeatPulse.UI.Core.HostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogDebug("Executing LivenessHostedService.");
-
-                using (var scope = _serviceScopeFactory.CreateScope())
+                try
                 {
-                    var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>();
-                    try
-                    {
-                        await runner.Run(cancellationToken);
+                    _logger.LogDebug("Executing LivenessHostedService.");
 
-                        _logger.LogDebug("LivenessHostedService executed succesfully.");
-                    }
-                    catch (Exception ex)
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        _logger.LogError("LivenessHostedService throw a error:", ex);
+                        var runner = scope.ServiceProvider.GetRequiredService<ILivenessRunner>();
+                        try
+                        {
+                            await runner.Run(cancellationToken);
+
+                            _logger.LogDebug("LivenessHostedService executed successfully.");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "LivenessHostedService throw a error:");
+                        }
                     }
+
+                    await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000, cancellationToken);
                 }
-
-                await Task.Delay(_settings.EvaluationTimeOnSeconds * 1000, cancellationToken);
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Exception has been thrown during execution of LivenessRunner");
+                    throw;
+                }
             }
         }
     }
