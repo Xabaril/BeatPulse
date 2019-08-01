@@ -1,0 +1,7 @@
+# Edit this file to enter your healthchecks
+
+healthchecks:
+  - name: helloworld
+    uri: http://helloworld.default
+service:
+  type: NodePort

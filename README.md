@@ -154,6 +154,8 @@ This automatically registers a new interface on **/beatpulse-ui**.
 
 **BeatPulseUI** is also available as a *docker image*  You can read more about [beat pulse ui docker image](./doc/ui-docker.md).
 
+> **Note**: Beatpulse-ui is available as a helm chart, for easy installation on a Kubernetes cluster. For more information please read how [install beatpulse-ui on Kubernetes](./doc/install-beatpulse-ui-k8s.md)
+
 ### Configuration
 
 The liveness to be used on BeatPulse-UI are configured using the **BeatPulse-UI** settings.
